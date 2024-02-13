@@ -1,7 +1,7 @@
 interface IUserRegistrationBody {
   name: string;
   email: string;
-  password: string;
+  password?: string;
   confirmPassword?: string;
   avatar?: string;
   role?: string;

@@ -27,16 +27,29 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Please enter the password"],
+      required: [true, "Please enter password"],
       minlength: [6, "Password must be atleast 6 characters"],
       select: false,
       default: "googleAuth",
     },
 
     avatar: {
-      public_id: String,
-      url: String,
+      //public_id: String,
+      //url: String,
+      type: String,
+      default: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
     },
+
+    // avatar: {
+    //   public_id: {
+    //     type: String,
+    //     default: "", // Provide default values for each property
+    //   },
+    //   url: {
+    //     type: String,
+    //     default: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+    //   },
+    // },
 
     role: {
       type: String,

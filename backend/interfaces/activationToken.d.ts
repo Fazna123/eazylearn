@@ -4,7 +4,7 @@
 // }
 
 export interface IActivationToken {
-  token: string;
+  token?: string;
   activationCode: string;
 }
 

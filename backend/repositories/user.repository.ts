@@ -3,13 +3,14 @@ import Users from "../models/user.model";
 //import { IUser } from "../interfaces/user";
 import IUserRegistrationBody from "../interfaces/userBody";
 import ILoginRequest from "../interfaces/login";
+import { ObjectId } from "mongoose";
 
 class UserRepository {
   async checkExistUser(email: string) {
     try {
-      console.log("authenticate user in repo");
+      //console.log("authenticate user in repo");
       const userDetails = await Users.findOne({ email: email });
-      console.log(userDetails);
+      //console.log(userDetails);
       if (!userDetails) {
         return {
           success: true,
@@ -57,27 +58,24 @@ class UserRepository {
 
   async authenticateUser(details: ILoginRequest) {
     try {
-      //console.log("fetching user details");
       const { email, password } = details;
       const user = await Users.findOne({ email }).select("+password");
-      //console.log(user);
       if (!user) {
         return {
           success: true,
           message: "No user found",
         };
       }
-      //console.log("checking password match");
-      //console.log(password);
-      //console.log(typeof password);
+
       const isPasswordMatch = await user.comparePassword(password);
-      //console.log("ispasswordmatch?", isPasswordMatch);
+
       if (!isPasswordMatch) {
         return {
           success: false,
           message: "Invalid Credentials",
         };
       }
+
       return {
         success: true,
         message: "User authenticated",
@@ -87,6 +85,54 @@ class UserRepository {
       return {
         success: false,
         message: "Failed to verify password, server error",
+      };
+    }
+  }
+
+  async updateUserDetails(userId: string, updates: IUserRegistrationBody) {
+    try {
+      const userDetails = await Users.findByIdAndUpdate(userId, updates, {
+        new: true,
+      });
+      if (!userDetails) {
+        return {
+          success: false,
+          message: "No user found",
+        };
+      }
+      return {
+        success: true,
+        message: "user details updated",
+        data: userDetails,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to update ${error}`,
+      };
+    }
+  }
+
+  async getUser(email: string) {
+    try {
+      console.log("email at repo", email);
+      const userDetails = await Users.findOne({ email });
+      console.log(userDetails);
+      if (!userDetails) {
+        return {
+          success: false,
+          message: "user details not stored",
+        };
+      }
+      return {
+        success: true,
+        message: "user created",
+        data: userDetails,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to fetch ${error}`,
       };
     }
   }
