@@ -61,18 +61,18 @@ export const isAuthenticated = async (
   next();
 };
 
-// export const authorizeRoles = (...roles: string[]) => {
-//   return (req: Request, res: Response, next: NextFunction) => {
-//     if (!roles.includes(req.user?.role || "")) {
-//       return next({
-//         status: HttpStatus.BadRequest,
-//         data: {
-//           success: false,
-//           message: "Unauthorized Access",
-//         },
-//       });
-//     }
-//     // Continue processing if authorized
-//     next();
-//   };
-// };
+export const authorizeRoles = (...roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!roles.includes(req.user?.role || "")) {
+      return next({
+        status: HttpStatus.BadRequest,
+        data: {
+          success: false,
+          message: "Unauthorized Access",
+        },
+      });
+    }
+    // Continue processing if authorized
+    next();
+  };
+};

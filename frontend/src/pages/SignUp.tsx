@@ -41,7 +41,8 @@ export default function SignUp() {
           return;
         } else {
           const activation_token = data.activationToken;
-          navigate("/otp", { state: { activation_token } });
+          const user = data.user;
+          navigate("/otp", { state: { activation_token, user } });
           //navigate('/otp')
         }
       }

@@ -31,7 +31,7 @@ export const accessTokenOptions: ITokenOptions = {
 
 export const refreshTokenOptions: ITokenOptions = {
   expires: new Date(Date.now() + refreshTokenExpire * 1000),
-  maxAge: accessTokenExpire * 24 * 60 * 60 * 1000,
+  maxAge: refreshTokenExpire * 24 * 60 * 60 * 1000,
   httpOnly: true,
   sameSite: "lax",
 };
@@ -39,6 +39,8 @@ export const refreshTokenOptions: ITokenOptions = {
 export const sendToken = (user: IUser, statusCode: number, res: Response) => {
   const accessToken = user.signAccessToken();
   const refreshToken = user.signRefreshToken();
+
+  //upload session to redis
 
   redis.set(user._id, JSON.stringify(user));
 

@@ -74,7 +74,7 @@ export default function Profile() {
       console.log("form data", formData);
       dispatch(updateUserStart());
       const res = await fetch(`/api/user/updateuser`, {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -159,7 +159,8 @@ export default function Profile() {
             id="email"
             placeholder="Email"
             className="bg-slate-100 rounded-lg p-3"
-            onChange={handleChange}
+            //onChange={handleChange}
+            disabled={true}
           />
           <input
             type="password"

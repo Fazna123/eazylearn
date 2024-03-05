@@ -81,11 +81,6 @@ class UserController {
         req.user?.email as string
       );
       if (response !== undefined) {
-        // const user = response.data.data;
-        // res.status(status).json({
-        //   success: true,
-        //   user,
-        // });
         res.status(response.status).send(response.data);
       }
     } catch (error) {
@@ -96,18 +91,48 @@ class UserController {
     }
   }
 
-  // async getUserInfo(req: Request, res: Response) {
-  //   try {
-  //     console.log("controller");
-  //     const response = await this.userUsecase.getUserInfo(req, res);
-  //     console.log("response in controller", response);
-  //     if (response !== undefined) res.status(response.status).send(response);
-  //   } catch (error) {
-  //     res.status(500).send({
-  //       success: false,
-  //       message: "server error",
-  //     });
-  //   }
-  // }
+  async resendOtp(req: Request, res: Response) {
+    try {
+      console.log("resend otp controller");
+      const response = await this.userUsecase.resendOtp(req, res);
+      if (response !== undefined) {
+        console.log("new response in resend otp cntrllr", response);
+        res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+
+  async updateAccessToken(req: Request, res: Response) {
+    try {
+      console.log("update access token");
+      const response = await this.userUsecase.updateAccessToken(req, res);
+      if (response !== undefined)
+        res.status(response.status).send(response.data?.accessToken);
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+  async getUserInfo(req: Request, res: Response) {
+    try {
+      console.log("controllerinfo me");
+      const response = await this.userUsecase.getUserInfo(req, res);
+      console.log("response in controller", response);
+      if (response !== undefined)
+        res.status(response.status).send(response.data?.user);
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
 }
 export default UserController;

@@ -10,8 +10,6 @@ const userRepository = new UserRepository();
 const userUsecase = new UserUsecase(userRepository);
 const userController = new UserController(userUsecase);
 
-// userRoute.post("/register", userController.createUser);
-
 userRoute.post("/register", (req: Request, res: Response) => {
   userController.createUser(req, res);
 });
@@ -34,16 +32,20 @@ userRoute.get("/logout", isAuthenticated, (req: Request, res: Response) => {
   userController.logoutUser(req, res);
 });
 
-// userRoute.get("/me", (req: Request, res: Response) => {
-//   userController.getUserInfo(req, res);
-// });
+userRoute.post("/resendotp", (req: Request, res: Response) => {
+  console.log("resend otp route");
+  userController.resendOtp(req, res);
+});
+userRoute.get("/me", isAuthenticated, (req: Request, res: Response) => {
+  userController.getUserInfo(req, res);
+});
 
-userRoute.post(
-  "/updateuser",
-  isAuthenticated,
-  (req: Request, res: Response) => {
-    userController.updateUserDetails(req, res);
-  }
-);
+userRoute.get("/refresh", (req: Request, res: Response) => {
+  userController.updateAccessToken(req, res);
+});
+
+userRoute.put("/updateuser", isAuthenticated, (req: Request, res: Response) => {
+  userController.updateUserDetails(req, res);
+});
 
 export default userRoute;

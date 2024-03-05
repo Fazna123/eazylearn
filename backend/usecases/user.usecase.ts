@@ -19,7 +19,7 @@ import {
 import { redis } from "../utils/redis";
 import IUpdateUserInfo from "../interfaces/updateuser";
 import bcrypt from "bcryptjs";
-//import { getUserById } from "../services/userservice";
+import { getUserById } from "../services/userservice";
 
 dotenv.config();
 
@@ -31,11 +31,8 @@ class UserUsecase {
 
   async createUser(req: Request, res: Response) {
     try {
-      //console.log("usecase");
       const { name, email, password } = req.body;
-      //console.log(req.body);
       const isEmailExist = await this.userRepository.checkExistUser(email);
-      //console.log(isEmailExist);
       if (isEmailExist.data) {
         return {
           status: HttpStatus.ServerError,
@@ -62,7 +59,7 @@ class UserUsecase {
         path.join(__dirname, "../mails/activationMail.ejs"),
         data
       );
-      console.log("Email HTML content:", html);
+      //console.log("Email HTML content:", html);
       try {
         await this.sendMail({
           email: user.email,
@@ -75,11 +72,12 @@ class UserUsecase {
           success: true,
           message: `Please check your mail ${user.email} to activate your account`,
           activationToken: (await activationToken).token,
+          user,
         });
       } catch (error) {
         res.status(500).send({
           success: false,
-          message: "server error",
+          message: "Error sending mail",
         });
       }
     } catch (error) {
@@ -95,8 +93,6 @@ class UserUsecase {
   ): Promise<IActivationToken> {
     console.log("create activaton code");
     const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
-    // console.log(activationCode);
-    // console.log(user);
 
     const token = jwt.sign(
       {
@@ -105,11 +101,9 @@ class UserUsecase {
       },
       process.env.ACTIVATION_SECRET as Secret,
       {
-        expiresIn: "5m",
+        expiresIn: "2m",
       }
     );
-    // console.log(token);
-    // console.log(token, activationCode);
     return { token, activationCode };
   }
 
@@ -142,10 +136,10 @@ class UserUsecase {
 
   async activateUser(req: Request, res: Response) {
     try {
+      console.log("activate user reqst body", req.body);
       const { otp, activation_token } = req.body;
 
       const activation_code = otp;
-      //const activation_token = activationToken;
 
       console.log(req.body);
       console.log("code", activation_code);
@@ -155,7 +149,7 @@ class UserUsecase {
         process.env.ACTIVATION_SECRET as string
       ) as { user: IUser; activationCode: string };
 
-      console.log(newUser);
+      console.log("new user", newUser);
 
       if (newUser.activationCode !== activation_code) {
         return {
@@ -209,26 +203,26 @@ class UserUsecase {
     try {
       const { email, password } = req.body as ILoginRequest;
 
-      if (!email || !password) {
-        return {
-          status: HttpStatus.BadRequest,
-          data: {
-            success: false,
-            message: "Please enter email & password",
-          },
-        };
-      }
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      //const passwordRegex =/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-      if (!emailRegex.test(email)) {
-        return {
-          status: HttpStatus.NotFound,
-          data: {
-            success: false,
-            message: "Invalid email or password format",
-          },
-        };
-      }
+      // if (!email || !password) {
+      //   return {
+      //     status: HttpStatus.BadRequest,
+      //     data: {
+      //       success: false,
+      //       message: "Please enter email & password",
+      //     },
+      //   };
+      // }
+      // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      // //const passwordRegex =/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+      // if (!emailRegex.test(email)) {
+      //   return {
+      //     status: HttpStatus.NotFound,
+      //     data: {
+      //       success: false,
+      //       message: "Invalid email or password format",
+      //     },
+      //   };
+      // }
 
       const user = await this.userRepository.authenticateUser(req.body);
 
@@ -253,12 +247,8 @@ class UserUsecase {
 
   async logoutUser(req: Request, res: Response) {
     try {
-      // console.log("usecase logout");
-      // console.log("cookies", req.cookies);
       res.cookie("access_token", "", { maxAge: 0 });
       res.cookie("refresh_token", "", { maxAge: 0 });
-      //console.log("cookies2", req.cookies);
-
       const userId = req.user?._id || "";
       redis.del(userId);
       return {
@@ -299,13 +289,6 @@ class UserUsecase {
           const newuser = await this.userRepository.checkExistUser(email);
           if (newuser.data) {
             sendToken(newuser.data, 200, res);
-            // return {
-            //   status: HttpStatus.Success,
-            //   data: {
-            //     success: true,
-            //     message: "User Activation Success",
-            //   },
-            // };
           }
           res.status(201).json({
             success: true,
@@ -353,7 +336,7 @@ class UserUsecase {
         details = { ...rest, avatar };
       }
       const response = await this.userRepository.updateUserDetails(
-        user.id,
+        user?.id,
         details
       );
       if (response.data) {
@@ -436,10 +419,18 @@ class UserUsecase {
 
       res.cookie("access_token", accessToken, accessTokenOptions);
       res.cookie("refresh_token", refreshToken, refreshTokenOptions);
-      res.status(200).json({
-        status: "success",
-        accessToken,
-      });
+      // res.status(200).json({
+      //   status: "success",
+      //   accessToken,
+      // });
+      return {
+        status: HttpStatus.Success,
+        data: {
+          success: true,
+          message: "Refreshed",
+          accessToken,
+        },
+      };
     } catch (error) {
       return {
         status: HttpStatus.ServerError,
@@ -450,37 +441,90 @@ class UserUsecase {
       };
     }
   }
+
+  async resendOtp(req: Request, res: Response) {
+    try {
+      const { user } = req.body;
+      const newUser: IUserRegistrationBody = {
+        name: user.name,
+        email: user.email,
+        password: user.password,
+      };
+      const activationToken = await this.createActivationToken(newUser);
+      const activationCode = (await activationToken).activationCode;
+      const data = { user: { name: newUser.name }, activationCode };
+
+      const html = await ejs.renderFile(
+        path.join(__dirname, "../mails/activationMail.ejs"),
+        data
+      );
+      try {
+        await this.sendMail({
+          email: user.email,
+          subject: "Activate your account with new Otp",
+          template: "activationMail.ejs",
+          data,
+        });
+        const response = {
+          status: 201,
+          data: {
+            success: true,
+            message: `Otp has been resent.Please check your mail ${user.email} to activate your account`,
+            activationToken: (await activationToken).token,
+            user,
+          },
+        };
+
+        return response;
+      } catch (error) {
+        return {
+          status: 500,
+          data: {
+            success: false,
+            message: "Failed sending new otp",
+          },
+        };
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+
+  async getUserInfo(req: Request, res: Response) {
+    try {
+      const userId = req.user?._id;
+      console.log("user id in get user info", userId);
+      const user = await getUserById(userId, res);
+      console.log(user);
+      if (user) {
+        return {
+          status: HttpStatus.Success,
+          data: {
+            success: true,
+            message: "User Info",
+            user,
+          },
+        };
+      } else {
+        return {
+          status: HttpStatus.NotFound,
+          data: {
+            success: true,
+            message: "Failed to fetch User Info",
+          },
+        };
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
 }
 
 export default UserUsecase;
-
-// async getUserInfo(req: Request, res: Response) {
-//   try {
-//     const userId = req.user?._id;
-//     const user = await getUserById(userId, res);
-//     console.log(user);
-//     if (user.user) {
-//       return {
-//         status: HttpStatus.Success,
-//         data: {
-//           success: true,
-//           message: "User Info",
-//           data: "",
-//         },
-//       };
-//     } else {
-//       return {
-//         status: HttpStatus.NotFound,
-//         data: {
-//           success: true,
-//           message: "Failed to fetch User Info",
-//         },
-//       };
-//     }
-//   } catch (error) {
-//     res.status(500).send({
-//       success: false,
-//       message: "server error",
-//     });
-//   }
-// }

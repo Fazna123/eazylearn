@@ -7,6 +7,10 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Otp from "./pages/Otp";
 import PrivateRoute from "./components/PrivateRoute";
+import AdminHome from "./pages/AdminHome";
+import AdminSignIn from "./pages/AdminSignin";
+//import AdminPrivateRoute from "./components/AdminPrivateRoute";
+//import AdminHeader from "./components/AdminHeader";
 
 export default function App() {
   return (
@@ -20,6 +24,8 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
         </Route>
+
+        <Route path="/admin" element={<AdminSignIn />} />
       </Routes>
       <Footer />
     </BrowserRouter>

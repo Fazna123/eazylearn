@@ -30,26 +30,13 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
       required: [true, "Please enter password"],
       minlength: [6, "Password must be atleast 6 characters"],
       select: false,
-      default: "googleAuth",
+      default: "google",
     },
 
     avatar: {
-      //public_id: String,
-      //url: String,
       type: String,
       default: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
     },
-
-    // avatar: {
-    //   public_id: {
-    //     type: String,
-    //     default: "", // Provide default values for each property
-    //   },
-    //   url: {
-    //     type: String,
-    //     default: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-    //   },
-    // },
 
     role: {
       type: String,
@@ -61,11 +48,59 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
       default: false,
     },
 
-    courses: [
+    // courses: [
+    //   {
+    //     courseId: String,
+    //   },
+    // ],
+    learnings: [
       {
-        courseId: String,
+        course: {
+          type: mongoose.Types.ObjectId,
+          ref: "Course",
+        },
+        progress: [
+          {
+            type: mongoose.Types.ObjectId,
+            ref: "Course",
+          },
+        ],
+        certificate: {
+          type: Boolean,
+          default: false,
+        },
       },
     ],
+    teachings: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Course",
+      },
+    ],
+    wishlist: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Course",
+      },
+    ],
+    wallet: {
+      balance: {
+        type: Number,
+        default: 0,
+      },
+      transactions: [
+        {
+          date: { type: Date },
+          amount: Number,
+          type: { type: String, enum: ["dr", "cr"] },
+          remark: String,
+        },
+      ],
+    },
+    isBlock: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
