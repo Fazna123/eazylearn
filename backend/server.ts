@@ -9,11 +9,13 @@ dotenv.config();
 
 import userRoute from "./routes/user.route";
 import adminRoute from "./routes/admin.route";
+import courseRoute from "./routes/course.route";
 
 const { app, server } = createServer();
 
 app.use("/api/user", userRoute);
 app.use("/api/admin", adminRoute);
+app.use("/api/user", courseRoute);
 
 // app.all("*", (req: Request, res: Response) => {
 //   res.status(404).json({

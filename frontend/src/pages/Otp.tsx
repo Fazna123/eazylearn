@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function SignIn() {
   const [activation_token, setActivationToken] = useState("");
@@ -125,7 +127,7 @@ export default function SignIn() {
 
   return (
     <div className="w-full bg-slate-200">
-      {/* <Header/> */}
+      <Header />
       <div className="p-3 max-w-lg mx-auto py-32">
         <h1 className="text-3xl text-center font-semibold my-7">
           Verify Your Account
@@ -185,6 +187,7 @@ export default function SignIn() {
           {error ? "Invalid OTP!" : ""}
         </p> */}
       </div>
+      <Footer />
     </div>
   );
 }

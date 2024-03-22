@@ -9,11 +9,12 @@ import {
   signInFailure,
 } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 
 export default function SignIn() {
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
   const { loading, error } = useSelector((state) => state.user);
-  //const [isVisible, setIsVisible] = useState(true);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -58,17 +59,20 @@ export default function SignIn() {
           },
           body: JSON.stringify(formData),
         });
-
-        const data = await res.json();
         if (!res.ok) {
-          const err = data.data.message || "Something went wrong!";
-          dispatch(signInFailure(data.data));
-          toast.error(err);
+          const err = await res.json();
+          dispatch(signInFailure(err.data));
+          toast.error(err.data.message || "Something went wrong!");
           return;
         } else {
+          const data = await res.json();
           console.log(data);
           dispatch(signInSuccess(data));
-          navigate("/");
+          if (data.user.role === "admin") {
+            navigate("/admin");
+          } else {
+            navigate("/");
+          }
         }
       }
     } catch (error) {
@@ -78,7 +82,7 @@ export default function SignIn() {
 
   return (
     <div className="w-full bg-slate-200">
-      {/* <Header/> */}
+      <Header />
       <div className="p-3 max-w-lg mx-auto py-24">
         <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -97,6 +101,7 @@ export default function SignIn() {
             onChange={handleChange}
           />
           <button
+            type="submit"
             disabled={loading}
             className="bg-blue-900 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
           >
@@ -120,6 +125,7 @@ export default function SignIn() {
           {error ? toast(error) || "Something went wrong!" : ""}
         </p> */}
       </div>
+      <Footer />
     </div>
   );
 }

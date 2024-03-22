@@ -8,10 +8,10 @@ export const isAuthenticated = async (
   res: Response,
   next: NextFunction
 ) => {
-  console.log(req.cookies);
+  console.log("req.cookies in isAthenticated", req.cookies);
 
   const access_token = req.cookies.access_token as string;
-  console.log("accesstoken", access_token);
+  //console.log("access_token", access_token);
 
   if (!access_token) {
     return {
@@ -28,7 +28,7 @@ export const isAuthenticated = async (
     process.env.ACCESS_TOKEN as string
   ) as JwtPayload;
 
-  console.log("decoded", decoded);
+  //console.log("decoded", decoded);
 
   if (!decoded) {
     return {
@@ -42,7 +42,7 @@ export const isAuthenticated = async (
 
   const user = await redis.get(decoded.id);
 
-  console.log("user", user);
+  //console.log("user", user);
 
   if (!user) {
     return {
@@ -62,14 +62,12 @@ export const isAuthenticated = async (
 };
 
 export const authorizeRoles = (...roles: string[]) => {
+  console.log("autorizeRoles");
   return (req: Request, res: Response, next: NextFunction) => {
     if (!roles.includes(req.user?.role || "")) {
-      return next({
-        status: HttpStatus.BadRequest,
-        data: {
-          success: false,
-          message: "Unauthorized Access",
-        },
+      return res.status(500).send({
+        success: false,
+        message: "Unauthorized Action",
       });
     }
     // Continue processing if authorized

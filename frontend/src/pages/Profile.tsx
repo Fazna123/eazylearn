@@ -16,6 +16,9 @@ import {
 } from "../redux/user/userSlice";
 
 import { useDispatch } from "react-redux";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
 
 export default function Profile() {
   const fileRef = useRef<HTMLInputElement | null>(null);
@@ -29,7 +32,7 @@ export default function Profile() {
   //console.log("formdata", formData);
 
   const { currentUser, loading, error } = useSelector((state) => state.user);
-  //console.log(currentUser);
+  const admin = currentUser.user.role === "admin";
 
   useEffect(() => {
     if (image) {
@@ -64,7 +67,7 @@ export default function Profile() {
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: { target: { id: string; value: string } }) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
@@ -106,89 +109,116 @@ export default function Profile() {
   };
 
   return (
-    <div>
+    <>
+      {!admin && <Header />}
       {/* <Header /> */}
-      <div className="p-3 max-w-lg mx-auto">
-        <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <input
-            type="file"
-            ref={fileRef}
-            hidden
-            accept="image/*"
-            onChange={(e) => {
-              //setImage(e.target.files[0])
-              const selectedFile = e.target.files?.[0];
-              if (selectedFile) {
-                setImage(selectedFile);
-              }
-            }}
-          />
-          <img
-            src={formData.profilePicture || currentUser.user.avatar}
-            alt="👤"
-            className="h-24 w-24 self-center cursor-pointer rounded-full object-cover mt-2"
-            onClick={() => fileRef.current?.click()}
-          />
-          <p className="text-sm self-center">
-            {imageError ? (
-              <span className="text-red-700">
-                Error Uploading(Size should be less than 2MB)
-              </span>
-            ) : imagePercent > 0 && imagePercent < 100 ? (
-              <span className="text-slate-700">{`Uploadng Image...${imagePercent}%`}</span>
-            ) : imagePercent === 100 ? (
-              <span className="text-green-700">
-                Image Uploaded Successfully
-              </span>
-            ) : (
-              ""
-            )}
-          </p>
-          <input
-            defaultValue={currentUser.user.name}
-            type="text"
-            id="name"
-            placeholder="Username"
-            className="bg-slate-100 rounded-lg p-3"
-            onChange={handleChange}
-          />
-          <input
-            defaultValue={currentUser.user.email}
-            type="email"
-            id="email"
-            placeholder="Email"
-            className="bg-slate-100 rounded-lg p-3"
-            //onChange={handleChange}
-            disabled={true}
-          />
-          <input
-            type="password"
-            id="password"
-            placeholder="Password"
-            className="bg-slate-100 rounded-lg p-3"
-            onChange={handleChange}
-          />
-          <button className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
-            {loading ? "Loading.." : "Update"}
-          </button>
-        </form>
-        <div className="flex justify-between mt-5">
-          {/* <span
+      <div className="bg-blue-50 p-10 h-full">
+        <div className="p-3 max-w-lg mx-auto bg-white h-auto">
+          <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <input
+              type="file"
+              ref={fileRef}
+              hidden
+              accept="image/*"
+              onChange={(e) => {
+                //setImage(e.target.files[0])
+                const selectedFile = e.target.files?.[0];
+                if (selectedFile) {
+                  setImage(selectedFile);
+                }
+              }}
+            />
+            <img
+              src={formData.profilePicture || currentUser.user.avatar}
+              alt="👤"
+              className="h-24 w-24 self-center cursor-pointer rounded-full object-cover mt-2"
+              onClick={() => fileRef.current?.click()}
+            />
+            <p className="text-sm self-center">
+              {imageError ? (
+                <span className="text-red-700">
+                  Error Uploading(Size should be less than 2MB)
+                </span>
+              ) : imagePercent > 0 && imagePercent < 100 ? (
+                <span className="text-slate-700">{`Uploadng Image...${imagePercent}%`}</span>
+              ) : imagePercent === 100 ? (
+                <span className="text-green-700">
+                  Image Uploaded Successfully
+                </span>
+              ) : (
+                ""
+              )}
+            </p>
+            <input
+              defaultValue={currentUser.user.name}
+              type="text"
+              id="name"
+              placeholder="Username"
+              className="bg-blue-50 rounded-lg p-3"
+              onChange={handleChange}
+            />
+            <input
+              defaultValue={currentUser.user.email}
+              type="email"
+              id="email"
+              placeholder="Email"
+              className="bg-blue-50 rounded-lg p-3"
+              //onChange={handleChange}
+              disabled={true}
+            />
+            <input
+              type="password"
+              id="password"
+              placeholder="Password"
+              className="bg-blue-50 rounded-lg p-3"
+              onChange={handleChange}
+            />
+            <button className="bg-blue-950 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
+              {loading ? "Loading.." : "Update"}
+            </button>
+          </form>
+          <div className="flex justify-between mt-5">
+            <span
+              className=" p-1 text-red-700 hover:font-semibold hover:text-blue-900 cursor-pointer"
+              onClick={handleSignOut}
+            >
+              Sign Out
+            </span>
+            {/* <span
             className="text-red-700 cursor-pointer"
             // onClick={handleDeleteAccount}
           >
             Delete Account
           </span> */}
-          <span className="text-red-700 cursor-pointer" onClick={handleSignOut}>
-            Sign Out
-          </span>
+            {admin ? (
+              <Link
+                to="/admin"
+                className="text-red-700 cursor-pointer"
+                // onClick={handleDeleteAccount}
+              >
+                Back to Dashboard
+              </Link>
+            ) : (
+              <span
+                className="text-red-700 cursor-pointer"
+                // onClick={handleDeleteAccount}
+              >
+                Delete Account
+              </span>
+            )}
+            {admin}
+          </div>
+          <p className="text-red-700 mt-5">
+            {error && "Something went wrong!"}
+          </p>
+          <p className="text-green-700 mt-5">
+            {updateSuccess && "User updated successfully!"}
+          </p>
         </div>
-        <p className="text-red-700 mt-5">{error && "Something went wrong!"}</p>
-        <p className="text-green-700 mt-5">
-          {updateSuccess && "User updated successfully!"}
-        </p>
       </div>
-    </div>
+      {/* <Footer /> */}
+      {!admin && <Footer />}
+    </>
   );
 }

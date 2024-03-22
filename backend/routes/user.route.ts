@@ -28,7 +28,7 @@ userRoute.post("/google", (req: Request, res: Response) => {
   userController.googleLogin(req, res);
 });
 
-userRoute.get("/logout", isAuthenticated, (req: Request, res: Response) => {
+userRoute.get("/logout", (req: Request, res: Response) => {
   userController.logoutUser(req, res);
 });
 

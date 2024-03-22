@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import OAuth from "../components/OAuth";
 import "react-toastify/dist/ReactToastify.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function SignUp() {
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
@@ -55,7 +57,7 @@ export default function SignUp() {
 
   return (
     <div className="w-full bg-slate-200">
-      {/* <Header/> */}
+      <Header />
       <div className="p-3 max-w-lg mx-auto py-24">
         <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -101,6 +103,7 @@ export default function SignUp() {
             : ""}
         </p>
       </div>
+      <Footer />
     </div>
   );
 }
