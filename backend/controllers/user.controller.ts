@@ -50,7 +50,8 @@ class UserController {
   async logoutUser(req: Request, res: Response) {
     try {
       console.log("logout controller");
-      console.log(req.cookies);
+      //console.log(req.cookies);
+      //console.log("controller lgout request", req.user);
       const response = await this.userUsecase.logoutUser(req, res);
       if (response !== undefined) res.status(response.status).send(response);
     } catch (error) {

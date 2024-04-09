@@ -56,13 +56,14 @@ export const isAuthenticated = async (
 
   //req.user = JSON.parse(user);
   req.user = JSON.parse(user);
+  console.log("req.user in isAuthenticated", req.user);
   console.log(req.user);
 
   next();
 };
 
 export const authorizeRoles = (...roles: string[]) => {
-  console.log("autorizeRoles");
+  console.log("authorizeRoles");
   return (req: Request, res: Response, next: NextFunction) => {
     if (!roles.includes(req.user?.role || "")) {
       return res.status(500).send({

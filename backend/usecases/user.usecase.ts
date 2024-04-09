@@ -249,8 +249,18 @@ class UserUsecase {
     try {
       res.cookie("access_token", "", { maxAge: 0 });
       res.cookie("refresh_token", "", { maxAge: 0 });
+      //console.log("req.user", req.user);
       const userId = req.user?._id || "";
-      redis.del(userId);
+      console.log("user:", userId);
+      //console.log(`Deleting user data for user ${userId}`);
+      await redis.del(userId);
+      console.log(`User data for user ${userId} deleted`);
+      // const result = await redis.exists(userId);
+      // if (result === 1) {
+      //   console.log(`Key "${userId}" exists in Redis cache.`);
+      // } else {
+      //   console.log(`Key "${userId}" does not exist in Redis cache.`);
+      // }
       return {
         status: HttpStatus.Success,
         data: {

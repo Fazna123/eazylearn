@@ -105,6 +105,7 @@ export default function Profile() {
       dispatch(signOut());
     } catch (error) {
       console.log(error);
+      alert("Logout failed. Please try again later.");
     }
   };
 
