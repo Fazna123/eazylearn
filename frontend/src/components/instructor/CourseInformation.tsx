@@ -1,4 +1,6 @@
 import { FC, useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,36 +18,106 @@ const CourseInformation: FC<Props> = ({
   setActive,
 }) => {
   const [dragging, setDragging] = useState(false);
+  // const [coverImage, setCoverImage] = useState<File | null>(null);
+  const [demo, setDemo] = useState<File | null>(null);
+  // const [lesson, setLesson] = useState<File | null>(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    setActive(active + 1);
-  };
+    if (demo) {
+      const videoData = new FormData();
+      videoData.append("file", demo);
+      videoData.append("upload_preset", "video_preset");
 
-  const handleFileChange = (e) => {
+      try {
+        const cloudName = "dt3lfeqdp";
+        const api = `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`;
+        const response = await axios.post(api, videoData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        if (response) {
+          console.log("demo video uploaded");
+          const { secure_url } = response.data;
+          setCourseInfo({ ...courseInfo, demoUrl: secure_url });
+          setActive(active + 1);
+        } else {
+          console.log("uploading failed");
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          toast(error?.response?.data?.message);
+        }
+        console.error("Error uploading video:", error);
+      }
+    }
+  };
+  const handleFileChange = async (e: any) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
+
+      reader.onload = async (e: any) => {
         if (reader.readyState === 2) {
-          setCourseInfo({ ...courseInfo, thumbnail: reader.result });
+          const imageData = new FormData();
+          imageData.append("file", file); // Append the file, not reader.result
+          imageData.append("upload_preset", "image_preset");
+
+          try {
+            const cloudName = "dt3lfeqdp";
+            const api = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+            const response = await axios.post(api, imageData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            });
+
+            if (response) {
+              console.log("Thumbnail uploaded");
+              const { secure_url } = response.data;
+              setCourseInfo({
+                ...courseInfo,
+                thumbnail: secure_url,
+              }); // Update state inside this block
+            } else {
+              console.log("uploading failed");
+            }
+          } catch (error) {
+            if (axios.isAxiosError(error)) {
+              toast(error?.response?.data?.message);
+            }
+          }
         }
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleDragOver = (e) => {
+  // const handleFileChange = (e: any) => {
+  //   const file = e.target.files?.[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onload = (e: any) => {
+  //       if (reader.readyState === 2) {
+  //         setCourseInfo({ ...courseInfo, thumbnail: reader.result });
+  //       }
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
+
+  const handleDragOver = (e: any) => {
     e.preventDefault();
     setDragging(true);
   };
 
-  const handleDragLeave = (e) => {
+  const handleDragLeave = (e: any) => {
     e.preventDefault();
     setDragging(false);
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: any) => {
     e.preventDefault();
     setDragging(false);
     const file = e.dataTransfer.files?.[0];
@@ -57,6 +129,36 @@ const CourseInformation: FC<Props> = ({
       reader.readAsDataURL(file);
     }
   };
+  // const handleUploadPreview = async (e) => {
+  //   //const file = e.target.files?.[0];
+  //   if (demo) {
+  //     const videoData = new FormData();
+  //     videoData.append("file", demo);
+  //     videoData.append("upload_preset", "video_preset");
+
+  //     try {
+  //       const cloudName = "dt3lfeqdp";
+  //       const api = `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`;
+  //       const response = await axios.post(api, videoData, {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       });
+  //       if (response) {
+  //         console.log("demo video uploaded");
+  //       } else {
+  //         console.log("uploading failed");
+  //       }
+  //       const { secure_url } = response.data;
+  //       setCourseInfo({ ...courseInfo, demoUrl: secure_url });
+  //     } catch (error) {
+  //       if (axios.isAxiosError(error)) {
+  //         toast(error?.response?.data?.message);
+  //       }
+  //       console.error("Error uploading video:", error);
+  //     }
+  //   }
+  // };
 
   return (
     <div className="w-full mt-24">
@@ -84,13 +186,13 @@ const CourseInformation: FC<Props> = ({
         <div className="mb-5">
           <label
             className="block text-blue-800 text-sm font-bold mb-2"
-            htmlFor=""
+            htmlFor="courseDescription"
           >
             Course Description
           </label>
           <textarea
             className="shadow appearance-none border  border-blue-400 rounded w-full !h-min !py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id=""
+            id="description"
             required
             cols={30}
             rows={8}
@@ -183,7 +285,7 @@ const CourseInformation: FC<Props> = ({
               }
             />
           </div>
-          <div className="w-[50%]">
+          {/* <div className="w-[50%]">
             <label
               className="block text-blue-800 text-sm font-bold mb-2 w-[50%]"
               htmlFor="demoUrl"
@@ -196,10 +298,37 @@ const CourseInformation: FC<Props> = ({
               type="text"
               value={courseInfo.demoUrl}
               placeholder="Enter demo url"
-              onChange={(e) =>
-                setCourseInfo({ ...courseInfo, demoUrl: e.target.value })
-              }
+              readOnly
             />
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
+              onClick={()=>handleUploadPreview()}
+            >
+              Upload
+            </button>
+          </div> */}
+          <div className="w-[50%]">
+            <label
+              className="block text-blue-800 text-sm font-bold mb-2 w-[50%]"
+              htmlFor="demoUrl"
+            >
+              Demo Url
+            </label>
+            <input
+              className="shadow appearance-none border border-blue-400 rounded w-full !h-min !py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="demoUrl"
+              type="file"
+              accept="video/*"
+              onChange={(e) => {
+                e.target.files ? setDemo(e.target.files?.[0]) : null;
+              }}
+            />
+            {/* <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
+              onClick={(e) => handleUploadPreview(e)}
+            >
+              Upload
+            </button> */}
           </div>
         </div>
         <br />

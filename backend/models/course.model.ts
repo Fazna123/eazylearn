@@ -103,9 +103,9 @@ const courseSchema = new Schema<ICourse>({
     type: String,
   },
   instructor: {
-    // type: mongoose.Types.ObjectId,
-    // ref: "User",
-    type: String,
+    type: mongoose.Types.ObjectId,
+    ref: "User",
+    // type: String,
   },
 });
 

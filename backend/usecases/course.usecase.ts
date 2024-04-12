@@ -16,16 +16,20 @@ class CourseUsecase {
   async createCourse(req: Request, res: Response) {
     try {
       const data = req.body;
-      const response = await this.courseRepository.createCourse(data);
-      if (response.course) {
-        return {
-          status: response.success ? 200 : 500,
-          data: {
-            success: response.success,
-            message: response.message,
-            course: response.course,
-          },
-        };
+      if (data) {
+        const courseData = data as unknown as ICourse;
+        courseData.instructor = req.user?._id || "";
+        const response = await this.courseRepository.createCourse(courseData);
+        if (response.course) {
+          return {
+            status: response.success ? 200 : 500,
+            data: {
+              success: response.success,
+              message: response.message,
+              course: response.course,
+            },
+          };
+        }
       }
     } catch (error) {
       return {

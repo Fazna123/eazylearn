@@ -8,6 +8,7 @@ export const isAuthenticated = async (
   res: Response,
   next: NextFunction
 ) => {
+  console.log(req);
   console.log("req.cookies in isAthenticated", req.cookies);
 
   const access_token = req.cookies.access_token as string;

@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import InstructorSideBar from "../components/instructor/InstructorSideBar";
-import InstructorHeader from "../components/instructor/InstructorHeader";
+//import InstructorHeader from "../components/instructor/InstructorHeader";
 
 interface InstructorLayoutProps {
   children: ReactNode;

@@ -8,8 +8,18 @@ import CourseInformation from "../components/instructor/CourseInformation";
 import CourseData from "../components/instructor/CourseData";
 import CourseContent from "../components/instructor/CourseContent";
 import CoursePreview from "../components/instructor/CoursePreview";
+import { useDispatch } from "react-redux";
+import {
+  createCourseStart,
+  createCourseSuccess,
+  createCourseFailure,
+} from "../redux/courses/courseSlice";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
-export default function MyTeachings() {
+export default function CreateCourse() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [active, setActive] = useState(0);
   const [courseInfo, setCourseInfo] = useState({
     name: "",
@@ -35,7 +45,7 @@ export default function MyTeachings() {
           url: "",
         },
       ],
-      suggessions: "",
+      suggestions: "",
     },
   ]);
   const [courseData, setCourseData] = useState({});
@@ -63,7 +73,7 @@ export default function MyTeachings() {
 
     const data = {
       name: courseInfo.name,
-      desciption: courseInfo.description,
+      description: courseInfo.description,
       price: courseInfo.price,
       estimatedPrice: courseInfo.estimatedPrice,
       tags: courseInfo.tags,
@@ -77,8 +87,37 @@ export default function MyTeachings() {
     };
     setCourseData(data);
   };
+  // const {  courseSuccess, courseLoaading, courseError } =
+  //   useSelector((state: any) => state.course);
   const handleCourseCreate = async (e: any) => {
     const data = courseData;
+    if (Object.keys(data).length === 0) {
+      toast("Fill all the fields and try again");
+    } else {
+      try {
+        dispatch(createCourseStart());
+        const res = await fetch("/api/user/create-course", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          dispatch(createCourseFailure(err.data));
+          toast.error(err.data.message || "Something went wrong!");
+          return;
+        } else {
+          //const data = await res.json();
+          dispatch(createCourseSuccess());
+          toast.success("Course Created Successfully");
+          navigate("/instructor/myteachings");
+        }
+      } catch (error) {
+        dispatch(createCourseFailure(error));
+      }
+    }
   };
   return (
     <>

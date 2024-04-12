@@ -4,6 +4,7 @@ import CourseModel from "../models/course.model";
 class CourseRepository {
   async createCourse(data: ICourse) {
     try {
+      console.log(data);
       const course = await CourseModel.create(data);
       if (!course) {
         return {

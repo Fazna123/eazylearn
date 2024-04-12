@@ -14,7 +14,7 @@ import Header from "../components/Header";
 
 export default function SignIn() {
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
-  const { loading, error } = useSelector((state) => state.user);
+  const { loading, error } = useSelector((state: any) => state.user);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();

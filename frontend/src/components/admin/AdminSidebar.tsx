@@ -26,7 +26,7 @@ export default function AdminSidebar() {
         <ul className="space-y-2">
           <li className="p-2">
             <NavLink
-              to="/instructor/dashboard"
+              to="/admin/dashboard"
               className={({ isActive }) =>
                 `flex items-center space-x-2 hover:text-orange-600 ${
                   isActive
@@ -49,7 +49,7 @@ export default function AdminSidebar() {
           </li>
           <li className="p-2">
             <NavLink
-              to="/instructor/myteachings"
+              to="/admin/courses"
               className={({ isActive }) =>
                 `flex items-center space-x-2 hover:text-orange-600 ${
                   isActive
@@ -72,7 +72,7 @@ export default function AdminSidebar() {
           </li>
           <li className="p-2">
             <NavLink
-              to="/instructor/mycommunities"
+              to="/admin/instructors"
               className={({ isActive }) =>
                 `flex items-center space-x-2 hover:text-orange-600 ${
                   isActive
@@ -101,7 +101,7 @@ export default function AdminSidebar() {
           </li>
           <li className="p-2">
             <NavLink
-              to="/instructor/chat"
+              to="/admin/users"
               className={({ isActive }) =>
                 `flex items-center space-x-2 hover:text-orange-600 ${
                   isActive
@@ -129,7 +129,7 @@ export default function AdminSidebar() {
           </li>
           <li className="p-2">
             <NavLink
-              to="/instructor/chat"
+              to="/admin/report"
               className={({ isActive }) =>
                 `flex items-center space-x-2 hover:text-orange-600 ${
                   isActive
