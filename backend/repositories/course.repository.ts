@@ -76,6 +76,97 @@ class CourseRepository {
       };
     }
   }
+  async getAllCourse() {
+    try {
+      const courses = await CourseModel.find().select(
+        "-courseData.videoUrl -courseData.sugession -courseData.questions -courseData.links"
+      );
+      if (!courses) {
+        return {
+          success: false,
+          message: "Failed to fetch course",
+        };
+      }
+      return {
+        success: true,
+        message: "Course details fetched successfully",
+        courses,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to fetch ${error}`,
+      };
+    }
+  }
+  async myTeachings(userId: string) {
+    try {
+      const courses = await CourseModel.find({ instructor: userId });
+      if (!courses) {
+        return {
+          success: false,
+          message: "Failed to fetch course",
+        };
+      }
+      return {
+        success: true,
+        message: "Course details fetched successfully",
+        courses,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to fetch ${error}`,
+      };
+    }
+  }
+  async approveCourse(courseId: string) {
+    try {
+      const course = await CourseModel.findByIdAndUpdate(
+        courseId,
+        { isApproved: true },
+        { new: true }
+      );
+      if (!course) {
+        return {
+          success: false,
+          message: "Failed to approve course",
+        };
+      }
+      return {
+        success: true,
+        message: "Course approved successfully",
+        course,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to approve ${error}`,
+      };
+    }
+  }
+  async deleteCourse(courseId: string) {
+    try {
+      const course = await CourseModel.findByIdAndDelete(courseId);
+
+      if (!course) {
+        return {
+          success: false,
+          message: "Failed to delete course",
+        };
+      }
+      return {
+        success: true,
+        message: "Course deleted successfully",
+        course,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to delete course ${error}`,
+      };
+    }
+  }
 }
 
 export default CourseRepository;

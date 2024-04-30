@@ -225,6 +225,7 @@ class UserUsecase {
       // }
 
       const user = await this.userRepository.authenticateUser(req.body);
+      console.log(user);
 
       if (!user.data) {
         return {
@@ -416,13 +417,13 @@ class UserUsecase {
       const accessToken = jwt.sign(
         { id: user._id },
         process.env.ACCESS_TOKEN as string,
-        { expiresIn: "1d" }
+        { expiresIn: "3d" }
       );
 
       const refreshToken = jwt.sign(
         { id: user._id },
         process.env.REFRESH_TOKEN as string,
-        { expiresIn: "3d" }
+        { expiresIn: "5d" }
       );
 
       req.user = user;
@@ -533,6 +534,103 @@ class UserUsecase {
         success: false,
         message: "server error",
       });
+    }
+  }
+
+  async getInstructors(req: Request, res: Response) {
+    try {
+      console.log("user usecase get instrtrs");
+      const response = await this.userRepository.getInstructors();
+      if (response.instructors) {
+        return {
+          status: response.success ? 200 : 500,
+          data: {
+            success: response.success,
+            message: response.message,
+            instructors: response.instructors,
+          },
+        };
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+  async approveInstructor(req: Request, res: Response) {
+    try {
+      const userId = req.params.id;
+      const response = await this.userRepository.approveInstructor(userId);
+      if (response.user) {
+        return {
+          status: response.success ? 200 : 500,
+          data: {
+            success: response.success,
+            message: response.message,
+            course: response.user,
+          },
+        };
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+  async getStudents(req: Request, res: Response) {
+    try {
+      const response = await this.userRepository.getStudents();
+      if (response.students) {
+        return {
+          status: response.success ? 200 : 500,
+          data: {
+            success: response.success,
+            message: response.message,
+            students: response.students,
+          },
+        };
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+  async deleteUser(req: Request, res: Response) {
+    try {
+      console.log("delete user usecase");
+      const userId = req.params.id;
+      const response = await this.userRepository.deleteUser(userId);
+      if (response.user) {
+        return {
+          status: response.success ? 200 : 500,
+          data: {
+            success: response.success,
+            message: response.message,
+            user: response.user,
+          },
+        };
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
     }
   }
 }

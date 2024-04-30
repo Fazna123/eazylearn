@@ -4,6 +4,7 @@ import Users from "../models/user.model";
 import IUserRegistrationBody from "../interfaces/userBody";
 import ILoginRequest from "../interfaces/login";
 import { ObjectId } from "mongoose";
+import userModel from "../models/user.model";
 
 class UserRepository {
   async checkExistUser(email: string) {
@@ -133,6 +134,100 @@ class UserRepository {
       return {
         success: false,
         message: `Failed to fetch ${error}`,
+      };
+    }
+  }
+
+  async getInstructors() {
+    try {
+      console.log("user repo get instrtrs");
+      const instructors = await Users.find({ role: "instructor" });
+      console.log(instructors);
+      if (!instructors) {
+        return {
+          success: false,
+          message: "Instructor details not fetched",
+        };
+      }
+      return {
+        success: true,
+        message: "Instructor List fetched",
+        instructors,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to fetch instructors ${error}`,
+      };
+    }
+  }
+  async approveInstructor(userId: string) {
+    try {
+      const user = await userModel.findByIdAndUpdate(
+        userId,
+        { isApproved: true },
+        { new: true }
+      );
+      if (!user) {
+        return {
+          success: false,
+          message: "Failed to approve course",
+        };
+      }
+      return {
+        success: true,
+        message: "Course approved successfully",
+        user,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to approve ${error}`,
+      };
+    }
+  }
+  async getStudents() {
+    try {
+      const students = await userModel.find({ role: "student" });
+      console.log("studnts:", students);
+      if (!students) {
+        return {
+          success: false,
+          message: "Students details not fetched",
+        };
+      }
+      return {
+        success: true,
+        message: "Students List fetched",
+        students,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to fetch students ${error}`,
+      };
+    }
+  }
+  async deleteUser(userId: string) {
+    try {
+      console.log("delte user repo");
+      const user = await userModel.findByIdAndDelete(userId);
+      console.log("user in repo delete", user);
+      if (!user) {
+        return {
+          success: false,
+          message: "Failed to delete user",
+        };
+      }
+      return {
+        success: true,
+        message: "User deleted successfully",
+        user,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to delete user ${error}`,
       };
     }
   }

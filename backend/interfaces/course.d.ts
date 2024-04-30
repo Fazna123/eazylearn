@@ -28,7 +28,7 @@ export interface ICourse extends Document {
   benefits?: { title: string }[];
   prerequisites?: { title: string }[];
   reviews?: IReview[];
-  courseData?: ICourseDetails[];
+  courseContent?: ICourseDetails[];
   ratings?: number;
   purchased?: number;
   instructor?: string | ObjectId;

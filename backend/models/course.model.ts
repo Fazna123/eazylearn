@@ -37,77 +37,73 @@ const courseDetailsSchema = new Schema<ICourseDetails>({
   questions: [commentSchema],
 });
 
-const courseSchema = new Schema<ICourse>({
-  name: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  price: {
-    type: Number,
-    required: true,
-  },
-  estimatedPrice: {
-    type: Number,
-  },
-  thumbnail: {
-    public_id: {
+const courseSchema = new Schema<ICourse>(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    estimatedPrice: {
+      type: Number,
+    },
+    thumbnail: {
+      type: String,
+    },
+    tags: {
       type: String,
       //required: true,
     },
-    url: {
+    level: {
       type: String,
       //required: true,
     },
+    demoUrl: {
+      type: String,
+      //required: true,
+    },
+    benefits: [{ title: String }],
+    prerequisites: [{ title: String }],
+    reviews: [reviewSchema],
+    courseContent: [courseDetailsSchema],
+    ratings: {
+      type: Number,
+      default: 0,
+    },
+    purchased: { type: Number, default: 0 },
+    offer: {
+      type: Number,
+      default: 0,
+    },
+    isApproved: {
+      type: Boolean,
+      default: false,
+    },
+    isBlock: {
+      type: Boolean,
+      default: false,
+    },
+    announcements: { type: [String], default: [] },
+    category: {
+      // type: mongoose.Types.ObjectId,
+      // ref: "Category",
+      type: String,
+    },
+    instructor: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      // type: String,
+    },
   },
-  tags: {
-    type: String,
-    //required: true,
-  },
-  level: {
-    type: String,
-    //required: true,
-  },
-  demoUrl: {
-    type: String,
-    //required: true,
-  },
-  benefits: [{ title: String }],
-  prerequisites: [{ title: String }],
-  reviews: [reviewSchema],
-  courseData: [courseDetailsSchema],
-  ratings: {
-    type: Number,
-    default: 0,
-  },
-  purchased: { type: Number, default: 0 },
-  offer: {
-    type: Number,
-    default: 0,
-  },
-  isApproved: {
-    type: Boolean,
-    default: false,
-  },
-  isBlock: {
-    type: Boolean,
-    default: false,
-  },
-  announcements: { type: [String], default: [] },
-  category: {
-    // type: mongoose.Types.ObjectId,
-    // ref: "Category",
-    type: String,
-  },
-  instructor: {
-    type: mongoose.Types.ObjectId,
-    ref: "User",
-    // type: String,
-  },
-});
+  { timestamps: true }
+);
 
 const CourseModel: Model<ICourse> = mongoose.model("Course", courseSchema);
 

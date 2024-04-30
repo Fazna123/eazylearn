@@ -15,7 +15,7 @@ import {
   createCourseFailure,
 } from "../redux/courses/courseSlice";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function CreateCourse() {
   const dispatch = useDispatch();
@@ -109,7 +109,6 @@ export default function CreateCourse() {
           toast.error(err.data.message || "Something went wrong!");
           return;
         } else {
-          //const data = await res.json();
           dispatch(createCourseSuccess());
           toast.success("Course Created Successfully");
           navigate("/instructor/myteachings");
@@ -166,6 +165,9 @@ export default function CreateCourse() {
             <div className="w-[20%] h-full -z-0 top-20 mt-[100px] right-0">
               <CourseOptions active={active} setActive={setActive} />
             </div>
+          </div>
+          <div>
+            <ToastContainer autoClose={2000} />
           </div>
         </div>
       </InstructorLayout>

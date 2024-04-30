@@ -4,7 +4,6 @@ import ReactPlayer from "react-player";
 
 type Props = {
   videoUrl: string;
-  title: string;
 };
 
 const CoursePlayer: FC<Props> = ({ videoUrl }) => {
@@ -14,7 +13,7 @@ const CoursePlayer: FC<Props> = ({ videoUrl }) => {
 
   return (
     <div>
-      <ReactPlayer url={videoUrl} controls={true} width="80%" height="80%" />
+      <ReactPlayer url={videoUrl} controls={true} width="100%" height="80%" />
     </div>
   );
 };

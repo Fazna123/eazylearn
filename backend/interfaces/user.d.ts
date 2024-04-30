@@ -8,7 +8,7 @@ export interface IUser extends Document {
   avatar?: string;
   role?: string;
   isVerified?: boolean;
-  //courses?: Array<{ courseId: string }>;
+  courses?: Array<{ courseId: string }>;
   learnings?: Array<{
     course: ObjectId;
     progress: Array<{}>;
@@ -18,6 +18,7 @@ export interface IUser extends Document {
   wishlist?: Array<{}>;
   wallet?: Object;
   isBlock?: boolean;
+  isApproved?: boolean;
 
   comparePassword: (password: string) => Promise<boolean>;
   signAccessToken: () => string;

@@ -92,6 +92,105 @@ class CourseUsecase {
       };
     }
   }
+  async getAllCourse(req: Request, res: Response) {
+    try {
+      //const courseId = req.params.id;
+      const response = await this.courseRepository.getAllCourse();
+      if (response.courses) {
+        return {
+          status: response.success ? 200 : 500,
+          data: {
+            success: response.success,
+            message: response.message,
+            courses: response.courses,
+          },
+        };
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+  async myTeachings(req: Request, res: Response) {
+    try {
+      console.log("myteachings usecase");
+      const userId = req.user?._id || "";
+      console.log("userid:", userId);
+      const response = await this.courseRepository.myTeachings(userId);
+      if (response.courses) {
+        console.log(response.courses);
+        return {
+          status: response.success ? 200 : 500,
+          data: {
+            success: response.success,
+            message: response.message,
+            courses: response.courses,
+          },
+        };
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+  async approveCourse(req: Request, res: Response) {
+    try {
+      const courseId = req.params.id;
+      const response = await this.courseRepository.approveCourse(courseId);
+      if (response.course) {
+        return {
+          status: response.success ? 200 : 500,
+          data: {
+            success: response.success,
+            message: response.message,
+            course: response.course,
+          },
+        };
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+  async deleteCourse(req: Request, res: Response) {
+    try {
+      const courseId = req.params.id;
+      const response = await this.courseRepository.deleteCourse(courseId);
+      if (response.course) {
+        return {
+          status: response.success ? 200 : 500,
+          data: {
+            success: response.success,
+            message: response.message,
+            course: response.course,
+          },
+        };
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
 }
 
 export default CourseUsecase;

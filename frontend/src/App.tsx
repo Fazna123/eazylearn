@@ -11,6 +11,10 @@ import Instructor from "./pages/Instructor";
 import MyTeachings from "./pages/MyTeachings";
 import Admin from "./pages/Admin";
 import CreateCourse from "./pages/CreateCourse";
+import AdminCourses from "./pages/AdminCourses";
+import AdminCourseView from "./pages/AdminCourseView";
+import AdminInstructors from "./pages/AdminInstructors";
+import AdminUsers from "./pages/AdminUsers";
 
 export default function App() {
   return (
@@ -31,7 +35,17 @@ export default function App() {
           <Route path="/instructor/createcourse" element={<CreateCourse />} />
         </Route>
 
-        <Route path="/admin" element={<Admin />} />
+        {/* <Route path="/admin" element={<Admin />} /> */}
+        <Route element={<PrivateRoute />}>
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/courses" element={<AdminCourses />} />
+          <Route path="/admin/instructors" element={<AdminInstructors />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route
+            path="/admin/course-details/:id"
+            element={<AdminCourseView />}
+          />
+        </Route>
       </Routes>
       {/* <Footer /> */}
     </BrowserRouter>

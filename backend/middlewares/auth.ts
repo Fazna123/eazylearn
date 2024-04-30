@@ -8,11 +8,11 @@ export const isAuthenticated = async (
   res: Response,
   next: NextFunction
 ) => {
-  console.log(req);
+  //console.log(req);
   console.log("req.cookies in isAthenticated", req.cookies);
 
   const access_token = req.cookies.access_token as string;
-  //console.log("access_token", access_token);
+  console.log("access_token:", access_token);
 
   if (!access_token) {
     return {
@@ -58,7 +58,7 @@ export const isAuthenticated = async (
   //req.user = JSON.parse(user);
   req.user = JSON.parse(user);
   console.log("req.user in isAuthenticated", req.user);
-  console.log(req.user);
+  //console.log(req.user);
 
   next();
 };

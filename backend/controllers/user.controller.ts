@@ -135,5 +135,58 @@ class UserController {
       });
     }
   }
+  async getInstructors(req: Request, res: Response) {
+    try {
+      console.log("user cntrllr get instrtrs");
+      const response = await this.userUsecase.getInstructors(req, res);
+      if (response !== undefined)
+        res.status(response.status).send(response.data);
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+  async approveInstructor(req: Request, res: Response) {
+    try {
+      const response = await this.userUsecase.approveInstructor(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+  async getStudents(req: Request, res: Response) {
+    try {
+      const response = await this.userUsecase.getStudents(req, res);
+      if (response !== undefined)
+        res.status(response.status).send(response.data);
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+
+  async deleteUser(req: Request, res: Response) {
+    try {
+      console.log("dlete user cntrllr");
+      const response = await this.userUsecase.deleteUser(req, res);
+      if (response !== undefined) {
+        res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
 }
 export default UserController;

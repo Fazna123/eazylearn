@@ -15,7 +15,7 @@ export default function AdminSidebar() {
     }
   };
   return (
-    <div className="bg-blue-950 text-slate-200 h-screen w-64 flex flex-col">
+    <div className="bg-blue-950 text-slate-200 h-screen w-1/5 sm:w-[16%] flex flex-col">
       <div className="p-10">
         <h1 className="text-2xl font-bold">Admin</h1>
       </div>

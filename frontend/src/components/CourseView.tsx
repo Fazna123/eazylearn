@@ -1,46 +1,56 @@
-import { FC } from "react";
-import CoursePlayer from "../../utils/CoursePlayer";
-import Ratings from "../../utils/Ratings";
+import { FC, useEffect, useState } from "react";
+import CoursePlayer from "../utils/CoursePlayer";
+import Ratings from "../utils/Ratings";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
-  active: number;
-  setActive: (active: number) => void;
-  courseData: any;
-  handleCourseCreate: any;
+  courseId: string;
 };
 
-const CoursePreview: FC<Props> = ({
-  courseData,
-  handleCourseCreate,
-  setActive,
-  active,
-}) => {
+const CourseView: FC<Props> = ({ courseId }) => {
+  const [courseData, setCourseData] = useState({
+    estimatedPrice: 0,
+    price: 0,
+    videoUrl: "",
+    title: "",
+    demoUrl: "",
+    name: "",
+    prerequisites: [],
+    benefits: [],
+    description: "",
+  });
+  useEffect(() => {
+    const fetchCourseData = async () => {
+      const response = await fetch(`/api/user/get-course/${courseId}`);
+      const data = await response.json();
+      console.log("data.course", data);
+      setCourseData(data.course);
+    };
+
+    fetchCourseData();
+  }, []);
+
+  const navigate = useNavigate();
   const discountPercentage =
-    ((courseData?.estimatedPrice - courseData?.price) /
+    (((courseData?.estimatedPrice - courseData?.price) /
       courseData?.estimatedPrice) *
-    100;
+      100) |
+    0;
   const discountPercentagePrice = discountPercentage.toFixed(0);
 
   const prevButton = () => {
-    setActive(active - 1);
+    navigate("/admin/courses");
   };
 
-  const createCourse = () => {
-    console.log("coursedata:", courseData);
-    handleCourseCreate();
-  };
   return (
     <div className="w-[90%] m-auto py-5 mb-5">
       <div className="w-full relative">
-        <div className="w-full mt-10">
-          <CoursePlayer
-            videoUrl={courseData?.demoUrl}
-            // title={courseData?.title}
-          />
+        <div className="w-full mt-10 mb-0">
+          <CoursePlayer videoUrl={courseData?.demoUrl} />
         </div>
-        <div className="flex items-center">
-          <h1 className="pt-5 text-[25px]">
+        <div className="flex items-center mt-0">
+          <h1 className="pt-0 mt-0 text-[25px]">
             {courseData.price === 0 ? "Free" : courseData?.price + "$"}
           </h1>
           <h5 className="pl-3 text-[20px] mt-2 line-through opacity-80">
@@ -55,7 +65,7 @@ const CoursePreview: FC<Props> = ({
             Buy Now @{courseData?.price}$
           </div>
         </div>
-        <div className="flex items-center mt-2 mb-3">
+        {/* <div className="flex items-center mt-2 mb-3">
           <input
             type="text"
             name=""
@@ -66,15 +76,15 @@ const CoursePreview: FC<Props> = ({
           <div className="w-fit px-10 py-2 h-[40px] !bg-blue-500 text-center text-white rounded cursor-not-allowed">
             Apply
           </div>
-        </div>
-        <p className="pb-1">• Source code included</p>
+        </div> */}
+        {/* <p className="pb-1">• Source code included</p>
         <p className="pb-1">• Lifetime access on all materials</p>
         <p className="pb-1">• Certificate of completion</p>
-        <p className="pb-1">• Premium Support</p>
+        <p className="pb-1">• Premium Support</p> */}
       </div>
       <div className="w-full">
         <div className="w-full sm:pr-5">
-          <h1 className="text-[25px] font-[600]">{courseData?.name}</h1>
+          <h1 className="text-[25px] font-[600] mt-2">{courseData?.name}</h1>
           <div className="flex items-center justify-between pt-3">
             <div className="flex items-center">
               <Ratings rating={0} />
@@ -124,17 +134,11 @@ const CoursePreview: FC<Props> = ({
           className="w-full sm:w-[180px] flex items-center justify-center h-[40px] bg-blue-900 text-white text-center rounded mt-8 cursor-pointer"
           onClick={() => prevButton()}
         >
-          Prev
-        </div>
-        <div
-          className="w-full sm:w-[180px] flex items-center justify-center h-[40px] bg-blue-900 text-white text-center rounded mt-8 cursor-pointer"
-          onClick={() => createCourse()}
-        >
-          Create
+          Back
         </div>
       </div>
     </div>
   );
 };
 
-export default CoursePreview;
+export default CourseView;

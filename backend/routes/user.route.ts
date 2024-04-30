@@ -48,4 +48,37 @@ userRoute.put("/updateuser", isAuthenticated, (req: Request, res: Response) => {
   userController.updateUserDetails(req, res);
 });
 
+userRoute.get(
+  "/get-instructors",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    console.log("user route get instrtrs");
+    userController.getInstructors(req, res);
+  }
+);
+
+userRoute.put(
+  "/approve-instructor/:id",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    userController.approveInstructor(req, res);
+  }
+);
+
+userRoute.get(
+  "/get-students",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    userController.getStudents(req, res);
+  }
+);
+
+userRoute.delete(
+  "/delete-user/:id",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    userController.deleteUser(req, res);
+  }
+);
+
 export default userRoute;

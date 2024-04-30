@@ -35,4 +35,32 @@ courseRoute.get("/get-course/:id", (req: Request, res: Response) => {
   courseController.getSingleCourse(req, res);
 });
 
+courseRoute.get("/get-courses", (req: Request, res: Response) => {
+  courseController.getAllCourse(req, res);
+});
+
+courseRoute.get(
+  "/get-myteachings",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    courseController.myTeachings(req, res);
+  }
+);
+
+courseRoute.put(
+  "/approve-course/:id",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    courseController.approveCourse(req, res);
+  }
+);
+
+courseRoute.delete(
+  "/delete-course/:id",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    courseController.deleteCourse(req, res);
+  }
+);
+
 export default courseRoute;

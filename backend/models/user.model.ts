@@ -48,11 +48,11 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
       default: false,
     },
 
-    // courses: [
-    //   {
-    //     courseId: String,
-    //   },
-    // ],
+    courses: [
+      {
+        courseId: String,
+      },
+    ],
     learnings: [
       {
         course: {
@@ -101,6 +101,10 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isApproved: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
@@ -115,13 +119,13 @@ userSchema.pre<IUser>("save", async function (next) {
 
 userSchema.methods.signAccessToken = function () {
   return jwt.sign({ id: this._id }, process.env.ACCESS_TOKEN || "", {
-    expiresIn: "1d",
+    expiresIn: "3d",
   });
 };
 
 userSchema.methods.signRefreshToken = function () {
   return jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN || "", {
-    expiresIn: "3d",
+    expiresIn: "5d",
   });
 };
 

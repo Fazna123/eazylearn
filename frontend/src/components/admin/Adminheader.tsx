@@ -4,7 +4,7 @@ export default function Adminheader() {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <div className="flex items-center justify-end p-5 fixed top-5 right-0 w-full">
+      <div className="flex items-center justify-end p-5 fixed top-5 right-0 w-[85%]">
         <div
           className="relative cursor-pointer m-2"
           onClick={() => setOpen(!open)}
