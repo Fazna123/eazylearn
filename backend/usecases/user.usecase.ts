@@ -539,8 +539,31 @@ class UserUsecase {
 
   async getInstructors(req: Request, res: Response) {
     try {
-      console.log("user usecase get instrtrs");
       const response = await this.userRepository.getInstructors();
+      if (response.instructors) {
+        return {
+          status: response.success ? 200 : 500,
+          data: {
+            success: response.success,
+            message: response.message,
+            instructors: response.instructors,
+          },
+        };
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+  async getInstructorsApproval(req: Request, res: Response) {
+    try {
+      console.log("user usecase get instrtrs");
+      const response = await this.userRepository.getInstructorsApproval();
       if (response.instructors) {
         return {
           status: response.success ? 200 : 500,
@@ -571,7 +594,7 @@ class UserUsecase {
           data: {
             success: response.success,
             message: response.message,
-            course: response.user,
+            user: response.user,
           },
         };
       }
@@ -613,6 +636,157 @@ class UserUsecase {
       console.log("delete user usecase");
       const userId = req.params.id;
       const response = await this.userRepository.deleteUser(userId);
+      if (response.user) {
+        return {
+          status: response.success ? 200 : 500,
+          data: {
+            success: response.success,
+            message: response.message,
+            user: response.user,
+          },
+        };
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+  async approveRoleInstructor(req: Request, res: Response) {
+    try {
+      const userId = req.params.id;
+      const { role, updates } = req.body;
+      const response = await this.userRepository.approveRoleInstructor(
+        userId,
+        updates
+      );
+      if (response.user) {
+        return {
+          status: response.success ? 200 : 500,
+          data: {
+            success: response.success,
+            message: response.message,
+            user: response.user,
+          },
+        };
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+
+  async changePassword(req: Request, res: Response) {
+    try {
+      const { oldPassword, newPassword } = req.body;
+      const email = req.user?.email;
+
+      if (email !== undefined) {
+        const authResult = await this.userRepository.authenticateUser({
+          email,
+          password: oldPassword,
+        });
+        if (!authResult.success) {
+          return {
+            status: 400,
+            data: {
+              success: false,
+              message: authResult.message,
+            },
+          };
+        }
+        const user = authResult.data;
+        const id = user?._id;
+
+        const passwordNew = await bcrypt.hash(newPassword, 10);
+
+        const response = await this.userRepository.changePassword(
+          id,
+          passwordNew
+        );
+        if (response.user) {
+          return {
+            status: response.success ? 200 : 500,
+            data: {
+              success: response.success,
+              message: response.message,
+              user: response.user,
+            },
+          };
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+  async rejectInstructor(req: Request, res: Response) {
+    try {
+      const userId = req.params.id;
+      const response = await this.userRepository.rejectInstructor(userId);
+      if (response.user) {
+        return {
+          status: response.success ? 200 : 500,
+          data: {
+            success: response.success,
+            message: response.message,
+            user: response.user,
+          },
+        };
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+  async blockUser(req: Request, res: Response) {
+    try {
+      const userId = req.params.id;
+      const response = await this.userRepository.blockUser(userId);
+      if (response.user) {
+        return {
+          status: response.success ? 200 : 500,
+          data: {
+            success: response.success,
+            message: response.message,
+            user: response.user,
+          },
+        };
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+  async unBlockUser(req: Request, res: Response) {
+    try {
+      const userId = req.params.id;
+      const response = await this.userRepository.unBlockUser(userId);
       if (response.user) {
         return {
           status: response.success ? 200 : 500,

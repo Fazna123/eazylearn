@@ -101,6 +101,66 @@ class CourseController {
       });
     }
   }
+  async getAllCourseDetails(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.getAllCourseDetails(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+  async addCategory(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.addCategory(req.body);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+  async getCategories(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.getCategories(req.query);
+      res.status(response.status).send(response.data);
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+  async updateCategory(req: Request, res: Response) {
+    try {
+      console.log("update cat cntrller");
+      const response = await this.courseUsecase.updateCategory(req, res);
+      res.status(response.status).send(response.data);
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+  async deleteCategory(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.deleteCategory(req, res);
+      res.status(response.status).send(response.data);
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
 }
 
 export default CourseController;

@@ -101,6 +101,35 @@ export default function AdminSidebar() {
           </li>
           <li className="p-2">
             <NavLink
+              to="/admin/instructor-approval"
+              className={({ isActive }) =>
+                `flex items-center space-x-2 hover:text-orange-600 ${
+                  isActive
+                    ? "text-orange-500 font-semibold underline"
+                    : "font-normal"
+                }`
+              }
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path d="M11.584 2.376a.75.75 0 0 1 .832 0l9 6a.75.75 0 1 1-.832 1.248L12 3.901 3.416 9.624a.75.75 0 0 1-.832-1.248l9-6Z" />
+                <path
+                  fillRule="evenodd"
+                  d="M20.25 10.332v9.918H21a.75.75 0 0 1 0 1.5H3a.75.75 0 0 1 0-1.5h.75v-9.918a.75.75 0 0 1 .634-.74A49.109 49.109 0 0 1 12 9c2.59 0 5.134.202 7.616.592a.75.75 0 0 1 .634.74Zm-7.5 2.418a.75.75 0 0 0-1.5 0v6.75a.75.75 0 0 0 1.5 0v-6.75Zm3-.75a.75.75 0 0 1 .75.75v6.75a.75.75 0 0 1-1.5 0v-6.75a.75.75 0 0 1 .75-.75ZM9 12.75a.75.75 0 0 0-1.5 0v6.75a.75.75 0 0 0 1.5 0v-6.75Z"
+                  clipRule="evenodd"
+                />
+                <path d="M12 7.875a1.125 1.125 0 1 0 0-2.25 1.125 1.125 0 0 0 0 2.25Z" />
+              </svg>
+
+              <span>Instructor Approval</span>
+            </NavLink>
+          </li>
+          <li className="p-2">
+            <NavLink
               to="/admin/users"
               className={({ isActive }) =>
                 `flex items-center space-x-2 hover:text-orange-600 ${
@@ -125,6 +154,31 @@ export default function AdminSidebar() {
               </svg>
 
               <span>Student Management</span>
+            </NavLink>
+          </li>
+          <li className="p-2">
+            <NavLink
+              to="/admin/categories"
+              className={({ isActive }) =>
+                `flex items-center space-x-2 hover:text-orange-600 ${
+                  isActive
+                    ? "text-orange-500 font-semibold underline"
+                    : "font-normal"
+                }`
+              }
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path d="M11.644 1.59a.75.75 0 0 1 .712 0l9.75 5.25a.75.75 0 0 1 0 1.32l-9.75 5.25a.75.75 0 0 1-.712 0l-9.75-5.25a.75.75 0 0 1 0-1.32l9.75-5.25Z" />
+                <path d="m3.265 10.602 7.668 4.129a2.25 2.25 0 0 0 2.134 0l7.668-4.13 1.37.739a.75.75 0 0 1 0 1.32l-9.75 5.25a.75.75 0 0 1-.71 0l-9.75-5.25a.75.75 0 0 1 0-1.32l1.37-.738Z" />
+                <path d="m10.933 19.231-7.668-4.13-1.37.739a.75.75 0 0 0 0 1.32l9.75 5.25c.221.12.489.12.71 0l9.75-5.25a.75.75 0 0 0 0-1.32l-1.37-.738-7.668 4.13a2.25 2.25 0 0 1-2.134-.001Z" />
+              </svg>
+
+              <span>Categories Management</span>
             </NavLink>
           </li>
           <li className="p-2">

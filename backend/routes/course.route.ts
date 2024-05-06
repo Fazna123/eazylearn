@@ -39,6 +39,10 @@ courseRoute.get("/get-courses", (req: Request, res: Response) => {
   courseController.getAllCourse(req, res);
 });
 
+courseRoute.get("/get-allcourses", (req: Request, res: Response) => {
+  courseController.getAllCourseDetails(req, res);
+});
+
 courseRoute.get(
   "/get-myteachings",
   isAuthenticated,
@@ -60,6 +64,39 @@ courseRoute.delete(
   isAuthenticated,
   (req: Request, res: Response) => {
     courseController.deleteCourse(req, res);
+  }
+);
+
+courseRoute.post(
+  "/add-category",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    console.log("add categry route");
+    courseController.addCategory(req, res);
+  }
+);
+courseRoute.get(
+  "/all-categories",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    courseController.getCategories(req, res);
+  }
+);
+
+courseRoute.put(
+  "/update-category",
+
+  (req: Request, res: Response) => {
+    console.log("update cat route");
+    courseController.updateCategory(req, res);
+  }
+);
+
+courseRoute.delete(
+  "/delete-category/:id",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    courseController.deleteCategory(req, res);
   }
 );
 

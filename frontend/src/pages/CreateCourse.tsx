@@ -8,7 +8,7 @@ import CourseInformation from "../components/instructor/CourseInformation";
 import CourseData from "../components/instructor/CourseData";
 import CourseContent from "../components/instructor/CourseContent";
 import CoursePreview from "../components/instructor/CoursePreview";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   createCourseStart,
   createCourseSuccess,
@@ -18,6 +18,8 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 
 export default function CreateCourse() {
+  const { currentUser } = useSelector((state) => state.user);
+  const isNotApproved = currentUser?.user?.isApproved === false;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [active, setActive] = useState(0);
@@ -83,7 +85,7 @@ export default function CreateCourse() {
       totalVideos: courseContentData.length,
       benefits: formattedBenefits,
       prerequisites: formattedPreRequisites,
-      courseContent: formattedCourseContentData,
+      courseData: formattedCourseContentData,
     };
     setCourseData(data);
   };
@@ -118,60 +120,86 @@ export default function CreateCourse() {
       }
     }
   };
-  return (
-    <>
-      <Header />
-      <InstructorLayout>
-        <InstructorHeader />
-        <div className="w-full bg-blue-50 m-0 h-full">
-          <div className="w-[90%] flex m-auto h-fit p-5 bg-white border-blue-100 border h-100 my-10">
-            <div className="w-[80%]">
-              {active === 0 && (
-                <CourseInformation
-                  courseInfo={courseInfo}
-                  setCourseInfo={setCourseInfo}
-                  active={active}
-                  setActive={setActive}
-                />
-              )}
-              {active === 1 && (
-                <CourseData
-                  benefits={benefits}
-                  setBenefits={setBenefits}
-                  prerequisites={prerequisites}
-                  setPrerequisites={setPrerequisites}
-                  active={active}
-                  setActive={setActive}
-                />
-              )}
-              {active === 2 && (
-                <CourseContent
-                  active={active}
-                  setActive={setActive}
-                  courseContentData={courseContentData}
-                  setCourseContentData={setCourseContentData}
-                  handleSubmit={handleSubmit}
-                />
-              )}
-              {active === 3 && (
-                <CoursePreview
-                  active={active}
-                  setActive={setActive}
-                  courseData={courseData}
-                  handleCourseCreate={handleCourseCreate}
-                />
-              )}
-            </div>
-            <div className="w-[20%] h-full -z-0 top-20 mt-[100px] right-0">
-              <CourseOptions active={active} setActive={setActive} />
+  if (isNotApproved) {
+    return (
+      <>
+        <Header />
+        <InstructorLayout>
+          <InstructorHeader />
+          <div className="w-full bg-blue-50 h-screen flex items-center justify-center">
+            <div className="text-center">
+              <p className="text-xl font-bold text-gray-800 mb-4">
+                You are not approved to create a course at the moment.
+              </p>
+              <button
+                onClick={() => navigate("/instructor")}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                Ok
+              </button>
             </div>
           </div>
-          <div>
-            <ToastContainer autoClose={2000} />
+        </InstructorLayout>
+        <Footer />
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Header />
+        <InstructorLayout>
+          <InstructorHeader />
+          <div className="w-full bg-blue-50 m-0 h-full">
+            <div className="w-[90%] flex m-auto h-fit p-5 bg-white border-blue-100 border h-100 my-10">
+              <div className="w-[80%]">
+                {active === 0 && (
+                  <CourseInformation
+                    courseInfo={courseInfo}
+                    setCourseInfo={setCourseInfo}
+                    active={active}
+                    setActive={setActive}
+                  />
+                )}
+                {active === 1 && (
+                  <CourseData
+                    benefits={benefits}
+                    setBenefits={setBenefits}
+                    prerequisites={prerequisites}
+                    setPrerequisites={setPrerequisites}
+                    active={active}
+                    setActive={setActive}
+                  />
+                )}
+                {active === 2 && (
+                  <CourseContent
+                    active={active}
+                    setActive={setActive}
+                    courseContentData={courseContentData}
+                    setCourseContentData={setCourseContentData}
+                    handleSubmit={handleSubmit}
+                  />
+                )}
+                {active === 3 && (
+                  <CoursePreview
+                    active={active}
+                    setActive={setActive}
+                    courseData={courseData}
+                    handleCourseCreate={handleCourseCreate}
+                    isEdit={false}
+                  />
+                )}
+              </div>
+              <div className="w-[20%] h-full -z-0 top-20 mt-[100px] right-0">
+                <CourseOptions active={active} setActive={setActive} />
+              </div>
+            </div>
+            <div>
+              <ToastContainer autoClose={2000} />
+            </div>
           </div>
-        </div>
-      </InstructorLayout>
-      <Footer />
-    </>
-  );
+        </InstructorLayout>
+        <Footer />
+      </>
+    );
+  }
 }

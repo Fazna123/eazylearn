@@ -60,7 +60,9 @@ class UserRepository {
   async authenticateUser(details: ILoginRequest) {
     try {
       const { email, password } = details;
-      const user = await Users.findOne({ email }).select("+password");
+      const user = await Users.findOne({ email, isBlock: false }).select(
+        "+password"
+      );
       if (!user) {
         return {
           success: true,
@@ -73,7 +75,7 @@ class UserRepository {
       if (!isPasswordMatch) {
         return {
           success: false,
-          message: "Invalid Credentials",
+          message: "Invalid Old Password",
         };
       }
 
@@ -140,8 +142,35 @@ class UserRepository {
 
   async getInstructors() {
     try {
-      console.log("user repo get instrtrs");
-      const instructors = await Users.find({ role: "instructor" });
+      const instructors = await Users.find({
+        role: "instructor",
+        isApproved: true,
+      });
+      console.log(instructors);
+      if (!instructors) {
+        return {
+          success: false,
+          message: "Instructor details not fetched",
+        };
+      }
+      return {
+        success: true,
+        message: "Instructor List fetched",
+        instructors,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to fetch instructors ${error}`,
+      };
+    }
+  }
+  async getInstructorsApproval() {
+    try {
+      const instructors = await Users.find({
+        role: "instructor",
+        isApproved: false,
+      });
       console.log(instructors);
       if (!instructors) {
         return {
@@ -165,7 +194,8 @@ class UserRepository {
     try {
       const user = await userModel.findByIdAndUpdate(
         userId,
-        { isApproved: true },
+        { isApproved: true, isRejected: false },
+
         { new: true }
       );
       if (!user) {
@@ -228,6 +258,140 @@ class UserRepository {
       return {
         success: false,
         message: `Failed to delete user ${error}`,
+      };
+    }
+  }
+  async approveRoleInstructor(userId: string, updates: any) {
+    try {
+      //console.log("updates:", updates);
+      const user = await userModel.findByIdAndUpdate(
+        userId,
+        {
+          role: "instructor",
+          isApproved: false,
+          isRejected: false,
+          verification: updates,
+        },
+        { new: true }
+      );
+      //console.log("user", user);
+      if (!user) {
+        return {
+          success: false,
+          message: "Failed to approve Instructor role",
+        };
+      }
+      return {
+        success: true,
+        message: "Instructor request sent to admin",
+        user,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to approve instructor role ${error}`,
+      };
+    }
+  }
+
+  async changePassword(id: string, newPassword: string) {
+    try {
+      const user = await userModel.findByIdAndUpdate(
+        id,
+        { password: newPassword },
+        { new: true }
+      );
+      if (!user) {
+        return {
+          success: false,
+          message: "Failed to update Password",
+        };
+      }
+      return {
+        success: true,
+        message: "Password updated successfuly",
+        user,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to update ${error}`,
+      };
+    }
+  }
+  async rejectInstructor(userId: string) {
+    try {
+      const user = await userModel.findByIdAndUpdate(
+        userId,
+        { isApproved: false, isRejected: true, role: "student" },
+
+        { new: true }
+      );
+      if (!user) {
+        return {
+          success: false,
+          message: "Failed to reject user",
+        };
+      }
+      return {
+        success: true,
+        message: "User rejected",
+        user,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to reject user ${error}`,
+      };
+    }
+  }
+  async blockUser(userId: string) {
+    try {
+      const user = await userModel.findByIdAndUpdate(
+        userId,
+        { isBlock: true },
+        { new: true }
+      );
+      if (!user) {
+        return {
+          success: false,
+          message: "Failed to block user",
+        };
+      }
+      return {
+        success: true,
+        message: "User Blocked",
+        user,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to block user ${error}`,
+      };
+    }
+  }
+  async unBlockUser(userId: string) {
+    try {
+      const user = await userModel.findByIdAndUpdate(
+        userId,
+        { isBlock: false },
+        { new: true }
+      );
+      if (!user) {
+        return {
+          success: false,
+          message: "Failed to unblock user",
+        };
+      }
+      return {
+        success: true,
+        message: "User unblocked",
+        user,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to unblock user ${error}`,
       };
     }
   }

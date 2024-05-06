@@ -76,7 +76,7 @@ const AllCourses = (props: Props) => {
         const { row } = params;
         return (
           <>
-            <Link to={`/admin/edit-course/${row._id}`}>
+            <Link to={`/instructor/edit-course/${row._id}`}>
               <FiEdit2 className="text-black" size={20} />
             </Link>
           </>

@@ -51,6 +51,8 @@ const CourseInformation: FC<Props> = ({
         }
         console.error("Error uploading video:", error);
       }
+    } else {
+      setActive(active + 1);
     }
   };
   const handleFileChange = async (e: any) => {

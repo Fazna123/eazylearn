@@ -1,3 +1,4 @@
+import ICategory from "../interfaces/category";
 import { ICourse } from "../interfaces/course";
 import CourseRepository from "../repositories/course.repository";
 import UserRepository from "../repositories/user.repository";
@@ -181,6 +182,133 @@ class CourseUsecase {
           },
         };
       }
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+  async getAllCourseDetails(req: Request, res: Response) {
+    try {
+      //const courseId = req.params.id;
+      const response = await this.courseRepository.getAllCourseDetails();
+      if (response.courses) {
+        return {
+          status: response.success ? 200 : 500,
+          data: {
+            success: response.success,
+            message: response.message,
+            courses: response.courses,
+          },
+        };
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+
+  async addCategory(data: ICategory) {
+    try {
+      let { name } = data;
+      name = name.toLowerCase();
+      const categoryExist = await this.courseRepository.findCategory(name);
+      if (categoryExist.success) {
+        return {
+          status: 404,
+          data: {
+            success: false,
+            message: "Category Exist",
+          },
+        };
+      }
+      const res = await this.courseRepository.createCategory({ name });
+      return {
+        status: res.success ? 200 : 500,
+        data: {
+          success: res.success,
+          message: res.message,
+        },
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+  async getCategories(query: any) {
+    try {
+      const { search } = query;
+      const res = await this.courseRepository.getCategories(search);
+      return {
+        status: res.success ? 200 : 500,
+        data: {
+          success: res.success,
+          message: res.message,
+          categories: res.categories,
+        },
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+  async updateCategory(req: Request, res: Response) {
+    try {
+      console.log("update cat usecase");
+      console.log("req.body", req.body);
+      let { id, name } = req.body;
+      name = name.toLowerCase();
+      const categories = req.body;
+
+      const res = await this.courseRepository.updateCategory(id, name);
+      return {
+        status: res.success ? 200 : 500,
+        data: {
+          success: res.success,
+          message: res.message,
+        },
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+  async deleteCategory(req: Request, res: Response) {
+    try {
+      const id = req.params.id;
+
+      const res = await this.courseRepository.deleteCategory(id);
+      return {
+        status: res.success ? 200 : 500,
+        data: {
+          success: res.success,
+          message: res.message,
+        },
+      };
     } catch (error) {
       return {
         status: 500,

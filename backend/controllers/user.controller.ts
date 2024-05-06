@@ -137,8 +137,21 @@ class UserController {
   }
   async getInstructors(req: Request, res: Response) {
     try {
-      console.log("user cntrllr get instrtrs");
       const response = await this.userUsecase.getInstructors(req, res);
+      if (response !== undefined)
+        res.status(response.status).send(response.data);
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+
+  async getInstructorsApproval(req: Request, res: Response) {
+    try {
+      console.log("user cntrllr get instrtrs");
+      const response = await this.userUsecase.getInstructorsApproval(req, res);
       if (response !== undefined)
         res.status(response.status).send(response.data);
     } catch (error) {
@@ -180,6 +193,72 @@ class UserController {
       const response = await this.userUsecase.deleteUser(req, res);
       if (response !== undefined) {
         res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+  async approveRoleInstructor(req: Request, res: Response) {
+    try {
+      const response = await this.userUsecase.approveRoleInstructor(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+
+  async changePassword(req: Request, res: Response) {
+    try {
+      const response = await this.userUsecase.changePassword(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "Server Error",
+      });
+    }
+  }
+  async rejectInstructor(req: Request, res: Response) {
+    try {
+      const response = await this.userUsecase.rejectInstructor(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+  async blockUser(req: Request, res: Response) {
+    try {
+      const response = await this.userUsecase.blockUser(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+  async unBlockUser(req: Request, res: Response) {
+    try {
+      const response = await this.userUsecase.unBlockUser(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
       }
     } catch (error) {
       res.status(500).send({

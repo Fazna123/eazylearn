@@ -5,6 +5,7 @@ import OAuth from "../components/OAuth";
 import "react-toastify/dist/ReactToastify.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import swal from "sweetalert";
 
 export default function SignUp() {
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
@@ -21,8 +22,14 @@ export default function SignUp() {
     e.preventDefault();
 
     try {
-      if (formData.name.trim().length < 3) {
-        toast.error("Enter a valid name");
+      if (
+        formData.name.trim().length < 3 ||
+        formData.email.trim().length < 3 ||
+        formData.password.trim().length < 3
+      ) {
+        swal("Enter valid credentials", { icon: "error" });
+      } else if (formData.password !== formData.confirmpassword) {
+        swal("Passwords do not match. Try again!", { icon: "error" });
       } else {
         setLoading(true);
         setError(false);
@@ -65,12 +72,14 @@ export default function SignUp() {
             type="text"
             placeholder="Username"
             id="name"
+            required
             className="bg-slate-100 p-3 rounded-lg"
             onChange={handleChange}
           />
           <input
             type="email"
             placeholder="Email"
+            required
             id="email"
             className="bg-slate-100 p-3 rounded-lg"
             onChange={handleChange}
@@ -79,6 +88,15 @@ export default function SignUp() {
             type="password"
             placeholder="Password"
             id="password"
+            required
+            className="bg-slate-100 p-3 rounded-lg"
+            onChange={handleChange}
+          />
+          <input
+            type="password"
+            placeholder="Re-enter the Password"
+            id="confirmpassword"
+            required
             className="bg-slate-100 p-3 rounded-lg"
             onChange={handleChange}
           />

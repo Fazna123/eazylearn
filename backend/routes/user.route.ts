@@ -29,6 +29,7 @@ userRoute.post("/google", (req: Request, res: Response) => {
 });
 
 userRoute.get("/logout", isAuthenticated, (req: Request, res: Response) => {
+  console.log("logout user route");
   userController.logoutUser(req, res);
 });
 
@@ -81,4 +82,52 @@ userRoute.delete(
   }
 );
 
+userRoute.put(
+  "/instructor/:id",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    console.log("user role to instructor in route");
+    userController.approveRoleInstructor(req, res);
+  }
+);
+
+userRoute.put(
+  "/changepassword",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    userController.changePassword(req, res);
+  }
+);
+
+userRoute.put(
+  "/reject-user/:id",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    userController.rejectInstructor(req, res);
+  }
+);
+
+userRoute.get(
+  "/get-instructors-approval",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    console.log("user route get instrtrs");
+    userController.getInstructorsApproval(req, res);
+  }
+);
+userRoute.put(
+  "/block-user/:id",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    userController.blockUser(req, res);
+  }
+);
+
+userRoute.put(
+  "/unblock-user/:id",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    userController.unBlockUser(req, res);
+  }
+);
 export default userRoute;

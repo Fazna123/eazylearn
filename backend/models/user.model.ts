@@ -53,6 +53,11 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
         courseId: String,
       },
     ],
+    verification: {
+      "0": String,
+      "1": String,
+      "2": String,
+    },
     learnings: [
       {
         course: {
@@ -102,6 +107,10 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
       default: false,
     },
     isApproved: {
+      type: Boolean,
+      default: false,
+    },
+    isRejected: {
       type: Boolean,
       default: false,
     },

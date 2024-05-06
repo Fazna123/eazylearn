@@ -72,7 +72,7 @@ const courseSchema = new Schema<ICourse>(
     benefits: [{ title: String }],
     prerequisites: [{ title: String }],
     reviews: [reviewSchema],
-    courseContent: [courseDetailsSchema],
+    courseData: [courseDetailsSchema],
     ratings: {
       type: Number,
       default: 0,
@@ -90,6 +90,7 @@ const courseSchema = new Schema<ICourse>(
       type: Boolean,
       default: false,
     },
+
     announcements: { type: [String], default: [] },
     category: {
       // type: mongoose.Types.ObjectId,

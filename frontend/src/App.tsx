@@ -15,6 +15,9 @@ import AdminCourses from "./pages/AdminCourses";
 import AdminCourseView from "./pages/AdminCourseView";
 import AdminInstructors from "./pages/AdminInstructors";
 import AdminUsers from "./pages/AdminUsers";
+import EditCourse from "./pages/EditCourse";
+import AdminInstructorApproval from "./pages/AdminInstructorApproval";
+import AdminCategories from "./pages/AdminCategories";
 
 export default function App() {
   return (
@@ -33,6 +36,7 @@ export default function App() {
           <Route path="/instructor/dashboard" element={<Instructor />} />
           <Route path="/instructor/myteachings" element={<MyTeachings />} />
           <Route path="/instructor/createcourse" element={<CreateCourse />} />
+          <Route path="/instructor/edit-course/:id" element={<EditCourse />} />
         </Route>
 
         {/* <Route path="/admin" element={<Admin />} /> */}
@@ -40,11 +44,16 @@ export default function App() {
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/courses" element={<AdminCourses />} />
           <Route path="/admin/instructors" element={<AdminInstructors />} />
+          <Route
+            path="/admin/instructor-approval"
+            element={<AdminInstructorApproval />}
+          />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route
             path="/admin/course-details/:id"
             element={<AdminCourseView />}
           />
+          <Route path="/admin/categories" element={<AdminCategories />} />
         </Route>
       </Routes>
       {/* <Footer /> */}

@@ -14,7 +14,9 @@ import Header from "../components/Header";
 
 export default function SignIn() {
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
-  const { loading, error } = useSelector((state: any) => state.user);
+  const { loading, error, currentUser } = useSelector(
+    (state: any) => state.user
+  );
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -33,6 +35,17 @@ export default function SignIn() {
       return () => clearTimeout(errorTimer);
     }
   }, [error, dispatch]);
+
+  useEffect(() => {
+    if (currentUser) {
+      console.log(currentUser);
+      if (currentUser.user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+    }
+  }, [currentUser, navigate]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

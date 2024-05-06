@@ -8,12 +8,16 @@ import { useEffect, useState } from "react";
 
 import { format } from "timeago.js";
 import { ToastContainer, toast } from "react-toastify";
+import { blockUser, unBlockUser } from "../../utils/endPoint";
 type Props = {};
 
 const AdminInstructorsList = (props: Props) => {
   const [rows, setRows] = useState<any[]>([]);
-  const [approvedInstructors, setApprovedInstructors] = useState<string[]>([]);
+  //const [approvedInstructors, setApprovedInstructors] = useState<string[]>([]);
   const [blockedInstructors, setBlockedInstructors] = useState<string[]>([]);
+  const [unblockedInstructors, setUnblockedInstructors] = useState<string[]>(
+    []
+  );
   //const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,33 +41,33 @@ const AdminInstructorsList = (props: Props) => {
 
   //...............................................................................
 
-  const handleApprove = async (id: string) => {
-    try {
-      const confirmed = await swal("Are you sure to approve user?", {
-        buttons: ["Cancel", true],
-      });
-      if (confirmed) {
-        const res = await fetch(`/api/user/approve-instructor/${id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ isApproved: true }),
-        });
-        if (res.ok) {
-          toast.success(`Instructor with ID ${id} approved successfully.`);
-          setApprovedInstructors((prevApprovedInstructors) => [
-            ...prevApprovedInstructors,
-            id,
-          ]);
-        } else {
-          toast.error(`Failed to approve course with ID ${id}.`);
-        }
-      }
-    } catch (error) {
-      console.error(`Error approving course with ID ${id}:`, error);
-    }
-  };
+  // const handleApprove = async (id: string) => {
+  //   try {
+  //     const confirmed = await swal("Are you sure to approve user?", {
+  //       buttons: ["Cancel", true],
+  //     });
+  //     if (confirmed) {
+  //       const res = await fetch(`/api/user/approve-instructor/${id}`, {
+  //         method: "PUT",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({ isApproved: true }),
+  //       });
+  //       if (res.ok) {
+  //         toast.success(`Instructor with ID ${id} approved successfully.`);
+  //         setApprovedInstructors((prevApprovedInstructors) => [
+  //           ...prevApprovedInstructors,
+  //           id,
+  //         ]);
+  //       } else {
+  //         toast.error(`Failed to approve course with ID ${id}.`);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error(`Error approving course with ID ${id}:`, error);
+  //   }
+  // };
   //------------------------------------------------------------------------------------
   const handleDelete = async (id: string) => {
     const confirmed = await swal("Are you sure to delete user?", {
@@ -100,8 +104,45 @@ const AdminInstructorsList = (props: Props) => {
     const confirmed = await swal("Are you sure to block user?", {
       buttons: ["Cancel", true],
     });
+    if (confirmed) {
+      const { success, data, error } = await blockUser(id);
+      if (!success) {
+        swal(error.message, { icon: "error" });
+      } else {
+        setBlockedInstructors((prevBlockedInstructors) => [
+          ...prevBlockedInstructors,
+          id,
+        ]);
+        setUnblockedInstructors((prevUnBlockedInstructors) =>
+          prevUnBlockedInstructors.filter((userId) => userId !== id)
+        );
+        swal(data.message, { icon: "success" });
+      }
+    }
   };
 
+  //-------------------------------------------------------------------------------------
+
+  const handleUnBlock = async (id: string) => {
+    const confirmed = await swal("Are you sure to unblock user?", {
+      buttons: ["Cancel", true],
+    });
+    if (confirmed) {
+      const { success, data, error } = await unBlockUser(id);
+      if (!success) {
+        swal(error.message, { icon: "error" });
+      } else {
+        setUnblockedInstructors((prevUnBlockedInstructors) => [
+          ...prevUnBlockedInstructors,
+          id,
+        ]);
+        setBlockedInstructors((prevBlockedInstructors) =>
+          prevBlockedInstructors.filter((userId) => userId !== id)
+        );
+        swal(data.message, { icon: "success" });
+      }
+    }
+  };
   //-------------------------------------------------------------------------------------
 
   const coloumns = [
@@ -121,9 +162,11 @@ const AdminInstructorsList = (props: Props) => {
         const { row } = params;
         const isBlocked =
           blockedInstructors.includes(row._id) || row.isBlock === "Blocked";
+
+        const blocked = !unblockedInstructors.includes(row._id);
         return (
           <Button
-            disabled={isBlocked}
+            disabled={isBlocked && blocked}
             onClick={(e) => {
               e.stopPropagation();
               handleBlock(row._id);
@@ -131,31 +174,32 @@ const AdminInstructorsList = (props: Props) => {
             variant="contained"
             color="secondary"
           >
-            {isBlocked ? "UnBlock" : "Block"}
+            Block
           </Button>
         );
       },
     },
     {
       field: " ",
-      headerName: "Approve",
+      headerName: "UnBlock",
       flex: 0.3,
       renderCell: (params: any) => {
         const { row } = params;
-        const isApproved =
-          approvedInstructors.includes(row._id) ||
-          row.isApproved === "Approved";
+        const isUnBlocked =
+          unblockedInstructors.includes(row._id) || row.isBlock !== "Blocked";
+
+        const unblocked = !blockedInstructors.includes(row._id);
         return (
           <Button
-            disabled={isApproved}
+            disabled={isUnBlocked && unblocked}
             onClick={(e) => {
               e.stopPropagation();
-              handleApprove(row._id);
+              handleUnBlock(row._id);
             }}
             variant="contained"
             color="primary"
           >
-            {isApproved ? "Approved" : "Approve"}
+            Unblock
           </Button>
         );
       },

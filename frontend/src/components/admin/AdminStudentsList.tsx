@@ -8,13 +8,16 @@ import { useEffect, useState } from "react";
 
 import { format } from "timeago.js";
 import { ToastContainer, toast } from "react-toastify";
+import { blockUser, unBlockUser } from "../../utils/endPoint";
 type Props = {};
 
 const AdminInstructorsList = (props: Props) => {
   const [rows, setRows] = useState<any[]>([]);
-  const [blockedUsers, setBlockedUsers] = useState<string[]>([]);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState("");
+  const [blockedUsers, setBlockedUsers] = useState<string[]>([]);
+  const [unblockedUsers, setUnblockedUsers] = useState<string[]>([]);
 
   useEffect(() => {
     fetch("/api/user/get-students")
@@ -33,10 +36,43 @@ const AdminInstructorsList = (props: Props) => {
   }, []);
 
   //...............................................................................
+  //------------------------------------------------------------------------------------
   const handleBlock = async (id: string) => {
     const confirmed = await swal("Are you sure to block user?", {
       buttons: ["Cancel", true],
     });
+    if (confirmed) {
+      const { success, data, error } = await blockUser(id);
+      if (!success) {
+        swal(error.message, { icon: "error" });
+      } else {
+        setBlockedUsers((prevBlockedUsers) => [...prevBlockedUsers, id]);
+        setUnblockedUsers((prevUnBlockedUsers) =>
+          prevUnBlockedUsers.filter((userId) => userId !== id)
+        );
+        swal(data.message, { icon: "success" });
+      }
+    }
+  };
+
+  //-------------------------------------------------------------------------------------
+
+  const handleUnBlock = async (id: string) => {
+    const confirmed = await swal("Are you sure to unblock user?", {
+      buttons: ["Cancel", true],
+    });
+    if (confirmed) {
+      const { success, data, error } = await unBlockUser(id);
+      if (!success) {
+        swal(error.message, { icon: "error" });
+      } else {
+        setUnblockedUsers((prevUnBlockedUsers) => [...prevUnBlockedUsers, id]);
+        setBlockedUsers((prevBlockedUsers) =>
+          prevBlockedUsers.filter((userId) => userId !== id)
+        );
+        swal(data.message, { icon: "success" });
+      }
+    }
   };
   //-------------------------------------------------------------------------------------
 
@@ -82,15 +118,17 @@ const AdminInstructorsList = (props: Props) => {
 
     {
       field: "  ",
-      headerName: "Status",
+      headerName: "Block",
       flex: 0.3,
       renderCell: (params: any) => {
         const { row } = params;
         const isBlocked =
           blockedUsers.includes(row._id) || row.isBlock === "Blocked";
+
+        const blocked = !unblockedUsers.includes(row._id);
         return (
           <Button
-            disabled={isBlocked}
+            disabled={isBlocked && blocked}
             onClick={(e) => {
               e.stopPropagation();
               handleBlock(row._id);
@@ -98,7 +136,32 @@ const AdminInstructorsList = (props: Props) => {
             variant="contained"
             color="secondary"
           >
-            {isBlocked ? "UnBlock" : "Block"}
+            Block
+          </Button>
+        );
+      },
+    },
+    {
+      field: " ",
+      headerName: "UnBlock",
+      flex: 0.3,
+      renderCell: (params: any) => {
+        const { row } = params;
+        const isUnBlocked =
+          unblockedUsers.includes(row._id) || row.isBlock !== "Blocked";
+
+        const unblocked = !blockedUsers.includes(row._id);
+        return (
+          <Button
+            disabled={isUnBlocked && unblocked}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleUnBlock(row._id);
+            }}
+            variant="contained"
+            color="primary"
+          >
+            Unblock
           </Button>
         );
       },

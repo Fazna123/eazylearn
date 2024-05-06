@@ -18,7 +18,10 @@ import {
 import { useDispatch } from "react-redux";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import swal from "sweetalert";
+//import { CHANGE_PASSWORD } from "../utils/api";
+import { changePasswordAPI } from "../utils/endPoint";
 
 export default function Profile() {
   const fileRef = useRef<HTMLInputElement | null>(null);
@@ -26,12 +29,22 @@ export default function Profile() {
   const [imagePercent, setImagePercent] = useState(0);
   const [imageError, setImageError] = useState(false);
   const [formData, setFormData] = useState({});
-  const [updateSuccess, setUpdateSuccess] = useState(false);
+  //const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  });
+  // const [passwordError, setPasswordError] = useState("");
+  // const [passwordSuccess, setPasswordSuccess] = useState(false);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   //console.log("formdata", formData);
 
-  const { currentUser, loading, error } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector(
+    (state: any) => state.user
+  );
   const admin = currentUser.user.role === "admin";
 
   useEffect(() => {
@@ -40,6 +53,7 @@ export default function Profile() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [image]);
+  //----------------------------------------------------------------------------
 
   const handleFileUpload = async (image: File | undefined) => {
     const storage = getStorage(app);
@@ -67,11 +81,13 @@ export default function Profile() {
     }
   };
 
+  //--------------------------------------------------------------------------------------------
+
   const handleChange = (e: { target: { id: string; value: string } }) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
       console.log("form data", formData);
@@ -89,32 +105,115 @@ export default function Profile() {
 
       if (!res.ok) {
         dispatch(updateUserFailure(data));
+        swal(data.message);
         return;
       } else {
         dispatch(updateUserSuccess(data));
-        setUpdateSuccess(true);
+        //setUpdateSuccess(true);
+        swal("User updated successfully", { icon: "success" });
+        //swal(data.message);
       }
     } catch (error) {
       dispatch(updateUserFailure(error));
     }
   };
 
+  //-----------------------------------------------------------------------------------
+
   const handleSignOut = async () => {
     try {
       await fetch("/api/user/logout");
       dispatch(signOut());
+      navigate("/");
     } catch (error) {
       console.log(error);
-      alert("Logout failed. Please try again later.");
+      swal("Logout failed. Please try again later.");
     }
   };
+
+  //---------------------------------------------------------------------------------------
+
+  const handleOldPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPasswordData({ ...passwordData, oldPassword: e.target.value });
+  };
+
+  const handleNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPasswordData({ ...passwordData, newPassword: e.target.value });
+  };
+
+  const handleConfirmNewPasswordChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setPasswordData({ ...passwordData, confirmNewPassword: e.target.value });
+  };
+
+  const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("handle password submit");
+    try {
+      if (passwordData.newPassword !== passwordData.confirmNewPassword) {
+        swal("New password and confirm password do not match.");
+        return;
+      }
+      const { success, data, error } = await changePasswordAPI(
+        passwordData.oldPassword,
+        passwordData.newPassword
+      );
+
+      if (!success) {
+        swal(error.message, { icon: "error" });
+      } else {
+        swal(data.message, { icon: "success" });
+        clearPasswordFields(); // Clear password fields
+      }
+
+      // const res = await fetch(CHANGE_PASSWORD, {
+      //   method: "PUT",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     oldPassword: passwordData.oldPassword,
+      //     newPassword: passwordData.newPassword,
+      //   }),
+      // });
+      // const res = change_password(
+      //   passwordData.oldPassword,
+      //   passwordData.newPassword
+      // );
+      // const data = await res.json();
+      // if (!res.ok) {
+      //   swal(data.message, { icon: "error" });
+      // } else {
+      //   swal("Password changed successfully", { icon: "success" });
+      //   clearPasswordFields(); // Clear password fields
+      // }
+    } catch (error: any) {
+      swal(error, { icon: "error" });
+    }
+  };
+  const clearPasswordFields = () => {
+    console.log("Clearing password fields");
+    setPasswordData({
+      oldPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    });
+  };
+
+  //-------------------------------------------------------------------------------------------------------------------
+  useEffect(() => {
+    console.log("Component re-rendered"); // Add this line
+  });
+
+  //-------------------------------------------------------------------------------------------------------
 
   return (
     <>
       {!admin && <Header />}
       {/* <Header /> */}
-      <div className="bg-blue-50 p-10 h-full">
-        <div className="p-3 max-w-lg mx-auto bg-white h-auto">
+      <div className="bg-blue-50 py-5 px-10 h-full flex flex-row justify-center">
+        <div className="p-5 max-w-lg my-auto bg-white h-auto w-[30%]">
           <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <input
@@ -168,13 +267,14 @@ export default function Profile() {
               //onChange={handleChange}
               disabled={true}
             />
-            <input
+            {/* <input
               type="password"
               id="password"
               placeholder="Password"
               className="bg-blue-50 rounded-lg p-3"
               onChange={handleChange}
-            />
+            /> */}
+
             <button className="bg-blue-950 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
               {loading ? "Loading.." : "Update"}
             </button>
@@ -210,12 +310,65 @@ export default function Profile() {
             )}
             {admin}
           </div>
-          <p className="text-red-700 mt-5">
+          {/* <p className="text-red-700 mt-5">
             {error && "Something went wrong!"}
           </p>
           <p className="text-green-700 mt-5">
             {updateSuccess && "User updated successfully!"}
-          </p>
+          </p> */}
+        </div>
+        <div className="p-5 max-w-lg my-auto ml-10 bg-white h-auto w-[30%]">
+          <h2 className="text-xl font-semibold mt-5 mb-3 text-center">
+            Change Password
+          </h2>
+          <form onSubmit={handlePasswordSubmit} className="flex flex-col gap-4">
+            <input
+              type="password"
+              id="oldPassword"
+              required
+              minLength={6}
+              placeholder="Old Password"
+              className="bg-blue-50 rounded-lg p-3"
+              //onChange={handlePasswordChange}
+              value={passwordData.oldPassword}
+              onChange={handleOldPasswordChange}
+            />
+            <input
+              type="password"
+              id="newPassword"
+              required
+              minLength={6}
+              placeholder="New Password"
+              className="bg-blue-50 rounded-lg p-3"
+              value={passwordData.newPassword}
+              onChange={handleNewPasswordChange}
+              //onChange={handlePasswordChange}
+            />
+            <label
+              htmlFor="newPassword"
+              className="text-green-600 mt-0 pt-0 font-light text-xs text-end"
+            >
+              New Password (min 6 characters)
+            </label>
+            <input
+              type="password"
+              id="confirmNewPassword"
+              required
+              minLength={6}
+              placeholder="Confirm New Password"
+              className="bg-blue-50 rounded-lg p-3"
+              value={passwordData.confirmNewPassword}
+              onChange={handleConfirmNewPasswordChange}
+              //onChange={handlePasswordChange}
+            />
+            <button className="bg-blue-950 text-white p-3 rounded-lg uppercase hover:opacity-95">
+              {loading ? "Loading.." : "Change Password"}
+            </button>
+            {/* {passwordError && <p className="text-red-700">{passwordError}</p>}
+            {passwordSuccess && (
+              <p className="text-green-700">Password changed successfully!</p>
+            )} */}
+          </form>
         </div>
       </div>
       {/* <Footer /> */}

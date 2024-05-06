@@ -19,6 +19,8 @@ export interface IUser extends Document {
   wallet?: Object;
   isBlock?: boolean;
   isApproved?: boolean;
+  isRejected?: boolean;
+  verification?: object;
 
   comparePassword: (password: string) => Promise<boolean>;
   signAccessToken: () => string;
