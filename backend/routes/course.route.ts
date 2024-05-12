@@ -5,12 +5,18 @@ import CourseRepository from "../repositories/course.repository";
 import CourseUsecase from "../usecases/course.usecase";
 import CourseController from "../controllers/course.controller";
 import UserRepository from "../repositories/user.repository";
+import OrderRepository from "../repositories/order.repository";
 
 const courseRoute = express.Router();
 
 const courseRepository = new CourseRepository();
 const userRepository = new UserRepository();
-const courseUsecase = new CourseUsecase(courseRepository, userRepository);
+const orderRepository = new OrderRepository();
+const courseUsecase = new CourseUsecase(
+  courseRepository,
+  userRepository,
+  orderRepository
+);
 const courseController = new CourseController(courseUsecase);
 
 courseRoute.post(
@@ -35,13 +41,19 @@ courseRoute.get("/get-course/:id", (req: Request, res: Response) => {
   courseController.getSingleCourse(req, res);
 });
 
+//only selected datas are visible
 courseRoute.get("/get-courses", (req: Request, res: Response) => {
   courseController.getAllCourse(req, res);
 });
 
-courseRoute.get("/get-allcourses", (req: Request, res: Response) => {
-  courseController.getAllCourseDetails(req, res);
-});
+//all details will be visible
+courseRoute.get(
+  "/get-allcourses",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    courseController.getAllCourseDetails(req, res);
+  }
+);
 
 courseRoute.get(
   "/get-myteachings",
@@ -97,6 +109,65 @@ courseRoute.delete(
   isAuthenticated,
   (req: Request, res: Response) => {
     courseController.deleteCategory(req, res);
+  }
+);
+
+courseRoute.get(
+  "/get-course-content/:id",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    courseController.getSingleCourseContent(req, res);
+  }
+);
+courseRoute.put(
+  "/add-question",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    courseController.addQuestion(req, res);
+  }
+);
+
+courseRoute.put(
+  "/add-answer",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    courseController.addAnswer(req, res);
+  }
+);
+
+courseRoute.put(
+  "/add-review/:id",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    console.log("add review route");
+    courseController.addReview(req, res);
+  }
+);
+
+courseRoute.put(
+  "/add-reply",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  (req: Request, res: Response) => {
+    courseController.addReplyToReview(req, res);
+  }
+);
+
+courseRoute.get(
+  "/get-all-notifications",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  (req: Request, res: Response) => {
+    courseController.getNotifications(req, res);
+  }
+);
+
+courseRoute.put(
+  "/update-notification/:id",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  (req: Request, res: Response) => {
+    courseController.updateNotifications(req, res);
   }
 );
 

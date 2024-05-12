@@ -5,12 +5,9 @@ import {
   addCategories,
   deleteCategories,
   getCategories,
-  //updateCategories,
   updateCategory,
 } from "../../utils/endPoint";
 import { AiOutlineDelete } from "react-icons/ai";
-//import { Button } from "@mui/material";
-//import { IoMdAddCircle } from "react-icons/io";
 
 type Props = {};
 
@@ -56,14 +53,12 @@ function AdminCategoriesList({}: Props) {
   };
 
   const updateCategoryHandler = async (id: any, name: string) => {
-    //console.log("Updating category with ID:", id, "and name:", name); // Debugging log
     setLoading(true);
     setCategories(
       categories.map((category: any) =>
         category._id === id ? { ...category, name } : category
       )
     );
-    //console.log("Updated categories:", categories); // Debugging log
     const { success, error } = await updateCategory(id, name);
     setLoading(false);
     if (!success) {
@@ -82,100 +77,10 @@ function AdminCategoriesList({}: Props) {
       swal("Category Deleted");
     } else {
       swal("Category Failed to Delete");
+      console.log(error.message);
     }
   };
 
-  // const update = async () => {
-  //   setLoading(true);
-  //   const { success, error } = await updateCategories(categories);
-  //   setLoading(false);
-  //   if (!success) {
-  //     swal(error.message, { icon: "error" });
-  //   } else {
-  //     swal("Categories updated successfully", { icon: "success" });
-  //   }
-  // };
-
-  // const handleCategoriesAdd = (id: any, value: string) => {
-  //   setCategories((prevCategory: any) =>
-  //     prevCategory.map((i: any) => (i._id === id ? { ...i, title: value } : i))
-  //   );
-  // };
-  // const newCategoriesHandler = () => {
-  //   if (categories[categories.length - 1].title === "") {
-  //     swal("Category title cannot be empty");
-  //   } else {
-  //     setCategories((prevCategory: any) => [...prevCategory, { title: "" }]);
-  //   }
-  // };
-  // console.log(categories);
-
-  // const editCategoriesHandler = async () => {
-  //   setLoading(true);
-  //   const { success, data, error } = await updateCategories(categories);
-  //   setLoading(false);
-  //   if (!success) {
-  //     swal(error.message, { icon: "error" });
-  //   } else {
-  //     swal(data.message, { icon: "success" });
-  //   }
-  // };
-  // return (
-  //   <>
-  //     {/* {loading ? (
-  //       <Spinner />
-  //     ) : ( */}
-  //     <div className="mt-[120px] text-center align-middle justify-center">
-  //       <h1 className="text-center text-slate-950">All Categories</h1>
-  //       {categories &&
-  //         categories.map((item: any, index: number) => {
-  //           return (
-  //             <div className="p-3">
-  //               <div className="flex items-center w-full justify-center">
-  //                 <input
-  //                   className="shadow appearance-none border border-blue-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-  //                   required
-  //                   value={item.name}
-  //                   onChange={(e) =>
-  //                     handleCategoriesAdd(item._id, e.target.value)
-  //                   }
-  //                   placeholder="Enter Category Title..."
-  //                 />
-  //                 <AiOutlineDelete
-  //                   className="text-black text-[18px] cursor-pointer"
-  //                   onClick={() =>
-  //                     setCategories((prevCategory: any) =>
-  //                       prevCategory.filter((i: any) => i._id !== item._id)
-  //                     )
-  //                   }
-  //                 />
-  //               </div>
-  //             </div>
-  //           );
-  //         })}
-  //       <br />
-  //       <br />
-  //       <div className="w-full flex justify-center">
-  //         <IoMdAddCircle
-  //           className="text-black text-[25px] cursor-pointer"
-  //           onClick={newCategoriesHandler}
-  //         />
-  //       </div>
-  //       <div className="bg-custom-500 py-4 flex flex-col md:flex-row justify-end px-4 md:px-10">
-  //         <button
-  //           className="border rounded-md h-min py-1 font-semibold px-3 duration-300 bg-blue-500 text-white hover:bg-white hover:text-slate-950"
-  //           type="button"
-  //           onClick={() => {
-  //             editCategoriesHandler();
-  //           }}
-  //         >
-  //           Proceed
-  //         </button>
-  //       </div>
-  //     </div>
-  //     {/* )} */}
-  //   </>
-  // );
   return (
     <>
       {loading ? (

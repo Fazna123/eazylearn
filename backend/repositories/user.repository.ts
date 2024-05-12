@@ -395,6 +395,56 @@ class UserRepository {
       };
     }
   }
+  async findUser(id: string) {
+    try {
+      const userDetails = await Users.findById(id);
+      //console.log(userDetails);
+      if (!userDetails) {
+        return {
+          success: false,
+          message: "user details not stored",
+        };
+      }
+      return {
+        success: true,
+        message: "user created",
+        data: userDetails,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to fetch ${error}`,
+      };
+    }
+  }
+  async userUpdate(id: string, updates: any) {
+    try {
+      const userDetails = await Users.findByIdAndUpdate(
+        { _id: id },
+        { courses: updates },
+        {
+          new: true,
+        }
+      );
+      console.log(userDetails);
+      if (!userDetails) {
+        return {
+          success: false,
+          message: "No user found",
+        };
+      }
+      return {
+        success: true,
+        message: "user details updated",
+        data: userDetails,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to update ${error}`,
+      };
+    }
+  }
 }
 
 export default UserRepository;

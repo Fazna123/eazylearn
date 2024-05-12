@@ -18,6 +18,8 @@ import AdminUsers from "./pages/AdminUsers";
 import EditCourse from "./pages/EditCourse";
 import AdminInstructorApproval from "./pages/AdminInstructorApproval";
 import AdminCategories from "./pages/AdminCategories";
+import Courses from "./pages/Courses";
+import SingleCourse from "./pages/SingleCourse";
 
 export default function App() {
   return (
@@ -28,7 +30,10 @@ export default function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/otp" element={<Otp />} />
+        <Route path="/courses" element={<Courses />} />
+        <Route path="/course/:id" element={<SingleCourse />} />
         <Route element={<PrivateRoute />}>
+          {/* <Route path="/course/:id" element={<SingleCourse />} /> */}
           <Route path="/profile" element={<Profile />} />
         </Route>
         <Route element={<PrivateRoute />}>

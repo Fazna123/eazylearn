@@ -13,7 +13,12 @@ const CoursePlayer: FC<Props> = ({ videoUrl }) => {
 
   return (
     <div>
-      <ReactPlayer url={videoUrl} controls={true} width="100%" height="80%" />
+      <ReactPlayer
+        url={videoUrl}
+        controls={true}
+        width="80%"
+        style={{ height: "300px", backgroundColor: "black" }}
+      />
     </div>
   );
 };

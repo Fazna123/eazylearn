@@ -48,6 +48,23 @@ class CourseController {
       });
     }
   }
+
+  async getSingleCourseContent(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.getSingleCourseContent(
+        req,
+        res
+      );
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
   async getAllCourse(req: Request, res: Response) {
     try {
       const response = await this.courseUsecase.getAllCourse(req, res);
@@ -153,6 +170,78 @@ class CourseController {
   async deleteCategory(req: Request, res: Response) {
     try {
       const response = await this.courseUsecase.deleteCategory(req, res);
+      res.status(response.status).send(response.data);
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+
+  async addQuestion(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.addQuestion(req, res);
+      res.status(response.status).send(response.data);
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+
+  async addAnswer(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.addAnswer(req, res);
+      res.status(response.status).send(response.data);
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+
+  async addReview(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.addReview(req, res);
+      res.status(response.status).send(response.data);
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+
+  async addReplyToReview(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.addReplyToReview(req, res);
+      res.status(response.status).send(response.data);
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+
+  async getNotifications(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.getNotifications(req, res);
+      res.status(response.status).send(response.data);
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+
+  async updateNotifications(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.updateNotifications(req, res);
       res.status(response.status).send(response.data);
     } catch (error) {
       res.status(500).send({

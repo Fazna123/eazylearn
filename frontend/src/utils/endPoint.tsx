@@ -3,10 +3,16 @@ import {
   ADD_CATEGORY,
   BLOCK_USER,
   CHANGE_PASSWORD,
+  CREATE_ORDER,
   DELETE_CATEGORY,
   GET_CATEGORIES,
+  GET_COURSES,
+  GET_SINGLECOURSE,
+  GET_STRIPE_KEY,
+  NEW_PAYMENT,
   UNBLOCK_USER,
   UPDATE_CATEGORY,
+  USER_INFO,
 } from "./api";
 
 export async function changePasswordAPI(
@@ -73,6 +79,62 @@ export async function updateCategory(id: string, name: string) {
 export async function deleteCategories(id: string) {
   try {
     const response = await axios.delete(DELETE_CATEGORY(id));
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+}
+
+export async function getCourses() {
+  try {
+    const response = await axios.get(GET_COURSES);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+}
+
+export async function getSingleCourse(id: string) {
+  try {
+    const response = await axios.get(GET_SINGLECOURSE(id));
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+}
+
+export async function getStripeKey() {
+  try {
+    const response = await axios.get(GET_STRIPE_KEY);
+    return { success: true, publishableKey: response.data.publishableKey };
+    //return res.status(response.status).json(response.publishableKey);
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+}
+
+export async function newPayment(amount: number) {
+  try {
+    const response = await axios.post(NEW_PAYMENT, { amount });
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+}
+
+export async function createOrder(courseId: string, payment_info: any) {
+  try {
+    const response = await axios.post(CREATE_ORDER, { courseId, payment_info });
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+}
+
+export async function getUserInfo() {
+  try {
+    const response = await axios.get(USER_INFO);
+    console.log(response);
     return { success: true, data: response.data };
   } catch (error: any) {
     return { success: false, error: error.response.data };

@@ -1,17 +1,28 @@
+import { Request, Response } from "express";
+import mongoose from "mongoose";
 import ICategory from "../interfaces/category";
 import { ICourse } from "../interfaces/course";
+import IAddQuestionData from "../interfaces/question";
 import CourseRepository from "../repositories/course.repository";
 import UserRepository from "../repositories/user.repository";
+import OrderRepository from "../repositories/order.repository";
+import ejs from "ejs";
+import path from "path";
+import sendMail from "../utils/sendMail";
+import { IAddReviewData, IAddReviewReply } from "../interfaces/review";
 
 class CourseUsecase {
   private courseRepository: CourseRepository;
   private userRepository: UserRepository;
+  private orderRepository: OrderRepository;
   constructor(
     courseRepository: CourseRepository,
-    userRepository: UserRepository
+    userRepository: UserRepository,
+    orderRepository: OrderRepository
   ) {
     this.courseRepository = courseRepository;
     this.userRepository = userRepository;
+    this.orderRepository = orderRepository;
   }
 
   async createCourse(req: Request, res: Response) {
@@ -73,6 +84,46 @@ class CourseUsecase {
     try {
       const courseId = req.params.id;
       const response = await this.courseRepository.getSingleCourse(courseId);
+      if (response.course) {
+        return {
+          status: response.success ? 200 : 500,
+          data: {
+            success: response.success,
+            message: response.message,
+            course: response.course,
+          },
+        };
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+  async getSingleCourseContent(req: Request, res: Response) {
+    try {
+      const courseId = req.params.id;
+      const userCourseList = req.user?.courses;
+
+      const courseExists = userCourseList?.find(
+        (course: any) => course._id.toString() === courseId
+      );
+      if (!courseExists) {
+        return {
+          status: 404,
+          data: {
+            success: false,
+            message: "You are not eligible to access this course",
+          },
+        };
+      }
+      const response = await this.courseRepository.getSingleCourseContent(
+        courseId
+      );
       if (response.course) {
         return {
           status: response.success ? 200 : 500,
@@ -307,6 +358,331 @@ class CourseUsecase {
         data: {
           success: res.success,
           message: res.message,
+        },
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+  async addQuestion(req: Request, res: Response) {
+    try {
+      const { question, courseId, contentId }: IAddQuestionData = req.body;
+      const courseDetails = await this.courseRepository.getSingleCourseContent(
+        courseId
+      );
+      const course = courseDetails.course;
+      if (!mongoose.Types.ObjectId.isValid(contentId)) {
+        return {
+          status: 400,
+          data: {
+            success: false,
+            message: "Invalid Content Id",
+          },
+        };
+      }
+      const courseContent = course?.courseData?.find((item: any) =>
+        item._id.equals(contentId)
+      );
+      const newQuestion: any = {
+        user: req?.user,
+        question,
+        questionReplies: [],
+      };
+      //courseContent?.questions.push(newQuestion);
+      const res = await this.courseRepository.addQuestion(
+        courseId,
+        courseContent?._id,
+        newQuestion
+      );
+
+      if (res) {
+        const notificationData = {
+          user: req.user?._id,
+          title: "New Question Recieved",
+          message: `You have a new question in ${courseContent?.title} of ${res.course?.name}`,
+        };
+        const notification = await this.orderRepository.saveNotification(
+          notificationData
+        );
+      }
+
+      return {
+        status: res.success ? 200 : 500,
+        data: {
+          success: res.success,
+          message: res.message,
+          course: res.course,
+        },
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+
+  async addAnswer(req: Request, res: Response) {
+    try {
+      const { answer, courseId, contentId, questionId } = req.body;
+      const courseDetails = await this.courseRepository.getSingleCourseContent(
+        courseId
+      );
+      const course = courseDetails.course;
+      if (!mongoose.Types.ObjectId.isValid(contentId)) {
+        return {
+          status: 400,
+          data: {
+            success: false,
+            message: "Invalid Content Id",
+          },
+        };
+      }
+      const courseContent = course?.courseData?.find((item: any) =>
+        item._id.equals(contentId)
+      );
+
+      const question = courseContent?.questions?.find((item: any) =>
+        item._id.equals(questionId)
+      );
+      if (!question) {
+        return {
+          status: 400,
+          data: {
+            success: false,
+            message: "Invalid question Id",
+          },
+        };
+      }
+      const newAnswer = {
+        user: req.user,
+        answer,
+      };
+
+      // question.questionReplies?.push(newAnswer);
+      // await course?.save()
+      const res = await this.courseRepository.addAnswer(
+        course?._id,
+        courseContent?._id,
+        question._id,
+        newAnswer
+      );
+      if (req.user?._id === question.user._id) {
+        const notificationData = {
+          user: req.user?._id,
+          title: "New Question Reply Recieved",
+          message: `You have a new question reply in ${courseContent?.title} of ${res.course?.name}`,
+        };
+        const notification = await this.orderRepository.saveNotification(
+          notificationData
+        );
+      } else {
+        const dataMail: any = {
+          name: question.user.name,
+          title: courseContent?.title,
+        };
+        const html = await ejs.renderFile(
+          path.join(__dirname, "../mails/question-reply.ejs"),
+          dataMail
+        );
+        try {
+          await sendMail({
+            email: question.user.email,
+            subject: "Question Reply",
+            template: "question-reply.ejs",
+            data: dataMail,
+          });
+        } catch (error) {
+          return {
+            status: 500,
+            data: {
+              success: false,
+              message: `Failed to send the mail ${error}`,
+            },
+          };
+        }
+      }
+      return {
+        status: res.success ? 200 : 500,
+        data: {
+          success: res.success,
+          message: res.message,
+          course: res.course,
+        },
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+
+  async addReview(req: Request, res: Response) {
+    try {
+      console.log("rev usecase");
+      const courseId = req.params.id;
+      console.log(courseId);
+      const { review, rating, userId } = req.body as IAddReviewData;
+      //const user = await this.userRepository.findUser(userId);
+      const courses = req?.user?.courses;
+      const courseExists = courses?.some(
+        (course: any) => course._id.toString() === courseId.toString()
+      );
+      if (!courseExists) {
+        return {
+          status: 404,
+          data: {
+            success: false,
+            message: "You are not eligible to access this course",
+          },
+        };
+      }
+      const reviewData: any = {
+        user: req?.user,
+        comment: review,
+        rating,
+      };
+      const res = await this.courseRepository.updateCourseRatings(
+        courseId,
+        reviewData
+      );
+
+      const courseDetails = await this.courseRepository.getSingleCourseContent(
+        courseId
+      );
+
+      const notificationData = {
+        user: req?.user?._id,
+        title: "New Review Recieved",
+        message: `${req?.user?.name} has given a review in ${courseDetails?.course?.name}`,
+      };
+      const notification = await this.orderRepository.saveNotification(
+        notificationData
+      );
+      return {
+        status: res.success ? 200 : 500,
+        data: {
+          success: res.success,
+          message: res.message,
+          course: res.course,
+        },
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+
+  //add reply to review
+  async addReplyToReview(req: Request, res: Response) {
+    try {
+      const { comment, courseId, reviewId } = req.body as IAddReviewReply;
+      const courseDetails = await this.courseRepository.getSingleCourseContent(
+        courseId
+      );
+      if (!courseDetails.course) {
+        return {
+          status: 404,
+          data: {
+            success: false,
+            message: "Course Not Found",
+          },
+        };
+      }
+      const review = courseDetails.course.reviews?.find(
+        (rev: any) => rev._id.toString() === reviewId
+      );
+      if (!review) {
+        return {
+          status: 404,
+          data: {
+            success: false,
+            message: "Review Not Found",
+          },
+        };
+      }
+      const replyData: any = {
+        user: req.user,
+        comment,
+      };
+
+      if (!review.commentReplies) {
+        review.commentReplies = [];
+      }
+      review?.commentReplies?.push(replyData);
+      const res = await this.courseRepository.updateReplyToReview(
+        courseId,
+        review
+      );
+      return {
+        status: res.success ? 200 : 500,
+        data: {
+          success: res.success,
+          message: res.message,
+          course: res.course,
+        },
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+
+  async getNotifications(req: Request, res: Response) {
+    try {
+      const res = await this.courseRepository.getNotifications();
+      return {
+        status: res.success ? 200 : 500,
+        data: {
+          success: res.success,
+          message: res.message,
+          notifications: res.notifications,
+        },
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+
+  async updateNotifications(req: Request, res: Response) {
+    try {
+      const id = req.params.id;
+      const res = await this.courseRepository.updateNotificationStatus(id);
+      return {
+        status: res.success ? 200 : 500,
+        data: {
+          success: res.success,
+          message: res.message,
+          notifications: res.notifications,
         },
       };
     } catch (error) {

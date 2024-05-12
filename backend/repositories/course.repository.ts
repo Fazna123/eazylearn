@@ -2,6 +2,7 @@ import ICategory from "../interfaces/category";
 import { ICourse } from "../interfaces/course";
 import categoryModel from "../models/category.model";
 import CourseModel from "../models/course.model";
+import notificationModel from "../models/notification.model";
 
 class CourseRepository {
   async createCourse(data: ICourse) {
@@ -62,6 +63,30 @@ class CourseRepository {
       }).select(
         "-courseData.videoUrl -courseData.sugession -courseData.questions -courseData.links"
       );
+      if (!course) {
+        return {
+          success: false,
+          message: "Failed to fetch course",
+        };
+      }
+      return {
+        success: true,
+        message: "Course details fetched successfully",
+        course,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to fetch ${error}`,
+      };
+    }
+  }
+
+  async getSingleCourseContent(courseId: string) {
+    try {
+      const course = await CourseModel.findById(courseId, {
+        isBlock: false,
+      });
       if (!course) {
         return {
           success: false,
@@ -323,6 +348,245 @@ class CourseRepository {
       };
     }
   }
+  async coursePurchaseUpdate(id: string) {
+    try {
+      const courses = await CourseModel.findByIdAndUpdate(
+        id,
+        { $inc: { purchased: 1 } },
+        { new: true }
+      );
+      console.log(courses);
+      if (!courses) {
+        return {
+          success: false,
+          message: "Failed to fetch course",
+        };
+      }
+      return {
+        success: true,
+        message: "Course details fetched successfully",
+        courses,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to fetch ${error}`,
+      };
+    }
+  }
+  async addQuestion(courseId: string, contentId: string, newQuestion: object) {
+    try {
+      const course = await CourseModel.findOneAndUpdate(
+        {
+          _id: courseId,
+          "courseData._id": contentId, // Match the courseId and contentId
+        },
+        {
+          $push: {
+            "courseData.$.questions": newQuestion, // Push the new question into the 'questions' array of the matched content
+          },
+        },
+        {
+          new: true,
+        }
+      );
+
+      if (!course) {
+        return {
+          success: false,
+          message: "Failed to find course or content",
+        };
+      }
+
+      return {
+        success: true,
+        message: "Question added successfully",
+        course,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to add question: ${error}`,
+      };
+    }
+  }
+
+  async addAnswer(
+    courseId: string,
+    contentId: string,
+    questionId: string,
+    answer: any
+  ) {
+    try {
+      const course = await CourseModel.findOneAndUpdate(
+        {
+          _id: courseId,
+          "courseData._id": contentId,
+          "courseData.questions._id": questionId,
+        },
+        {
+          $push: {
+            "courseData.$[content].questions.$[question].questionReplies":
+              answer,
+          },
+        },
+        {
+          new: true,
+          arrayFilters: [
+            { "content._id": contentId },
+            { "question._id": questionId },
+          ],
+        }
+      );
+
+      if (!course) {
+        return {
+          success: false,
+          message: "Failed to find course or content or question",
+        };
+      }
+
+      return {
+        success: true,
+        message: "Answer added successfully",
+        course,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to add answer: ${error}`,
+      };
+    }
+  }
+  async updateCourseRatings(courseId: string, reviewData: any) {
+    try {
+      const course = await CourseModel.findById(courseId);
+
+      const reviews = course?.reviews ?? [];
+
+      reviews.push(reviewData);
+
+      let avg = 0;
+      reviews.forEach((rev: any) => {
+        avg += rev.rating;
+      });
+
+      if (course) {
+        course.ratings = avg / reviews.length;
+      }
+
+      await course?.save();
+      return {
+        success: true,
+        message: "Review added successfully",
+        course,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to add review: ${error}`,
+      };
+    }
+  }
+
+  async updateReplyToReview(courseId: any, review: any) {
+    try {
+      const updatedCourse = await CourseModel.findByIdAndUpdate(
+        courseId,
+        { $set: { "reviews.$[review]": review } },
+        { new: true, arrayFilters: [{ "review._id": review._id }] }
+      );
+
+      return {
+        success: true,
+        message: "Reply to review added successfully",
+        course: updatedCourse,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to add reply to review: ${error}`,
+      };
+    }
+  }
+  async getNotifications() {
+    try {
+      const notifications = await notificationModel
+        .find()
+        .sort({ createdAt: -1 });
+      return {
+        success: true,
+        message: "Notifications fetched successfully",
+        notifications: notifications,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to fetch notifications: ${error}`,
+      };
+    }
+  }
+
+  async updateNotificationStatus(id: string) {
+    try {
+      const notification = await notificationModel.findByIdAndUpdate(id, {
+        status: "read",
+      });
+      if (!notification) {
+        return {
+          success: false,
+          message: `Failed to update notifications`,
+        };
+      }
+      const notifications = await notificationModel
+        .find()
+        .sort({ createdAt: -1 });
+      return {
+        success: true,
+        message: "Notifications updated successfully",
+        notifications: notifications,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to update notifications: ${error}`,
+      };
+    }
+  }
 }
 
 export default CourseRepository;
+
+// async addQuestion(courseId, courseContent) {
+//   try {
+//     // Update the course document by pushing the new question into the specified content's 'questions' array
+//     const course = await CourseModel.findByIdAndUpdate(
+//       courseId,
+//       {
+//         $push: { "courseData.$[content].questions": courseContent.questions },
+//       },
+//       {
+//         new: true,
+//         arrayFilters: [{ "content._id": courseContent._id }], // Filter to match the specified contentId
+//       }
+//     );
+
+//     if (!course) {
+//       return {
+//         success: false,
+//         message: "Failed to find course",
+//       };
+//     }
+
+//     return {
+//       success: true,
+//       message: "Question added successfully",
+//       course,
+//     };
+//   } catch (error) {
+//     return {
+//       success: false,
+//       message: `Failed to add question: ${error}`,
+//     };
+//   }
+// }

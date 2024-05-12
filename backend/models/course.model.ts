@@ -11,6 +11,7 @@ const reviewSchema = new Schema<IReview>({
     default: 0,
   },
   comment: String,
+  commentReplies: [Object],
 });
 
 const linkSchema = new Schema<ILink>({
@@ -20,8 +21,8 @@ const linkSchema = new Schema<ILink>({
 
 const commentSchema = new Schema<IComment>({
   user: Object,
-  comment: String,
-  commentReplies: [Object],
+  question: String,
+  questionReplies: [Object],
 });
 
 const courseDetailsSchema = new Schema<ICourseDetails>({
@@ -93,9 +94,9 @@ const courseSchema = new Schema<ICourse>(
 
     announcements: { type: [String], default: [] },
     category: {
-      // type: mongoose.Types.ObjectId,
-      // ref: "Category",
-      type: String,
+      type: mongoose.Types.ObjectId,
+      ref: "Category",
+      // type: String,
     },
     instructor: {
       type: mongoose.Types.ObjectId,
