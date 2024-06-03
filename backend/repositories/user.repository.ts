@@ -5,6 +5,7 @@ import IUserRegistrationBody from "../interfaces/userBody";
 import ILoginRequest from "../interfaces/login";
 import { ObjectId } from "mongoose";
 import userModel from "../models/user.model";
+import { generateLast12MonthsData } from "../utils/analytics.generator";
 
 class UserRepository {
   async checkExistUser(email: string) {
@@ -145,7 +146,7 @@ class UserRepository {
       const instructors = await Users.find({
         role: "instructor",
         isApproved: true,
-      });
+      }).sort({ createdAt: -1 });
       console.log(instructors);
       if (!instructors) {
         return {
@@ -218,7 +219,9 @@ class UserRepository {
   }
   async getStudents() {
     try {
-      const students = await userModel.find({ role: "student" });
+      const students = await userModel
+        .find({ role: "student" })
+        .sort({ createdAt: -1 });
       console.log("studnts:", students);
       if (!students) {
         return {
@@ -442,6 +445,21 @@ class UserRepository {
       return {
         success: false,
         message: `Failed to update ${error}`,
+      };
+    }
+  }
+  async getUserAnalytics() {
+    try {
+      const users = await generateLast12MonthsData(userModel);
+      return {
+        success: true,
+        message: "Details fetched",
+        users,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Server Error",
       };
     }
   }

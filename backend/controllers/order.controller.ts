@@ -51,5 +51,59 @@ class OrderController {
       });
     }
   }
+
+  async getAllOrders(req: Request, res: Response) {
+    try {
+      const response = await this.orderUsecase.getAllOrders(req, res);
+      return res.status(response.status).send(response.data);
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "Server Error",
+      });
+    }
+  }
+
+  async getOrderAnalytics(req: Request, res: Response) {
+    try {
+      const response = await this.orderUsecase.getOrderAnalytics(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "Server Error",
+      });
+    }
+  }
+  async getDashboardData(req: Request, res: Response) {
+    try {
+      const response = await this.orderUsecase.getDashboardData(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "Server Error",
+      });
+    }
+  }
+
+  async getInstructorMontlyOrderAnalytics(req: Request, res: Response) {
+    try {
+      const response =
+        await this.orderUsecase.getInstructorMonthlyOrderAnalytics(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "Server Error",
+      });
+    }
+  }
 }
 export default OrderController;

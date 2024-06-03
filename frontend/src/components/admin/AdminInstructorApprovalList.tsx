@@ -223,7 +223,10 @@ const AdminInstructorApprovalList = (props: Props) => {
         };
         return (
           <a href={`mailto:${row.email}`} onClick={handleLinkClick}>
-            <AiOutlineMail className="text-black" size={20} />
+            <AiOutlineMail
+              className="text-black mt-5 ml-2 text-center"
+              size={20}
+            />
           </a>
         );
       },

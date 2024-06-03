@@ -267,5 +267,18 @@ class UserController {
       });
     }
   }
+  async getUserAnalytics(req: Request, res: Response) {
+    try {
+      const response = await this.userUsecase.getUserAnalytics(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "Server Error",
+      });
+    }
+  }
 }
 export default UserController;

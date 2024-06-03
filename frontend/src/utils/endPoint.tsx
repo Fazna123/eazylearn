@@ -1,17 +1,29 @@
 import axios from "axios";
 import {
+  ADD_ANSWER,
   ADD_CATEGORY,
+  ADD_QUESTION,
+  ADD_REVIEW,
+  ALL_ORDERS,
   BLOCK_USER,
   CHANGE_PASSWORD,
+  COURSE_ANALYTICS,
+  COURSE_FULL_CONTENT,
   CREATE_ORDER,
+  DASHBOARD_DATA,
   DELETE_CATEGORY,
   GET_CATEGORIES,
   GET_COURSES,
+  GET_COURSES_SEARCH,
   GET_SINGLECOURSE,
   GET_STRIPE_KEY,
+  INSTRUCTOR_DASHBOARD_DATA,
+  MY_TEACHINGS,
   NEW_PAYMENT,
+  ORDER_ANALYTICS,
   UNBLOCK_USER,
   UPDATE_CATEGORY,
+  USER_ANALYTICS,
   USER_INFO,
 } from "./api";
 
@@ -134,9 +146,144 @@ export async function createOrder(courseId: string, payment_info: any) {
 export async function getUserInfo() {
   try {
     const response = await axios.get(USER_INFO);
-    console.log(response);
     return { success: true, data: response.data };
   } catch (error: any) {
     return { success: false, error: error.response.data };
   }
 }
+
+export async function getCourseInfo(id: string) {
+  try {
+    const response = await axios.get(COURSE_FULL_CONTENT(id));
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+}
+
+export async function addQuestion(
+  question: string,
+  courseId: string,
+  contentId: string
+) {
+  try {
+    const response = await axios.put(ADD_QUESTION, {
+      question,
+      courseId,
+      contentId,
+    });
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+}
+
+export async function addAnswer(
+  answer: string,
+  courseId: string,
+  contentId: string,
+  questionId: string
+) {
+  try {
+    const response = await axios.put(ADD_ANSWER, {
+      answer,
+      courseId,
+      contentId,
+      questionId,
+    });
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+}
+
+export async function addReview(review: any, rating: number, courseId: string) {
+  try {
+    const response = await axios.put(ADD_REVIEW(courseId), {
+      review,
+      rating,
+    });
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+}
+
+export const getCoursesSearch = async ({
+  search = "",
+  category = "All",
+  page = 1,
+  pageSize = 10,
+}) => {
+  try {
+    const response = await axios.get(
+      GET_COURSES_SEARCH({ search, category, page, pageSize })
+    );
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const getUserAnalytics = async () => {
+  try {
+    const response = await axios.get(USER_ANALYTICS);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};
+
+export const getCourseAnalytics = async () => {
+  try {
+    const response = await axios.get(COURSE_ANALYTICS);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};
+
+export const getOrderAnalytics = async () => {
+  try {
+    const response = await axios.get(ORDER_ANALYTICS);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};
+
+export const getAllOrders = async () => {
+  try {
+    const response = await axios.get(ALL_ORDERS);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};
+
+export const getDashboardData = async () => {
+  try {
+    const response = await axios.get(DASHBOARD_DATA);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};
+
+export const getMyTeachings = async () => {
+  try {
+    const response = await axios.get(MY_TEACHINGS);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};
+
+export const getInstructorDashboardAnaytics = async () => {
+  try {
+    const response = await axios.get(INSTRUCTOR_DASHBOARD_DATA);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};

@@ -8,21 +8,20 @@ import swal from "sweetalert";
 
 import { format } from "timeago.js";
 import { ToastContainer, toast } from "react-toastify";
-type Props = {};
 
-const AdminCourseList = (props: Props) => {
+const AdminDeleteCourseList = () => {
   const [rows, setRows] = useState<any[]>([]);
-  const [approvedCourses, setApprovedCourses] = useState<string[]>([]);
+  const [revokedCourses, setRevokedCourses] = useState<string[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("/api/user/get-approved-courses")
+    fetch("/api/user/get-deletedcourses")
       .then((response) => response.json())
       .then((data) => {
         const newRows = data?.courses.map((course: any, index: number) => ({
           id: index + 1,
           ...course,
-          isApproved: course.isApproved ? "Approved" : "Pending",
+
           createdAt: format(course.createdAt),
         }));
         setRows(newRows);
@@ -32,63 +31,33 @@ const AdminCourseList = (props: Props) => {
 
   //...............................................................................
 
-  // const handleApprove = async (id: string) => {
-  //   try {
-  //     const confirmed = await swal("Are you sure to approve this course?", {
-  //       buttons: ["Cancel", true],
-  //     });
-  //     if (confirmed) {
-  //       const res = await fetch(`/api/user/approve-course/${id}`, {
-  //         method: "PUT",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({ isApproved: true }),
-  //       });
-
-  //       if (res.ok) {
-  //         toast.success(`Course with ID ${id} approved successfully.`);
-  //         setApprovedCourses((prevApprovedCourses) => [
-  //           ...prevApprovedCourses,
-  //           id,
-  //         ]);
-  //       }
-  //     } else {
-  //       toast.error(`Failed to approve course with ID ${id}.`);
-  //     }
-  //   } catch (error) {
-  //     console.error(`Error approving course with ID ${id}:`, error);
-  //   }
-  // };
-
-  //-------------------------------------------------------------------------------------
-  const handleDelete = async (id: string) => {
-    const confirmed = await swal("Are you sure to delete course?", {
-      buttons: ["Cancel", "Proceed"],
-      dangerMode: true,
-    });
-    if (confirmed) {
-      try {
-        const response = await fetch(`/api/user/delete-course/${id}`, {
-          method: "DELETE", // Assuming you are using DELETE method for deletion
+  const handleRevoke = async (id: string) => {
+    try {
+      const confirmed = await swal("Are you sure to revoke this course?", {
+        buttons: ["Cancel", true],
+      });
+      if (confirmed) {
+        const res = await fetch(`/api/user/revoke-course/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ isBlock: false }),
         });
-        if (response.ok) {
-          // Deletion successful
-          setRows(rows.filter((course) => course._id !== id));
-          swal("Course deleted successfully!", {
-            icon: "success",
-          });
-        } else {
-          // Handle error response
-          throw new Error("Failed to delete course");
+
+        if (res.ok) {
+          toast.success(`Course with ID ${id} revoked successfully.`);
+          setRows((prevRows) => prevRows.filter((row) => row._id !== id));
+          setRevokedCourses((prevRevokedCourses) => [
+            ...prevRevokedCourses,
+            id,
+          ]);
         }
-      } catch (error) {
-        // Handle fetch error
-        console.error("Error deleting course:", error);
-        swal("Failed to delete course!", {
-          icon: "error",
-        });
+      } else {
+        toast.error(`Failed to revoke course with ID ${id}.`);
       }
+    } catch (error) {
+      console.error(`Error in revoking course with ID ${id}:`, error);
     }
   };
 
@@ -107,7 +76,7 @@ const AdminCourseList = (props: Props) => {
     { field: "ratings", headerName: "Ratings" },
     { field: "purchased", headerName: "Purchased" },
     { field: "createdAt", headerName: "Created At", flex: 0.5 },
-    { field: "isApproved", headerName: "Status" },
+
     {
       field: "  ",
       headerName: "Details",
@@ -128,66 +97,27 @@ const AdminCourseList = (props: Props) => {
         );
       },
     },
-    // {
-    //   field: " ",
-    //   headerName: "Approve",
-    //   flex: 0.3,
-    //   renderCell: (params: any) => {
-    //     const { row } = params;
-    //     const isApproved =
-    //       approvedCourses.includes(row._id) || row.isApproved === "Approved";
-    //     return (
-    //       <Button
-    //         disabled={isApproved}
-    //         onClick={(e) => {
-    //           e.stopPropagation();
-    //           handleApprove(row._id);
-    //         }}
-    //         variant="contained"
-    //         color="primary"
-    //       >
-    //         {isApproved ? "Approved" : "Approve"}
-    //       </Button>
-    //     );
-    //   },
-    // },
     {
-      field: "",
-      headerName: "Delete",
-      flex: 0.2,
+      field: " ",
+      headerName: "Revoke the Course",
+      flex: 0.3,
       renderCell: (params: any) => {
         const { row } = params;
         return (
           <Button
             onClick={(e) => {
               e.stopPropagation();
-              handleDelete(row._id);
+              handleRevoke(row._id);
             }}
+            variant="contained"
+            color="primary"
           >
-            <AiOutlineDelete className="text-black" size={20} />
+            Revoke
           </Button>
         );
       },
     },
   ];
-  //const rows: any = [];
-
-  // {
-  //   data &&
-  //     data.forEach((item: any) => {
-  //       rows.push({
-  //         id: item.id,
-  //         _id: item._id,
-  //         title: item.name,
-  //         description: item.description,
-  //         price: item.price,
-  //         ratings: item.ratings,
-  //         purchased: item.purchased,
-  //         created_at: format(item.createdAt),
-  //         isApproved: item.isApproved ? "Approved" : "Pending",
-  //       });
-  //     });
-  // }
 
   return (
     <div className="mt-[80px] w-full">
@@ -265,4 +195,4 @@ const AdminCourseList = (props: Props) => {
   );
 };
 
-export default AdminCourseList;
+export default AdminDeleteCourseList;

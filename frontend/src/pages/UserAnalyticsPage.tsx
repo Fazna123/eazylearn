@@ -1,13 +1,17 @@
 import AdminSidebar from "../components/admin/AdminSidebar";
 import Adminheader from "../components/admin/Adminheader";
-import Dashboard from "../components/admin/Dashboard";
+import UserAnalytics from "../components/admin/UserAnalytics";
 
-export default function AdminCourses() {
+type Props = {};
+
+const UserAnalyticsPage = (props: Props) => {
   return (
     <div className="flex w-full bg-blue-50 m-0 h-screen">
       <AdminSidebar />
       <Adminheader />
-      <Dashboard isDashboard={true} />
+      <UserAnalytics isDashboard={false} />
     </div>
   );
-}
+};
+
+export default UserAnalyticsPage;

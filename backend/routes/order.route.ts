@@ -6,7 +6,7 @@ import CourseRepository from "../repositories/course.repository";
 import OrderRepository from "../repositories/order.repository";
 import OrderUsecase from "../usecases/order.usecase";
 import OrderController from "../controllers/order.controller";
-import { isAuthenticated } from "../middlewares/auth";
+import { authorizeRoles, isAuthenticated } from "../middlewares/auth";
 
 const userRepository = new UserRepository();
 //const stripePayments = new StripePayments(userRepository);
@@ -41,5 +41,41 @@ orderRoute.get(
 orderRoute.post("/payment", (req: Request, res: Response) => {
   orderController.newPayment(req, res);
 });
+
+orderRoute.get(
+  "/get-allorders",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  (req: Request, res: Response) => {
+    orderController.getAllOrders(req, res);
+  }
+);
+
+orderRoute.get(
+  "/get-order-analytics",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  (req: Request, res: Response) => {
+    orderController.getOrderAnalytics(req, res);
+  }
+);
+
+orderRoute.get(
+  "/get-dashboarddata",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  (req: Request, res: Response) => {
+    orderController.getDashboardData(req, res);
+  }
+);
+
+orderRoute.get(
+  "/get-instructordashboardanalytics",
+  isAuthenticated,
+
+  (req: Request, res: Response) => {
+    orderController.getInstructorMontlyOrderAnalytics(req, res);
+  }
+);
 
 export default orderRoute;

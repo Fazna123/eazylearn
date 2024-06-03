@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import UserUsecase from "../usecases/user.usecase";
 import UserController from "../controllers/user.controller";
 import UserRepository from "../repositories/user.repository";
-import { isAuthenticated } from "../middlewares/auth";
+import { authorizeRoles, isAuthenticated } from "../middlewares/auth";
 
 const userRoute = express.Router();
 
@@ -128,6 +128,15 @@ userRoute.put(
   isAuthenticated,
   (req: Request, res: Response) => {
     userController.unBlockUser(req, res);
+  }
+);
+
+userRoute.get(
+  "/get-user-analytics",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  (req: Request, res: Response) => {
+    userController.getUserAnalytics(req, res);
   }
 );
 export default userRoute;

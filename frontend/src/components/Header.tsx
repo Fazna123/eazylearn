@@ -95,7 +95,7 @@ export default function Header() {
                   Courses
                 </NavLink>
               </li>
-              <li>
+              {/* <li>
                 <NavLink
                   to="/categories"
                   className={({ isActive }) =>
@@ -106,7 +106,7 @@ export default function Header() {
                 >
                   Categories
                 </NavLink>
-              </li>
+              </li> */}
               <li>
                 <NavLink
                   to="/instructor"
@@ -121,14 +121,14 @@ export default function Header() {
               </li>
               <li>
                 <NavLink
-                  to="/contact"
+                  to="/about"
                   className={({ isActive }) =>
                     `block py-2 pr-4 pl-3 duration-200 border-b border-gray-100 ${
                       isActive ? "text-orange-600 underline" : "text-blue-900"
                     } lg:hover:bg-transparent lg:border-0 hover:text-orange-600 lg:p-0`
                   }
                 >
-                  Contact Us
+                  About Us
                 </NavLink>
               </li>
             </ul>

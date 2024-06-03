@@ -38,6 +38,7 @@ export interface ICourse extends Document {
   coupons?: ICoupon[];
   category?: string | ObjectId;
   announcements?: string[];
+  isRejected?: boolean;
 }
 
 // interface IMCQ extends Document {

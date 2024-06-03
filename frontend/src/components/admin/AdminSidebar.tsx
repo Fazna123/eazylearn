@@ -72,6 +72,30 @@ export default function AdminSidebar() {
           </li>
           <li className="p-2">
             <NavLink
+              to="/admin/course-approval"
+              className={({ isActive }) =>
+                `flex items-center space-x-2 hover:text-orange-600 ${
+                  isActive
+                    ? "text-orange-500 font-semibold underline"
+                    : "font-normal"
+                }`
+              }
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path d="M11.25 4.533A9.707 9.707 0 0 0 6 3a9.735 9.735 0 0 0-3.25.555.75.75 0 0 0-.5.707v14.25a.75.75 0 0 0 1 .707A8.237 8.237 0 0 1 6 18.75c1.995 0 3.823.707 5.25 1.886V4.533ZM12.75 20.636A8.214 8.214 0 0 1 18 18.75c.966 0 1.89.166 2.75.47a.75.75 0 0 0 1-.708V4.262a.75.75 0 0 0-.5-.707A9.735 9.735 0 0 0 18 3a9.707 9.707 0 0 0-5.25 1.533v16.103Z" />
+              </svg>
+
+              <span>Course Approval</span>
+            </NavLink>
+          </li>
+
+          <li className="p-2">
+            <NavLink
               to="/admin/instructors"
               className={({ isActive }) =>
                 `flex items-center space-x-2 hover:text-orange-600 ${
@@ -183,6 +207,60 @@ export default function AdminSidebar() {
           </li>
           <li className="p-2">
             <NavLink
+              to="/courses"
+              className={({ isActive }) =>
+                `flex items-center space-x-2 hover:text-orange-600 ${
+                  isActive
+                    ? "text-orange-500 font-semibold underline"
+                    : "font-normal"
+                }`
+              }
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M2.25 5.25a3 3 0 0 1 3-3h13.5a3 3 0 0 1 3 3V15a3 3 0 0 1-3 3h-3v.257c0 .597.237 1.17.659 1.591l.621.622a.75.75 0 0 1-.53 1.28h-9a.75.75 0 0 1-.53-1.28l.621-.622a2.25 2.25 0 0 0 .659-1.59V18h-3a3 3 0 0 1-3-3V5.25Zm1.5 0v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+
+              <span>Application</span>
+            </NavLink>
+          </li>
+          <li className="p-2">
+            <NavLink
+              to="/admin/deletedcourses"
+              className={({ isActive }) =>
+                `flex items-center space-x-2 hover:text-orange-600 ${
+                  isActive
+                    ? "text-orange-500 font-semibold underline"
+                    : "font-normal"
+                }`
+              }
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M12 5.25c1.213 0 2.415.046 3.605.135a3.256 3.256 0 0 1 3.01 3.01c.044.583.077 1.17.1 1.759L17.03 8.47a.75.75 0 1 0-1.06 1.06l3 3a.75.75 0 0 0 1.06 0l3-3a.75.75 0 0 0-1.06-1.06l-1.752 1.751c-.023-.65-.06-1.296-.108-1.939a4.756 4.756 0 0 0-4.392-4.392 49.422 49.422 0 0 0-7.436 0A4.756 4.756 0 0 0 3.89 8.282c-.017.224-.033.447-.046.672a.75.75 0 1 0 1.497.092c.013-.217.028-.434.044-.651a3.256 3.256 0 0 1 3.01-3.01c1.19-.09 2.392-.135 3.605-.135Zm-6.97 6.22a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 1 0 1.06 1.06l1.752-1.751c.023.65.06 1.296.108 1.939a4.756 4.756 0 0 0 4.392 4.392 49.413 49.413 0 0 0 7.436 0 4.756 4.756 0 0 0 4.392-4.392c.017-.223.032-.447.046-.672a.75.75 0 0 0-1.497-.092c-.013.217-.028.434-.044.651a3.256 3.256 0 0 1-3.01 3.01 47.953 47.953 0 0 1-7.21 0 3.256 3.256 0 0 1-3.01-3.01 47.759 47.759 0 0 1-.1-1.759L6.97 15.53a.75.75 0 0 0 1.06-1.06l-3-3Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+
+              <span>Deleted Courses</span>
+            </NavLink>
+          </li>
+          <li className="p-2">
+            <NavLink
               to="/admin/report"
               className={({ isActive }) =>
                 `flex items-center space-x-2 hover:text-orange-600 ${
@@ -205,6 +283,87 @@ export default function AdminSidebar() {
               <span>Sales Report</span>
             </NavLink>
           </li>
+          {/* <li className="p-2">
+            <NavLink
+              to="/admin/useranalytics"
+              className={({ isActive }) =>
+                `flex items-center space-x-2 hover:text-orange-600 ${
+                  isActive
+                    ? "text-orange-500 font-semibold underline"
+                    : "font-normal"
+                }`
+              }
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M3 6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6Zm4.5 7.5a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0v-2.25a.75.75 0 0 1 .75-.75Zm3.75-1.5a.75.75 0 0 0-1.5 0v4.5a.75.75 0 0 0 1.5 0V12Zm2.25-3a.75.75 0 0 1 .75.75v6.75a.75.75 0 0 1-1.5 0V9.75A.75.75 0 0 1 13.5 9Zm3.75-1.5a.75.75 0 0 0-1.5 0v9a.75.75 0 0 0 1.5 0v-9Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+
+              <span>User Analytics</span>
+            </NavLink>
+          </li> */}
+          <li className="p-2">
+            <NavLink
+              to="/admin/courseanalytics"
+              className={({ isActive }) =>
+                `flex items-center space-x-2 hover:text-orange-600 ${
+                  isActive
+                    ? "text-orange-500 font-semibold underline"
+                    : "font-normal"
+                }`
+              }
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M3 6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6Zm4.5 7.5a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0v-2.25a.75.75 0 0 1 .75-.75Zm3.75-1.5a.75.75 0 0 0-1.5 0v4.5a.75.75 0 0 0 1.5 0V12Zm2.25-3a.75.75 0 0 1 .75.75v6.75a.75.75 0 0 1-1.5 0V9.75A.75.75 0 0 1 13.5 9Zm3.75-1.5a.75.75 0 0 0-1.5 0v9a.75.75 0 0 0 1.5 0v-9Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+
+              <span>Course Analytics</span>
+            </NavLink>
+          </li>
+          {/* <li className="p-2">
+            <NavLink
+              to="/admin/orderanalytics"
+              className={({ isActive }) =>
+                `flex items-center space-x-2 hover:text-orange-600 ${
+                  isActive
+                    ? "text-orange-500 font-semibold underline"
+                    : "font-normal"
+                }`
+              }
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M3 6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6Zm4.5 7.5a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0v-2.25a.75.75 0 0 1 .75-.75Zm3.75-1.5a.75.75 0 0 0-1.5 0v4.5a.75.75 0 0 0 1.5 0V12Zm2.25-3a.75.75 0 0 1 .75.75v6.75a.75.75 0 0 1-1.5 0V9.75A.75.75 0 0 1 13.5 9Zm3.75-1.5a.75.75 0 0 0-1.5 0v9a.75.75 0 0 0 1.5 0v-9Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+
+              <span>Order Analytics</span>
+            </NavLink>
+          </li> */}
           <li className="p-2">
             <NavLink
               to="/profile"

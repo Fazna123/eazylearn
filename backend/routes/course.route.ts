@@ -46,6 +46,19 @@ courseRoute.get("/get-courses", (req: Request, res: Response) => {
   courseController.getAllCourse(req, res);
 });
 
+courseRoute.get("/get-approved-courses", (req: Request, res: Response) => {
+  courseController.getApprovedCourses(req, res);
+});
+
+courseRoute.get("/get-courses-approval", (req: Request, res: Response) => {
+  courseController.getCoursesToApprove(req, res);
+});
+
+//with searching,filtering and pageination
+courseRoute.get("/get-courses-search", (req: Request, res: Response) => {
+  courseController.getAllCourseSearch(req, res);
+});
+
 //all details will be visible
 courseRoute.get(
   "/get-allcourses",
@@ -71,11 +84,27 @@ courseRoute.put(
   }
 );
 
+courseRoute.put(
+  "/reject-course/:id",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    courseController.rejectCourse(req, res);
+  }
+);
+
 courseRoute.delete(
   "/delete-course/:id",
   isAuthenticated,
   (req: Request, res: Response) => {
     courseController.deleteCourse(req, res);
+  }
+);
+
+courseRoute.put(
+  "/revoke-course/:id",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    courseController.revokeCourse(req, res);
   }
 );
 
@@ -89,7 +118,7 @@ courseRoute.post(
 );
 courseRoute.get(
   "/all-categories",
-  isAuthenticated,
+
   (req: Request, res: Response) => {
     courseController.getCategories(req, res);
   }
@@ -129,6 +158,7 @@ courseRoute.put(
 
 courseRoute.put(
   "/add-answer",
+  // authorizeRoles("instructor"),
   isAuthenticated,
   (req: Request, res: Response) => {
     courseController.addAnswer(req, res);
@@ -168,6 +198,24 @@ courseRoute.put(
   authorizeRoles("admin"),
   (req: Request, res: Response) => {
     courseController.updateNotifications(req, res);
+  }
+);
+
+courseRoute.get(
+  "/get-deletedCourses",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  (req: Request, res: Response) => {
+    courseController.deletedCourses(req, res);
+  }
+);
+
+courseRoute.get(
+  "/get-course-analytics",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  (req: Request, res: Response) => {
+    courseController.getCourseAnalytics(req, res);
   }
 );
 

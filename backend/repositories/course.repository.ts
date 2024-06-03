@@ -3,6 +3,13 @@ import { ICourse } from "../interfaces/course";
 import categoryModel from "../models/category.model";
 import CourseModel from "../models/course.model";
 import notificationModel from "../models/notification.model";
+import { generateLast12MonthsData } from "../utils/analytics.generator";
+
+type CourseQuery = {
+  isBlock: boolean;
+  name?: { $regex: string; $options: string };
+  category?: string;
+};
 
 class CourseRepository {
   async createCourse(data: ICourse) {
@@ -107,9 +114,11 @@ class CourseRepository {
   }
   async getAllCourse() {
     try {
-      const courses = await CourseModel.find({ isBlock: false }).select(
-        "-courseData.videoUrl -courseData.sugession -courseData.questions -courseData.links"
-      );
+      const courses = await CourseModel.find({ isBlock: false })
+        .select(
+          "-courseData.videoUrl -courseData.sugession -courseData.questions -courseData.links"
+        )
+        .sort({ createdAt: -1 });
       if (!courses) {
         return {
           success: false,
@@ -128,12 +137,63 @@ class CourseRepository {
       };
     }
   }
+
+  async getApprovedCourses() {
+    try {
+      const courses = await CourseModel.find({
+        isBlock: false,
+        isApproved: true,
+      }).sort({ createdAt: -1 });
+      if (!courses) {
+        return {
+          success: false,
+          message: "Failed to fetch course",
+        };
+      }
+      return {
+        success: true,
+        message: "Course details fetched successfully",
+        courses,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to fetch ${error}`,
+      };
+    }
+  }
+  async getCoursesToApprove() {
+    try {
+      const courses = await CourseModel.find({
+        isBlock: false,
+        isApproved: false,
+      }).populate("instructor", "email");
+
+      if (!courses) {
+        return {
+          success: false,
+          message: "Failed to fetch course",
+        };
+      }
+
+      return {
+        success: true,
+        message: "Course details fetched successfully",
+        courses,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to fetch ${error}`,
+      };
+    }
+  }
   async myTeachings(userId: string) {
     try {
       const courses = await CourseModel.find({
         instructor: userId,
         isBlock: false,
-      });
+      }).sort({ createdAt: -1 });
       if (!courses) {
         return {
           success: false,
@@ -157,6 +217,31 @@ class CourseRepository {
       const course = await CourseModel.findByIdAndUpdate(
         courseId,
         { isApproved: true },
+        { new: true }
+      );
+      if (!course) {
+        return {
+          success: false,
+          message: "Failed to approve course",
+        };
+      }
+      return {
+        success: true,
+        message: "Course approved successfully",
+        course,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to approve ${error}`,
+      };
+    }
+  }
+  async rejectCourse(courseId: string) {
+    try {
+      const course = await CourseModel.findByIdAndUpdate(
+        courseId,
+        { isRejected: true },
         { new: true }
       );
       if (!course) {
@@ -203,9 +288,59 @@ class CourseRepository {
       };
     }
   }
+  async revokeCourse(courseId: string) {
+    try {
+      const course = await CourseModel.findByIdAndUpdate(
+        courseId,
+        { isBlock: false },
+        { new: true }
+      );
+
+      if (!course) {
+        return {
+          success: false,
+          message: "Failed to delete course",
+        };
+      }
+      return {
+        success: true,
+        message: "Course deleted successfully",
+        course,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to delete course ${error}`,
+      };
+    }
+  }
+  async deletedCourses() {
+    try {
+      const courses = await CourseModel.find({ isBlock: true }).sort({
+        createdAt: -1,
+      });
+
+      if (!courses) {
+        return {
+          success: false,
+          message: "Failed to delete course",
+        };
+      }
+      return {
+        success: true,
+        message: "Course deleted successfully",
+        courses,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to delete course ${error}`,
+      };
+    }
+  }
   async getAllCourseDetails() {
     try {
-      const courses = await CourseModel.find();
+      const courses = await CourseModel.find().sort({ createdAt: -1 });
       if (!courses) {
         return {
           success: false,
@@ -397,7 +532,6 @@ class CourseRepository {
           message: "Failed to find course or content",
         };
       }
-
       return {
         success: true,
         message: "Question added successfully",
@@ -550,6 +684,79 @@ class CourseRepository {
       return {
         success: false,
         message: `Failed to update notifications: ${error}`,
+      };
+    }
+  }
+
+  async getAllCourseSearch({
+    search,
+    category,
+    page,
+    pageSize,
+  }: {
+    search?: string;
+    category?: string;
+    page?: number;
+    pageSize?: number;
+  }) {
+    try {
+      const pageNumber = parseInt(page, 10);
+      const limit = parseInt(pageSize, 10);
+      const skip = (pageNumber - 1) * limit;
+
+      const query: CourseQuery = { isBlock: false };
+
+      if (search) {
+        query.name = { $regex: search, $options: "i" }; // case-insensitive search
+      }
+
+      if (category && category !== "All") {
+        query.category = category;
+      }
+
+      const courses = await CourseModel.find(query)
+        .select(
+          "-courseData.videoUrl -courseData.sugession -courseData.questions -courseData.links"
+        )
+        .skip(skip)
+        .limit(limit);
+
+      const totalCourses = await CourseModel.countDocuments(query);
+
+      if (!courses) {
+        return {
+          success: false,
+          message: "Failed to fetch courses",
+        };
+      }
+
+      return {
+        success: true,
+        message: "Course details fetched successfully",
+        courses,
+        totalCourses,
+        currentPage: pageNumber,
+        totalPages: Math.ceil(totalCourses / limit),
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        message: `Failed to fetch courses: ${error.message}`,
+      };
+    }
+  }
+  async getCourseAnalytics() {
+    try {
+      const courses = await generateLast12MonthsData(CourseModel);
+      return {
+        success: true,
+        message: "Details fetched",
+        courses,
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        message: `Server Error ${error.message}`,
       };
     }
   }

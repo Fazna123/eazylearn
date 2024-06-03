@@ -4,26 +4,32 @@ import ILink from "../interfaces/link";
 import { ICourse, ICourseDetails } from "../interfaces/course";
 import User from "./user.model";
 
-const reviewSchema = new Schema<IReview>({
-  user: Object,
-  rating: {
-    type: Number,
-    default: 0,
+const reviewSchema = new Schema<IReview>(
+  {
+    user: Object,
+    rating: {
+      type: Number,
+      default: 0,
+    },
+    comment: String,
+    commentReplies: [Object],
   },
-  comment: String,
-  commentReplies: [Object],
-});
+  { timestamps: true }
+);
 
 const linkSchema = new Schema<ILink>({
   title: String,
   url: String,
 });
 
-const commentSchema = new Schema<IComment>({
-  user: Object,
-  question: String,
-  questionReplies: [Object],
-});
+const commentSchema = new Schema<IComment>(
+  {
+    user: Object,
+    question: String,
+    questionReplies: [Object],
+  },
+  { timestamps: true }
+);
 
 const courseDetailsSchema = new Schema<ICourseDetails>({
   videoUrl: String,
@@ -88,6 +94,10 @@ const courseSchema = new Schema<ICourse>(
       default: false,
     },
     isBlock: {
+      type: Boolean,
+      default: false,
+    },
+    isRejected: {
       type: Boolean,
       default: false,
     },

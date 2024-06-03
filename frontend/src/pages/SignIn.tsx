@@ -40,7 +40,7 @@ export default function SignIn() {
     if (currentUser) {
       console.log(currentUser);
       if (currentUser.user.role === "admin") {
-        navigate("/admin");
+        navigate("/admin/dashboard");
       } else {
         navigate("/");
       }

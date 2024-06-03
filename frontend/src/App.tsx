@@ -20,6 +20,13 @@ import AdminInstructorApproval from "./pages/AdminInstructorApproval";
 import AdminCategories from "./pages/AdminCategories";
 import Courses from "./pages/Courses";
 import SingleCourse from "./pages/SingleCourse";
+import CourseAccessPage from "./pages/CourseAccessPage";
+import AdminDeletedCourses from "./pages/AdminDeletedCourses";
+import AdminCourseApproval from "./pages/AdminCourseApproval";
+import AdminReports from "./pages/AdminReports";
+import UserAnalyticsPage from "./pages/UserAnalyticsPage";
+import OrderAnalyticsPage from "./pages/OrderAnalyticsPage";
+import CourseAnalyticsPage from "./pages/CourseAnalyticsPage";
 
 export default function App() {
   return (
@@ -35,6 +42,7 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           {/* <Route path="/course/:id" element={<SingleCourse />} /> */}
           <Route path="/profile" element={<Profile />} />
+          <Route path="/course-access/:id" element={<CourseAccessPage />} />
         </Route>
         <Route element={<PrivateRoute />}>
           <Route path="/instructor" element={<Instructor />} />
@@ -46,7 +54,7 @@ export default function App() {
 
         {/* <Route path="/admin" element={<Admin />} /> */}
         <Route element={<PrivateRoute />}>
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/dashboard" element={<Admin />} />
           <Route path="/admin/courses" element={<AdminCourses />} />
           <Route path="/admin/instructors" element={<AdminInstructors />} />
           <Route
@@ -59,6 +67,24 @@ export default function App() {
             element={<AdminCourseView />}
           />
           <Route path="/admin/categories" element={<AdminCategories />} />
+          <Route path="/admin/report" element={<AdminReports />} />
+          <Route path="/admin/useranalytics" element={<UserAnalyticsPage />} />
+          <Route
+            path="/admin/orderanalytics"
+            element={<OrderAnalyticsPage />}
+          />
+          <Route
+            path="/admin/courseanalytics"
+            element={<CourseAnalyticsPage />}
+          />
+          <Route
+            path="/admin/deletedcourses"
+            element={<AdminDeletedCourses />}
+          />
+          <Route
+            path="/admin/course-approval"
+            element={<AdminCourseApproval />}
+          />
         </Route>
       </Routes>
       {/* <Footer /> */}

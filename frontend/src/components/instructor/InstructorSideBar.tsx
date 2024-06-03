@@ -86,7 +86,7 @@ export default function InstructorSideBar() {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                class="w-6 h-6"
+                className="w-6 h-6"
               >
                 <path
                   fill-rule="evenodd"
@@ -99,7 +99,7 @@ export default function InstructorSideBar() {
               <span>Create Course</span>
             </NavLink>
           </li>
-          <li className="p-2">
+          {/* <li className="p-2">
             <NavLink
               to="/instructor/mycommunities"
               className={({ isActive }) =>
@@ -125,7 +125,7 @@ export default function InstructorSideBar() {
 
               <span>My Communities</span>
             </NavLink>
-          </li>
+          </li> */}
           <li className="p-2">
             <NavLink
               to="/instructor/chat"

@@ -85,6 +85,7 @@ class OrderUsecase {
       }
       const data: any = {
         courseId: courseDetails?.course._id,
+        price: courseDetails?.course.price,
         userId: user?._id,
         payment_info,
       };
@@ -212,6 +213,97 @@ class OrderUsecase {
         data: {
           success: true,
           client_secret: myPayment.client_secret,
+        },
+      };
+    } catch (error: any) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: `server error ${error.message}`,
+        },
+      };
+    }
+  }
+
+  async getAllOrders(req: Request, res: Response) {
+    try {
+      const response = await this.orderRepository.getAllOrders();
+      return {
+        status: response.success ? 201 : 500,
+        data: {
+          success: response.success,
+          message: response.message,
+          orders: response.orders,
+        },
+      };
+    } catch (error: any) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: `server error ${error.message}`,
+        },
+      };
+    }
+  }
+
+  async getOrderAnalytics(req: Request, res: Response) {
+    try {
+      const response = await this.orderRepository.getOrderAnalytics();
+      return {
+        status: response.success ? 201 : 500,
+        data: {
+          success: response.success,
+          message: response.message,
+          orders: response.orders,
+        },
+      };
+    } catch (error: any) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: `server error ${error.message}`,
+        },
+      };
+    }
+  }
+  async getDashboardData(req: Request, res: Response) {
+    try {
+      const response = await this.orderRepository.getDashboardData();
+      return {
+        status: response.success ? 201 : 500,
+        data: {
+          success: response.success,
+          message: response.message,
+          data: response.data,
+        },
+      };
+    } catch (error: any) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: `server error ${error.message}`,
+        },
+      };
+    }
+  }
+
+  async getInstructorMonthlyOrderAnalytics(req: Request, res: Response) {
+    try {
+      const instructorId = req?.user?._id;
+      const response =
+        await this.orderRepository.getInstructorMonthlyOrderAnalytics(
+          instructorId
+        );
+      return {
+        status: response.success ? 201 : 500,
+        data: {
+          success: response.success,
+          message: response.message,
+          data: response.data,
         },
       };
     } catch (error: any) {

@@ -294,7 +294,7 @@ export default function Profile() {
           </span> */}
             {admin ? (
               <Link
-                to="/admin"
+                to="/admin/dashboard"
                 className="text-red-700 cursor-pointer"
                 // onClick={handleDeleteAccount}
               >

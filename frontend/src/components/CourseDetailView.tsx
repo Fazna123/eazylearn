@@ -6,11 +6,12 @@ import { useSelector } from "react-redux";
 import CoursePlayer from "../utils/CoursePlayer";
 import { Link, useNavigate } from "react-router-dom";
 import CourseContentList from "./CourseContentList";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckOutForm from "./CheckOutForm";
 import Ratings from "../utils/Ratings";
 import { format } from "timeago.js";
+import { getUserInfo } from "../utils/endPoint";
 
 type Props = {
   data: any;
@@ -23,25 +24,48 @@ const CourseDetailView = ({ data, stripePromise, clientSecret }: Props) => {
   console.log("data", data);
   console.log("stripe promise", stripePromise);
   console.log("client secret", clientSecret);
-  const { currentUser } = useSelector((state: any) => state.user);
+
+  const currentCourseId = data?._id;
+
+  const { currentUser: user } = useSelector((state: any) => state.user);
+  const [currentUser, setCurrentUser] = useState({});
   const [open, setOpen] = useState(false);
+  //const [isPurchased, setIsPurchased] = useState(false);
+
   const discountPercentage =
     ((data?.estimatedPrice - data?.price) / data?.price) * 100;
 
   const discountPercentagePrice = discountPercentage.toFixed(0);
 
+  const handleOrder = (e: any) => {
+    if (!user || !user.user) {
+      navigate("/signin");
+    } else {
+      setOpen(true);
+    }
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const { success, data, error } = await getUserInfo();
+      console.log("fetch data of user");
+      console.log("data in details page", data);
+      console.log("User info:", data); // Log user info
+      console.log("Current course ID:", currentCourseId); // Log current course ID
+      if (success) {
+        setCurrentUser(data);
+        //setIsPurchased(data.courses.includes(currentCourseId));
+      }
+    };
+    fetchData();
+  }, []);
+
+  console.log("current user", currentUser);
+
   const isPurchased =
     currentUser &&
-    currentUser?.user?.courses?.find((item: any) => item._id === data._id);
+    currentUser?.courses?.find((item: any) => item._id === currentCourseId);
   console.log(currentUser);
   console.log("purchased", isPurchased);
-
-  const handleOrder = (e: any) => {
-    if (currentUser === null) {
-      navigate("/signin");
-    }
-    setOpen(true);
-  };
   //   const preprocessData = (data) => {
   //     // Iterate over each section
   //     const newData = data.map((section) => {

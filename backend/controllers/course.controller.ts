@@ -78,6 +78,49 @@ class CourseController {
       });
     }
   }
+
+  async getApprovedCourses(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.getApprovedCourses(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+
+  async getCoursesToApprove(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.getCoursesToApprove(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+
+  async getAllCourseSearch(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.getAllCourseSearch(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+
   async myTeachings(req: Request, res: Response) {
     try {
       console.log("my teachings controller");
@@ -105,6 +148,19 @@ class CourseController {
       });
     }
   }
+  async rejectCourse(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.rejectCourse(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
   async deleteCourse(req: Request, res: Response) {
     try {
       const response = await this.courseUsecase.deleteCourse(req, res);
@@ -118,9 +174,35 @@ class CourseController {
       });
     }
   }
+  async revokeCourse(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.revokeCourse(req, res);
+      if (response !== undefined) {
+        res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
   async getAllCourseDetails(req: Request, res: Response) {
     try {
       const response = await this.courseUsecase.getAllCourseDetails(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+  async deletedCourses(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.deletedCourses(req, res);
       if (response !== undefined) {
         return res.status(response.status).send(response.data);
       }
@@ -247,6 +329,19 @@ class CourseController {
       res.status(500).send({
         success: false,
         message: "server error",
+      });
+    }
+  }
+  async getCourseAnalytics(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.getCourseAnalytics(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "Server Error",
       });
     }
   }

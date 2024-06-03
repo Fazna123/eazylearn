@@ -1,6 +1,6 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Button } from "@mui/material";
-import { AiOutlineDelete } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineMail } from "react-icons/ai";
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -10,13 +10,14 @@ import { format } from "timeago.js";
 import { ToastContainer, toast } from "react-toastify";
 type Props = {};
 
-const AdminCourseList = (props: Props) => {
+const AdminCourseApprovalList = (props: Props) => {
   const [rows, setRows] = useState<any[]>([]);
   const [approvedCourses, setApprovedCourses] = useState<string[]>([]);
+  const [rejectedCourses, setRejectedCourses] = useState<string[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("/api/user/get-approved-courses")
+    fetch("/api/user/get-courses-approval")
       .then((response) => response.json())
       .then((data) => {
         const newRows = data?.courses.map((course: any, index: number) => ({
@@ -32,34 +33,35 @@ const AdminCourseList = (props: Props) => {
 
   //...............................................................................
 
-  // const handleApprove = async (id: string) => {
-  //   try {
-  //     const confirmed = await swal("Are you sure to approve this course?", {
-  //       buttons: ["Cancel", true],
-  //     });
-  //     if (confirmed) {
-  //       const res = await fetch(`/api/user/approve-course/${id}`, {
-  //         method: "PUT",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({ isApproved: true }),
-  //       });
+  const handleApprove = async (id: string) => {
+    try {
+      const confirmed = await swal("Are you sure to approve this course?", {
+        buttons: ["Cancel", true],
+      });
+      if (confirmed) {
+        const res = await fetch(`/api/user/approve-course/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ isApproved: true }),
+        });
 
-  //       if (res.ok) {
-  //         toast.success(`Course with ID ${id} approved successfully.`);
-  //         setApprovedCourses((prevApprovedCourses) => [
-  //           ...prevApprovedCourses,
-  //           id,
-  //         ]);
-  //       }
-  //     } else {
-  //       toast.error(`Failed to approve course with ID ${id}.`);
-  //     }
-  //   } catch (error) {
-  //     console.error(`Error approving course with ID ${id}:`, error);
-  //   }
-  // };
+        if (res.ok) {
+          toast.success(`Course with ID ${id} approved successfully.`);
+          setRows(rows.filter((course) => course._id !== id));
+          setApprovedCourses((prevApprovedCourses) => [
+            ...prevApprovedCourses,
+            id,
+          ]);
+        }
+      } else {
+        toast.error(`Failed to approve course with ID ${id}.`);
+      }
+    } catch (error) {
+      console.error(`Error approving course with ID ${id}:`, error);
+    }
+  };
 
   //-------------------------------------------------------------------------------------
   const handleDelete = async (id: string) => {
@@ -91,6 +93,39 @@ const AdminCourseList = (props: Props) => {
       }
     }
   };
+  //--------------------------------------------------------------------------------------
+  const handleReject = async (id: string) => {
+    const confirmed = await swal("Are you sure to reject this course?", {
+      buttons: ["Cancel", "Proceed"],
+      dangerMode: true,
+    });
+    if (confirmed) {
+      try {
+        const response = await fetch(`/api/user/reject-course/${id}`, {
+          method: "PUT",
+        });
+        if (response.ok) {
+          swal("Course Rejected successfully!", {
+            icon: "success",
+          });
+          setRows(
+            rows.map((row) =>
+              row._id === id ? { ...row, isRejected: "Rejected" } : row
+            )
+          );
+        } else {
+          // Handle error response
+          throw new Error("Failed to delete course");
+        }
+      } catch (error) {
+        // Handle fetch error
+        console.error("Error rejecting course:", error);
+        swal("Failed to reject course!", {
+          icon: "error",
+        });
+      }
+    }
+  };
 
   //-------------------------------------------------------------------------------------
 
@@ -104,12 +139,11 @@ const AdminCourseList = (props: Props) => {
     { field: "name", headerName: "Title", flex: 0.5 },
     { field: "description", headerName: "Course Description", flex: 0.5 },
     { field: "price", headerName: "Price" },
-    { field: "ratings", headerName: "Ratings" },
-    { field: "purchased", headerName: "Purchased" },
+
     { field: "createdAt", headerName: "Created At", flex: 0.5 },
     { field: "isApproved", headerName: "Status" },
     {
-      field: "  ",
+      field: "    ",
       headerName: "Details",
       flex: 0.3,
       renderCell: (params: any) => {
@@ -128,31 +162,75 @@ const AdminCourseList = (props: Props) => {
         );
       },
     },
-    // {
-    //   field: " ",
-    //   headerName: "Approve",
-    //   flex: 0.3,
-    //   renderCell: (params: any) => {
-    //     const { row } = params;
-    //     const isApproved =
-    //       approvedCourses.includes(row._id) || row.isApproved === "Approved";
-    //     return (
-    //       <Button
-    //         disabled={isApproved}
-    //         onClick={(e) => {
-    //           e.stopPropagation();
-    //           handleApprove(row._id);
-    //         }}
-    //         variant="contained"
-    //         color="primary"
-    //       >
-    //         {isApproved ? "Approved" : "Approve"}
-    //       </Button>
-    //     );
-    //   },
-    // },
     {
-      field: "",
+      field: " ",
+      headerName: "Approve",
+      flex: 0.3,
+      renderCell: (params: any) => {
+        const { row } = params;
+        const isApproved =
+          approvedCourses.includes(row._id) || row.isApproved === "Approved";
+        return (
+          <Button
+            disabled={isApproved}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleApprove(row._id);
+            }}
+            variant="contained"
+            color="primary"
+          >
+            {isApproved ? "Approved" : "Approve"}
+          </Button>
+        );
+      },
+    },
+    {
+      field: "  ",
+      headerName: "Reject",
+      flex: 0.3,
+      renderCell: (params: any) => {
+        const { row } = params;
+        const isRejected =
+          rejectedCourses.includes(row._id) || row.isRejected === "Rejected";
+        return (
+          <Button
+            disabled={isRejected}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleReject(row._id);
+            }}
+            variant="contained"
+            color="secondary"
+          >
+            {isRejected ? "Rejected" : "Reject"}
+          </Button>
+        );
+      },
+    },
+    {
+      field: "   ",
+      headerName: "Email",
+      flex: 0.2,
+      renderCell: (params: any) => {
+        const { row } = params;
+        const handleLinkClick = (
+          event: React.MouseEvent<HTMLAnchorElement>
+        ) => {
+          event.stopPropagation();
+        };
+        return (
+          <a href={`mailto:${row.instructor.email}`} onClick={handleLinkClick}>
+            <AiOutlineMail
+              className="text-black text-center mt-5 ml-2"
+              size={20}
+            />
+          </a>
+        );
+      },
+    },
+    {
+      field: "         ",
       headerName: "Delete",
       flex: 0.2,
       renderCell: (params: any) => {
@@ -265,4 +343,4 @@ const AdminCourseList = (props: Props) => {
   );
 };
 
-export default AdminCourseList;
+export default AdminCourseApprovalList;

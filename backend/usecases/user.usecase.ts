@@ -807,6 +807,27 @@ class UserUsecase {
       };
     }
   }
+  async getUserAnalytics(req: Request, res: Response) {
+    try {
+      const response = await this.userRepository.getUserAnalytics();
+      return {
+        status: response.success ? 201 : 500,
+        data: {
+          success: response.success,
+          message: response.message,
+          users: response.users,
+        },
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: `server error ${error.message}`,
+        },
+      };
+    }
+  }
 }
 
 export default UserUsecase;
