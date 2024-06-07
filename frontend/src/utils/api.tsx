@@ -39,4 +39,5 @@ export const DASHBOARD_DATA = "/api/order/get-dashboarddata";
 export const MY_TEACHINGS = "/api/user/get-myteachings";
 export const INSTRUCTOR_DASHBOARD_DATA =
   "/api/order/get-instructordashboardanalytics";
+export const MY_COURSES = "/api/user/mycourses-user";
 //----------------------------------------------------------------------------------------------------------

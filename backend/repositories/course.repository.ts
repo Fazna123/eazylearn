@@ -3,15 +3,39 @@ import { ICourse } from "../interfaces/course";
 import categoryModel from "../models/category.model";
 import CourseModel from "../models/course.model";
 import notificationModel from "../models/notification.model";
+import userModel from "../models/user.model";
 import { generateLast12MonthsData } from "../utils/analytics.generator";
+import cron from "node-cron";
 
 type CourseQuery = {
   isBlock: boolean;
   name?: { $regex: string; $options: string };
   category?: string;
+  isApproved: boolean;
 };
 
 class CourseRepository {
+  constructor() {
+    this.initializeCronJobs();
+  }
+
+  initializeCronJobs() {
+    cron.schedule("0 0 0 * * *", async () => {
+      try {
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        const result = await notificationModel.deleteMany({
+          status: "read",
+          createdAt: { $lt: thirtyDaysAgo },
+        });
+        console.log(`Deleted ${result.deletedCount} notifications`);
+        // console.log("---------");
+        // console.log("running");
+      } catch (error) {
+        console.error("Error in cron job:", error);
+      }
+    });
+  }
+
   async createCourse(data: ICourse) {
     try {
       console.log(data);
@@ -114,7 +138,10 @@ class CourseRepository {
   }
   async getAllCourse() {
     try {
-      const courses = await CourseModel.find({ isBlock: false })
+      const courses = await CourseModel.find({
+        isBlock: false,
+        isApproved: true,
+      })
         .select(
           "-courseData.videoUrl -courseData.sugession -courseData.questions -courseData.links"
         )
@@ -704,7 +731,7 @@ class CourseRepository {
       const limit = parseInt(pageSize, 10);
       const skip = (pageNumber - 1) * limit;
 
-      const query: CourseQuery = { isBlock: false };
+      const query: CourseQuery = { isBlock: false, isApproved: true };
 
       if (search) {
         query.name = { $regex: search, $options: "i" }; // case-insensitive search
@@ -748,6 +775,32 @@ class CourseRepository {
   async getCourseAnalytics() {
     try {
       const courses = await generateLast12MonthsData(CourseModel);
+      return {
+        success: true,
+        message: "Details fetched",
+        courses,
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        message: `Server Error ${error.message}`,
+      };
+    }
+  }
+
+  async getMyCourses(userId: string) {
+    try {
+      const user = await userModel.findById({ _id: userId }).select("courses");
+      if (!user) {
+        return {
+          success: false,
+          message: "User not found",
+        };
+      }
+      const courseIds = user?.courses?.map((course: any) => course._id);
+      //console.log(courseIds);
+      const courses = await CourseModel.find({ _id: { $in: courseIds } });
+      //onsole.log(courses);
       return {
         success: true,
         message: "Details fetched",

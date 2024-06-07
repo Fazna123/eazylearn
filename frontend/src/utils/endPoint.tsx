@@ -18,6 +18,7 @@ import {
   GET_SINGLECOURSE,
   GET_STRIPE_KEY,
   INSTRUCTOR_DASHBOARD_DATA,
+  MY_COURSES,
   MY_TEACHINGS,
   NEW_PAYMENT,
   ORDER_ANALYTICS,
@@ -282,6 +283,15 @@ export const getMyTeachings = async () => {
 export const getInstructorDashboardAnaytics = async () => {
   try {
     const response = await axios.get(INSTRUCTOR_DASHBOARD_DATA);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};
+
+export const getMyCourses = async () => {
+  try {
+    const response = await axios.get(MY_COURSES);
     return { success: true, data: response.data };
   } catch (error: any) {
     return { success: false, error: error.response.data };

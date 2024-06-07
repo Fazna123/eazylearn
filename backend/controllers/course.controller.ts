@@ -345,6 +345,20 @@ class CourseController {
       });
     }
   }
+
+  async getMyCourses(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.getMyCourses(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "Server Error",
+      });
+    }
+  }
 }
 
 export default CourseController;

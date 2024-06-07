@@ -27,6 +27,7 @@ import AdminReports from "./pages/AdminReports";
 import UserAnalyticsPage from "./pages/UserAnalyticsPage";
 import OrderAnalyticsPage from "./pages/OrderAnalyticsPage";
 import CourseAnalyticsPage from "./pages/CourseAnalyticsPage";
+import MyCourses from "./pages/MyCourses";
 
 export default function App() {
   return (
@@ -39,9 +40,11 @@ export default function App() {
         <Route path="/otp" element={<Otp />} />
         <Route path="/courses" element={<Courses />} />
         <Route path="/course/:id" element={<SingleCourse />} />
+
         <Route element={<PrivateRoute />}>
           {/* <Route path="/course/:id" element={<SingleCourse />} /> */}
           <Route path="/profile" element={<Profile />} />
+          <Route path="/mycourses" element={<MyCourses />} />
           <Route path="/course-access/:id" element={<CourseAccessPage />} />
         </Route>
         <Route element={<PrivateRoute />}>

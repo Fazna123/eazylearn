@@ -219,4 +219,12 @@ courseRoute.get(
   }
 );
 
+courseRoute.get(
+  "/mycourses-user",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    courseController.getMyCourses(req, res);
+  }
+);
+
 export default courseRoute;

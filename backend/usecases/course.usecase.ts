@@ -10,6 +10,7 @@ import ejs from "ejs";
 import path from "path";
 import sendMail from "../utils/sendMail";
 import { IAddReviewData, IAddReviewReply } from "../interfaces/review";
+import cron from "node-cron";
 
 class CourseUsecase {
   private courseRepository: CourseRepository;
@@ -864,6 +865,29 @@ class CourseUsecase {
   async getCourseAnalytics(req: Request, res: Response) {
     try {
       const response = await this.courseRepository.getCourseAnalytics();
+      return {
+        status: response.success ? 201 : 500,
+        data: {
+          success: response.success,
+          message: response.message,
+          courses: response.courses,
+        },
+      };
+    } catch (error: any) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: `server error ${error.message}`,
+        },
+      };
+    }
+  }
+
+  async getMyCourses(req: Request, res: Response) {
+    try {
+      const userId = req?.user?._id;
+      const response = await this.courseRepository.getMyCourses(userId);
       return {
         status: response.success ? 201 : 500,
         data: {

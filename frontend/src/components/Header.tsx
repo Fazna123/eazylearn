@@ -119,7 +119,7 @@ export default function Header() {
                   Teach on EazyLearN
                 </NavLink>
               </li>
-              <li>
+              {/* <li>
                 <NavLink
                   to="/about"
                   className={({ isActive }) =>
@@ -130,7 +130,7 @@ export default function Header() {
                 >
                   About Us
                 </NavLink>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
