@@ -18,10 +18,6 @@ class SocketUtils {
       }
     };
 
-    // const removeUser = (socketId: string) => {
-    //   users = users.filter((user) => user.userId !== socketId);
-    // };
-
     const removeUser = (socketId: string) => {
       users = users.filter((user) => user.socketId !== socketId);
     };
@@ -60,12 +56,12 @@ class SocketUtils {
           messages[recieverId].push(message);
         }
 
-        if (user) {
-          io.to(user.socketId).emit("getMessage", messages);
-        }
+        // if (user) {
+        io.to(user.socketId).emit("getMessage", message);
+        //}
       });
 
-      socket.on("messageSeen", async ({ senderId, recieverId, messageId }) => {
+      socket.on("messageSeen", ({ senderId, recieverId, messageId }) => {
         const user = getUser(senderId);
 
         //update the seen flag
@@ -78,13 +74,13 @@ class SocketUtils {
             message.seen = true;
 
             //send a message seen event to the sender
-            if (user) {
-              io.to(user.socketId).emit("messageSeen", {
-                senderId,
-                recieverId,
-                messageId,
-              });
-            }
+            // if (user) {
+            io.to(user.socketId).emit("messageSeen", {
+              senderId,
+              recieverId,
+              messageId,
+            });
+            //}
           }
         }
       });

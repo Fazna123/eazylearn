@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import swal from "sweetalert";
 import { format } from "timeago.js";
@@ -47,6 +47,7 @@ function StudentMessages() {
   const [userData, setUserData] = useState({});
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [activeStatus, setActiveStatus] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
   //-----------------------------------------------------------------------------------
 
   useEffect(() => {
@@ -182,6 +183,11 @@ function StudentMessages() {
     }
   };
   console.log("currentChat", currentChat);
+  //------------------------------------------------------------------------------
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   //-------------------------------------------------------------------------------------------
 
@@ -218,6 +224,7 @@ function StudentMessages() {
             instructorId={currentUser.user._id}
             userData={userData}
             activeStatus={activeStatus}
+            scrollRef={scrollRef}
           />
         )}
       </div>
@@ -236,13 +243,13 @@ const MessageList = ({
   online,
   setActiveStatus,
 }) => {
+  const [active, setActive] = useState(0);
+  const [user, setUser] = useState({});
   const navigate = useNavigate();
   const handleClick = (id: string) => {
     navigate(`/inbox?${id}`);
     setOpen(true);
   };
-  const [active, setActive] = useState(0);
-  const [user, setUser] = useState({});
 
   useEffect(() => {
     setActiveStatus(online);
@@ -267,7 +274,7 @@ const MessageList = ({
       className={`w-[97%] flex p-2 px-3 mx-4 ${
         active === index ? "bg-slate-200" : "bg-transparent"
       } cursor-pointer`}
-      onClick={(index) =>
+      onClick={(e) =>
         setActive(index) ||
         handleClick(data._id) ||
         setCurrentChat(data) ||
@@ -288,7 +295,7 @@ const MessageList = ({
         )} */}
       </div>
       <div className="pl-3">
-        <h1 className="text-[18px]">{user.name}</h1>
+        <h1 className="text-[18px]">{user?.name}</h1>
         <p className="text-[16px] text-slate-500">
           {/* {data.lastMessageId !== userData._id ? "You:" : ""} */}
           {data.lastMessage}
@@ -307,6 +314,7 @@ const StudentInboxMessage = ({
   instructorId,
   userData,
   activeStatus,
+  scrollRef,
 }) => {
   return (
     <div className="w-full min-h-full flex flex-col justify-between">
@@ -342,12 +350,13 @@ const StudentInboxMessage = ({
 
       <div className="px-3 h-[63vh] overflow-y-scroll">
         {messages &&
-          messages.map((item) => (
+          messages.map((item, index) => (
             <div
               key={item._id}
               className={`flex w-full my-2 ${
                 item.sender === instructorId ? "justify-end" : "justify-start"
               }`}
+              ref={scrollRef}
             >
               <div>
                 <div

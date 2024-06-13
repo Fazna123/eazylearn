@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   createNewMessage,
   getAllMessages,
@@ -46,6 +46,7 @@ const InstructorMessages = () => {
   const [userData, setUserData] = useState({});
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [activeStatus, setActiveStatus] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   //-----------------------------------------------------------------------------------
 
@@ -83,7 +84,7 @@ const InstructorMessages = () => {
       }
     };
     fetchConversations();
-  }, [instructorId, messages]);
+  }, [currentUser.user, messages]);
 
   //----------------------------------------------------------------------------------
 
@@ -108,6 +109,23 @@ const InstructorMessages = () => {
     //setActiveStatus(online ? true : false);
     return online ? true : false;
   };
+  //-------------------------------------------------------------------------------------------
+
+  useEffect(() => {
+    if (!currentChat) return;
+
+    const getMessage = async () => {
+      const { success, error, data } = await getAllMessages(currentChat._id);
+      if (success) {
+        setMessages(data.messages);
+      } else {
+        console.log(error);
+      }
+    };
+    getMessage();
+  }, [currentChat]);
+
+  console.log("msgs:", messages);
   //----------------------------------------------------------------------------------
 
   const sendMessageHandler = async (e) => {
@@ -171,23 +189,10 @@ const InstructorMessages = () => {
   };
   console.log("currentChat", currentChat);
 
-  //-------------------------------------------------------------------------------------------
-
   useEffect(() => {
-    if (!currentChat) return;
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
-    const getMessage = async () => {
-      const { success, error, data } = await getAllMessages(currentChat._id);
-      if (success) {
-        setMessages(data.messages);
-      } else {
-        console.log(error);
-      }
-    };
-    getMessage();
-  }, [currentChat]);
-
-  console.log("msgs:", messages);
   //-------------------------------------------------------------------------------------------
   return (
     <div className="mt-[60px] w-full">
@@ -223,6 +228,8 @@ const InstructorMessages = () => {
             instructorId={currentUser.user._id}
             userData={userData}
             activeStatus={activeStatus}
+            scrollRef={scrollRef}
+            setMessages={setMessages}
           />
         )}
       </div>
@@ -250,10 +257,10 @@ const MessageList = ({
   const [active, setActive] = useState(0);
 
   useEffect(() => {
-    setActiveStatus(online);
+    //setActiveStatus(online);
     const userId = data.members.find((user: any) => user !== me);
 
-    console.log(userId, "ffffffff");
+    //console.log(userId, "ffffffff");
     const getUserInfo = async () => {
       const { success, error, data } = await getUserDetails(userId);
       if (success) {
@@ -271,7 +278,7 @@ const MessageList = ({
       className={`w-[97%] flex p-2 px-3 mx-4 ${
         active === index ? "bg-slate-200" : "bg-transparent"
       } cursor-pointer`}
-      onClick={(index) =>
+      onClick={(e) =>
         setActive(index) ||
         handleClick(data._id) ||
         setCurrentChat(data) ||
@@ -292,8 +299,8 @@ const MessageList = ({
         )} */}
       </div>
       <div className="pl-3">
-        <h1 className="text-[18px]">{user.name}</h1>
-        <p className="text-[16px] text-slate-500">{data.lastMessage}</p>
+        <h1 className="text-[18px]">{user?.name}</h1>
+        <p className="text-[16px] text-slate-500">{data?.lastMessage}</p>
       </div>
     </div>
   );
@@ -308,6 +315,7 @@ const InstructorInboxMessage = ({
   instructorId,
   userData,
   activeStatus,
+  scrollRef,
 }) => {
   return (
     <div className="w-full min-h-full flex flex-col justify-between">
@@ -343,27 +351,29 @@ const InstructorInboxMessage = ({
 
       <div className="px-3 h-[63vh] overflow-y-scroll">
         {messages &&
-          messages.map((item) => (
+          messages.map((item, index) => (
             <div
-              key={item._id}
               className={`flex w-full my-2 ${
                 item.sender === instructorId ? "justify-end" : "justify-start"
               }`}
+              ref={scrollRef}
             >
-              <div>
-                <div
-                  className={`w-max rounded p-2 text-white h-min ${
-                    item.sender === instructorId
-                      ? "bg-green-600"
-                      : " bg-slate-600"
-                  } `}
-                >
-                  <p>{item.text}</p>
+              {item.text !== "" && (
+                <div>
+                  <div
+                    className={`w-max rounded p-2 text-white h-min ${
+                      item.sender === instructorId
+                        ? "bg-green-600"
+                        : " bg-slate-600"
+                    } `}
+                  >
+                    <p>{item.text}</p>
+                  </div>
+                  <p className="text-[12px] text-slate-500">
+                    {format(item.createdAt)}
+                  </p>
                 </div>
-                <p className="text-[12px] text-slate-500">
-                  {format(item.createdAt)}
-                </p>
-              </div>
+              )}
             </div>
           ))}
       </div>
