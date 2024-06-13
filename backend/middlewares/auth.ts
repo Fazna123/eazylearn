@@ -12,7 +12,7 @@ export const isAuthenticated = async (
   console.log("req.cookies in isAthenticated", req.cookies);
 
   const access_token = req.cookies.access_token as string;
-  console.log("access_token:", access_token);
+  // console.log("access_token:", access_token);
 
   if (!access_token) {
     return {
@@ -29,7 +29,7 @@ export const isAuthenticated = async (
     process.env.ACCESS_TOKEN as string
   ) as JwtPayload;
 
-  //console.log("decoded", decoded);
+  // console.log("decoded", decoded);
 
   if (!decoded) {
     return {
@@ -43,7 +43,7 @@ export const isAuthenticated = async (
 
   const user = await redis.get(decoded.id);
 
-  //console.log("user", user);
+  // console.log("user", user);
 
   if (!user) {
     return {
@@ -57,14 +57,14 @@ export const isAuthenticated = async (
 
   //req.user = JSON.parse(user);
   req.user = JSON.parse(user);
-  console.log("req.user in isAuthenticated", req.user);
+  // console.log("req.user in isAuthenticated", req.user);
   //console.log(req.user);
 
   next();
 };
 
 export const authorizeRoles = (...roles: string[]) => {
-  console.log("authorizeRoles");
+  // console.log("authorizeRoles");
   return (req: Request, res: Response, next: NextFunction) => {
     if (!roles.includes(req.user?.role || "")) {
       return res.status(500).send({

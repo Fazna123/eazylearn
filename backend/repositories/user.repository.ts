@@ -463,6 +463,21 @@ class UserRepository {
       };
     }
   }
+  async getMyInfoById(userId: string) {
+    try {
+      const user = await userModel.findById(userId);
+      return {
+        success: true,
+        message: "Details fetched",
+        user,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Server Error",
+      };
+    }
+  }
 }
 
 export default UserRepository;

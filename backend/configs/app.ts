@@ -7,6 +7,7 @@ import { ErrorMiddleWare } from "../middlewares/error";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import http from "http";
+import { Server as SocketIOServer } from "socket.io";
 
 const createServer = () => {
   const app = express();
@@ -17,6 +18,13 @@ const createServer = () => {
       origin: process.env.ORIGIN,
     })
   );
+  const io = new SocketIOServer(server, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"],
+    },
+    transports: ["websocket", "polling"],
+  });
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -24,7 +32,7 @@ const createServer = () => {
   app.use(cookieParser());
   app.use(ErrorMiddleWare);
 
-  return { app, server };
+  return { app, server, io };
 };
 
 export default createServer;

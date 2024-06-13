@@ -46,13 +46,21 @@ courseRoute.get("/get-courses", (req: Request, res: Response) => {
   courseController.getAllCourse(req, res);
 });
 
-courseRoute.get("/get-approved-courses", (req: Request, res: Response) => {
-  courseController.getApprovedCourses(req, res);
-});
+courseRoute.get(
+  "/get-approved-courses",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    courseController.getApprovedCourses(req, res);
+  }
+);
 
-courseRoute.get("/get-courses-approval", (req: Request, res: Response) => {
-  courseController.getCoursesToApprove(req, res);
-});
+courseRoute.get(
+  "/get-courses-approval",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    courseController.getCoursesToApprove(req, res);
+  }
+);
 
 //with searching,filtering and pageination
 courseRoute.get("/get-courses-search", (req: Request, res: Response) => {
@@ -126,7 +134,7 @@ courseRoute.get(
 
 courseRoute.put(
   "/update-category",
-
+  isAuthenticated,
   (req: Request, res: Response) => {
     console.log("update cat route");
     courseController.updateCategory(req, res);
@@ -224,6 +232,15 @@ courseRoute.get(
   isAuthenticated,
   (req: Request, res: Response) => {
     courseController.getMyCourses(req, res);
+  }
+);
+
+courseRoute.post(
+  "/send-rejection-email",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    console.log("rejection route");
+    courseController.sendRejectionEmail(req, res);
   }
 );
 

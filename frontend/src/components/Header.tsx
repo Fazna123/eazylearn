@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 //import { signOut } from "../redux/user/userSlice";
 
 export default function Header() {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state: any) => state.user);
 
   //const dispatch = useDispatch();
 
@@ -24,12 +24,6 @@ export default function Header() {
             <img src="/logonew.png" className=" mr-3 h-14" alt="Logo" />
           </Link>
           <div className="flex items-center lg:order-2">
-            {/* <Link
-              to="/signin"
-              className="text-blue-900 hover:bg-blue-950 hover:text-white focus:ring-2 focus:ring-slate-300 font-medium rounded-lg text-md px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none"
-            >
-              Log in
-            </Link> */}
             {currentUser ? (
               <Link
                 to="/mycourses"
@@ -51,7 +45,7 @@ export default function Header() {
               <>
                 <Link to="/profile">
                   <img
-                    src={currentUser.user.avatar}
+                    src={currentUser.user?.avatar}
                     alt="👤"
                     className="h-10 w-10 rounded-full object-cover"
                   />
@@ -95,18 +89,7 @@ export default function Header() {
                   Courses
                 </NavLink>
               </li>
-              {/* <li>
-                <NavLink
-                  to="/categories"
-                  className={({ isActive }) =>
-                    `block py-2 pr-4 pl-3 duration-200 border-b border-gray-100 ${
-                      isActive ? "text-orange-600 underline" : "text-blue-900"
-                    } lg:hover:bg-transparent lg:border-0 hover:text-orange-600 lg:p-0`
-                  }
-                >
-                  Categories
-                </NavLink>
-              </li> */}
+
               <li>
                 <NavLink
                   to="/instructor"
@@ -119,6 +102,20 @@ export default function Header() {
                   Teach on EazyLearN
                 </NavLink>
               </li>
+              {currentUser && currentUser.user.role === "student" && (
+                <li>
+                  <NavLink
+                    to="/inbox"
+                    className={({ isActive }) =>
+                      `block py-2 pr-4 pl-3 duration-200 border-b border-gray-100 ${
+                        isActive ? "text-orange-600 underline" : "text-blue-900"
+                      } lg:hover:bg-transparent lg:border-0 hover:text-orange-600 lg:p-0`
+                    }
+                  >
+                    Inbox
+                  </NavLink>
+                </li>
+              )}
               {/* <li>
                 <NavLink
                   to="/about"

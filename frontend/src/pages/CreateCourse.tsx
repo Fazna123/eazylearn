@@ -16,9 +16,10 @@ import {
 } from "../redux/courses/courseSlice";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import swal from "sweetalert";
 
 export default function CreateCourse() {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state: any) => state.user);
   const isNotApproved = currentUser?.user?.isApproved === false;
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -91,7 +92,7 @@ export default function CreateCourse() {
   };
   // const {  courseSuccess, courseLoaading, courseError } =
   //   useSelector((state: any) => state.course);
-  const handleCourseCreate = async (e: any) => {
+  const handleCourseCreate = async () => {
     const data = courseData;
     if (Object.keys(data).length === 0) {
       toast("Fill all the fields and try again");
@@ -112,7 +113,7 @@ export default function CreateCourse() {
           return;
         } else {
           dispatch(createCourseSuccess());
-          toast.success("Course Created Successfully");
+          swal("Course Created Successfully");
           navigate("/instructor/myteachings");
         }
       } catch (error) {

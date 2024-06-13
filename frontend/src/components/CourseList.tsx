@@ -1,10 +1,20 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getCategories, getCourses, getCoursesSearch } from "../utils/endPoint";
 import Spinner from "./Spinner";
 import CourseCard from "./CourseCard";
 
 type Props = {};
+
+const debounce = (func: any, delay: number) => {
+  let timeout: any;
+  return (...args: []) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+};
 
 const CourseList = (props: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -85,17 +95,32 @@ const CourseList = (props: Props) => {
     setCourses(filteredCourses);
   }, [courseData, category, search]);
 
-  const handleSearch = () => {
-    fetchCourses();
-    // if (search === "") {
-    //   return;
-    // } else {
-    // setSearchParams({ name: search });
-    // // Use navigate to update URL
-    // navigate(`/courses?name=${search}`);
+  const handleSearch = (e: any) => {
+    let name = e.target.value;
+    setSearchParams({ name: name });
+    // fetchCourses();
+    if (search === "") {
+      setSearchParams({ name: search });
+      fetchCourses();
+      //return;
+    } else {
+      setSearchParams({ name: search });
+      fetchCourses();
+      // // Use navigate to update URL
+      // navigate(`/courses?name=${search}`);
 
-    //}
+      //}
+    }
   };
+
+  const handleSearchChange = (event: any) => {
+    const { value } = event.target;
+    setSearchParams({ name: value });
+    fetchCourses();
+  };
+
+  const debouncedHandleSearchChange = (e: any) =>
+    useCallback(debounce(handleSearchChange(e), 300), []);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -143,11 +168,12 @@ const CourseList = (props: Props) => {
                 type="text"
                 placeholder="Search courses..."
                 value={search}
-                onChange={(e) => setSearchParams({ name: e.target.value })}
+                //onChange={(e) => setSearchParams({ name: e.target.value })}
+                onChange={(e) => debouncedHandleSearchChange(e)}
                 className="block w-full py-2 pl-10 pr-4 text-blue-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
               />
               <button
-                onClick={handleSearch}
+                onClick={(e) => handleSearch(e)}
                 className="absolute top-0 right-0 p-2 text-white rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-500  bg-blue-700"
               >
                 Search

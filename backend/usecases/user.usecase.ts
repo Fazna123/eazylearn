@@ -537,6 +537,38 @@ class UserUsecase {
     }
   }
 
+  async getMyInfo(req: Request, res: Response) {
+    try {
+      const userId = req.user?._id;
+      console.log("user id in get user info", userId);
+      const user = await this.userRepository.getMyInfoById(userId);
+      console.log(user);
+      if (user) {
+        return {
+          status: HttpStatus.Success,
+          data: {
+            success: true,
+            message: "User Info",
+            user: user.user,
+          },
+        };
+      } else {
+        return {
+          status: HttpStatus.NotFound,
+          data: {
+            success: true,
+            message: "Failed to fetch User Info",
+          },
+        };
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+
   async getInstructors(req: Request, res: Response) {
     try {
       const response = await this.userRepository.getInstructors();
@@ -818,7 +850,7 @@ class UserUsecase {
           users: response.users,
         },
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
         status: 500,
         data: {
@@ -826,6 +858,38 @@ class UserUsecase {
           message: `server error ${error.message}`,
         },
       };
+    }
+  }
+
+  async getUserDetails(req: Request, res: Response) {
+    try {
+      const userId = req.params.id;
+      console.log("user id in get user info", userId);
+      const user = await this.userRepository.getMyInfoById(userId);
+      console.log(user);
+      if (user) {
+        return {
+          status: HttpStatus.Success,
+          data: {
+            success: true,
+            message: "User Info",
+            user: user.user,
+          },
+        };
+      } else {
+        return {
+          status: HttpStatus.NotFound,
+          data: {
+            success: true,
+            message: "Failed to fetch User Info",
+          },
+        };
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
     }
   }
 }

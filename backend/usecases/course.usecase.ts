@@ -11,6 +11,8 @@ import path from "path";
 import sendMail from "../utils/sendMail";
 import { IAddReviewData, IAddReviewReply } from "../interfaces/review";
 import cron from "node-cron";
+import EmailOptions from "../interfaces/email";
+import nodemailer, { Transporter } from "nodemailer";
 
 class CourseUsecase {
   private courseRepository: CourseRepository;
@@ -905,6 +907,74 @@ class CourseUsecase {
         },
       };
     }
+  }
+
+  async sendRejectionMail(req: Request, res: Response) {
+    try {
+      //console.log("Rejection use case");
+      //console.log("Request body:", req.body);
+      const { email, courseName, reason } = req.body;
+      const mailData = {
+        courseName,
+        reason,
+        year: new Date().getFullYear(),
+      };
+
+      try {
+        await this.sendMail({
+          email: email,
+          subject: "Course Rejection Notification",
+          template: "rejectionMail.ejs",
+          data: mailData,
+        });
+
+        res.status(201).json({
+          success: true,
+          message: "Mail sent successfully",
+        });
+      } catch (error: any) {
+        console.error("Error sending mail:", error.message);
+        res.status(500).json({
+          success: false,
+          message: error.message,
+        });
+      }
+    } catch (error: any) {
+      console.error("Server error:", error.message);
+      res.status(500).json({
+        success: false,
+        message: `Server error: ${error.message}`,
+      });
+    }
+  }
+
+  async sendMail(options: any): Promise<void> {
+    const transporter: Transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || "587"),
+      service: process.env.SMTP_SERVICE,
+      auth: {
+        user: process.env.SMTP_MAIL,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
+    //console.log("send Mail");
+    const { email, subject, template, data } = options;
+    //console.log(options);
+
+    const templatePath = path.join(__dirname, "../mails", template);
+    //console.log(templatePath);
+
+    const html: string = await ejs.renderFile(templatePath, data);
+
+    const mailOptions = {
+      from: process.env.SMTP_MAIL,
+      to: email,
+      subject,
+      html,
+    };
+
+    await transporter.sendMail(mailOptions);
   }
 }
 

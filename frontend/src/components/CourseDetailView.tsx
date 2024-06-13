@@ -11,7 +11,9 @@ import { Elements } from "@stripe/react-stripe-js";
 import CheckOutForm from "./CheckOutForm";
 import Ratings from "../utils/Ratings";
 import { format } from "timeago.js";
-import { getUserInfo } from "../utils/endPoint";
+import { createConversation, getMyInfo, getUserInfo } from "../utils/endPoint";
+import Instructor from "../pages/Instructor";
+import swal from "sweetalert";
 
 type Props = {
   data: any;
@@ -22,10 +24,14 @@ type Props = {
 const CourseDetailView = ({ data, stripePromise, clientSecret }: Props) => {
   const navigate = useNavigate();
   console.log("data", data);
+  console.log("instructor", data.instructor);
   console.log("stripe promise", stripePromise);
   console.log("client secret", clientSecret);
 
   const currentCourseId = data?._id;
+  const courseDetails = data;
+  //console.log("courseDetails", courseDetails);
+  console.log(courseDetails.instructor);
 
   const { currentUser: user } = useSelector((state: any) => state.user);
   const [currentUser, setCurrentUser] = useState({});
@@ -44,15 +50,32 @@ const CourseDetailView = ({ data, stripePromise, clientSecret }: Props) => {
       setOpen(true);
     }
   };
+
+  const handleMessageSubmit = async () => {
+    const groupTitle = courseDetails.instructor + currentUser._id;
+    const userId = currentUser._id;
+    const instructorId = courseDetails.instructor;
+    const { success, error, data } = await createConversation(
+      groupTitle,
+      userId,
+      instructorId
+    );
+    if (success) {
+      navigate(`/inbox?/${data.conversation._id}`);
+    } else {
+      swal(error.message);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      const { success, data, error } = await getUserInfo();
+      const { success, data, error } = await getMyInfo();
       console.log("fetch data of user");
       console.log("data in details page", data);
       console.log("User info:", data); // Log user info
       console.log("Current course ID:", currentCourseId); // Log current course ID
       if (success) {
-        setCurrentUser(data);
+        setCurrentUser(data.user);
         //setIsPurchased(data.courses.includes(currentCourseId));
       }
     };
@@ -65,6 +88,7 @@ const CourseDetailView = ({ data, stripePromise, clientSecret }: Props) => {
     currentUser &&
     currentUser?.courses?.find((item: any) => item._id === currentCourseId);
   console.log(currentUser);
+  console.log("current user courses", currentUser.courses);
   console.log("purchased", isPurchased);
   //   const preprocessData = (data) => {
   //     // Iterate over each section
@@ -239,6 +263,18 @@ const CourseDetailView = ({ data, stripePromise, clientSecret }: Props) => {
                 >
                   Buy Now @ {data.price}$
                 </div>
+              )}
+            </div>
+            <div className="flex items-center">
+              {isPurchased ? (
+                <div
+                  className="!w-[190px] text-white text-center rounded-full p-3 my-3 cursor-pointer bg-blue-800 border border-white font-[600] hover:bg-blue-500"
+                  onClick={handleMessageSubmit}
+                >
+                  Chat with Instructor
+                </div>
+              ) : (
+                <div></div>
               )}
             </div>
             <br />

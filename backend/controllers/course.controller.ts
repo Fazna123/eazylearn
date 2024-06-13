@@ -359,6 +359,21 @@ class CourseController {
       });
     }
   }
+
+  async sendRejectionEmail(req: Request, res: Response) {
+    try {
+      console.log("rejctn cntrllr");
+      const response = await this.courseUsecase.sendRejectionMail(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "Server Error",
+      });
+    }
+  }
 }
 
 export default CourseController;

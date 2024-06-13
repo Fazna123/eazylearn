@@ -11,13 +11,22 @@ import userRoute from "./routes/user.route";
 import adminRoute from "./routes/admin.route";
 import courseRoute from "./routes/course.route";
 import orderRoute from "./routes/order.route";
+import chatRoute from "./routes/chat.route";
+import ChatRepository from "./repositories/chat.repository";
+import SocketUtils from "./utils/socket.utils";
 
-const { app, server } = createServer();
+const chatRepository = new ChatRepository();
 
+const { app, server, io } = createServer();
+
+const socketUtils = new SocketUtils(chatRepository);
+
+socketUtils.configureSocketIO(io);
 app.use("/api/user", userRoute);
 app.use("/api/admin", adminRoute);
 app.use("/api/user", courseRoute);
 app.use("/api/order", orderRoute);
+app.use("/api/chat", chatRoute);
 
 // app.all("*", (req: Request, res: Response) => {
 //   res.status(404).json({

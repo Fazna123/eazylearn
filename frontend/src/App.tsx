@@ -28,69 +28,82 @@ import UserAnalyticsPage from "./pages/UserAnalyticsPage";
 import OrderAnalyticsPage from "./pages/OrderAnalyticsPage";
 import CourseAnalyticsPage from "./pages/CourseAnalyticsPage";
 import MyCourses from "./pages/MyCourses";
+import { UserProvider } from "./utils/UserContext";
+import InstructorInbox from "./pages/InstructorInbox";
+import StudentInbox from "./pages/StudentInbox";
 
 export default function App() {
   return (
     <BrowserRouter>
-      {/* <Header /> */}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/otp" element={<Otp />} />
-        <Route path="/courses" element={<Courses />} />
-        <Route path="/course/:id" element={<SingleCourse />} />
+      <UserProvider>
+        {/* <Header /> */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/otp" element={<Otp />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/course/:id" element={<SingleCourse />} />
 
-        <Route element={<PrivateRoute />}>
-          {/* <Route path="/course/:id" element={<SingleCourse />} /> */}
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/mycourses" element={<MyCourses />} />
-          <Route path="/course-access/:id" element={<CourseAccessPage />} />
-        </Route>
-        <Route element={<PrivateRoute />}>
-          <Route path="/instructor" element={<Instructor />} />
-          <Route path="/instructor/dashboard" element={<Instructor />} />
-          <Route path="/instructor/myteachings" element={<MyTeachings />} />
-          <Route path="/instructor/createcourse" element={<CreateCourse />} />
-          <Route path="/instructor/edit-course/:id" element={<EditCourse />} />
-        </Route>
+          <Route element={<PrivateRoute />}>
+            {/* <Route path="/course/:id" element={<SingleCourse />} /> */}
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/mycourses" element={<MyCourses />} />
+            <Route path="/course-access/:id" element={<CourseAccessPage />} />
+            <Route path="/inbox" element={<StudentInbox />} />
+          </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/instructor" element={<Instructor />} />
+            <Route path="/instructor/dashboard" element={<Instructor />} />
+            <Route path="/instructor/myteachings" element={<MyTeachings />} />
+            <Route path="/instructor/createcourse" element={<CreateCourse />} />
+            <Route
+              path="/instructor/edit-course/:id"
+              element={<EditCourse />}
+            />
+            <Route path="/instructor/chat" element={<InstructorInbox />} />
+          </Route>
 
-        {/* <Route path="/admin" element={<Admin />} /> */}
-        <Route element={<PrivateRoute />}>
-          <Route path="/admin/dashboard" element={<Admin />} />
-          <Route path="/admin/courses" element={<AdminCourses />} />
-          <Route path="/admin/instructors" element={<AdminInstructors />} />
-          <Route
-            path="/admin/instructor-approval"
-            element={<AdminInstructorApproval />}
-          />
-          <Route path="/admin/users" element={<AdminUsers />} />
-          <Route
-            path="/admin/course-details/:id"
-            element={<AdminCourseView />}
-          />
-          <Route path="/admin/categories" element={<AdminCategories />} />
-          <Route path="/admin/report" element={<AdminReports />} />
-          <Route path="/admin/useranalytics" element={<UserAnalyticsPage />} />
-          <Route
-            path="/admin/orderanalytics"
-            element={<OrderAnalyticsPage />}
-          />
-          <Route
-            path="/admin/courseanalytics"
-            element={<CourseAnalyticsPage />}
-          />
-          <Route
-            path="/admin/deletedcourses"
-            element={<AdminDeletedCourses />}
-          />
-          <Route
-            path="/admin/course-approval"
-            element={<AdminCourseApproval />}
-          />
-        </Route>
-      </Routes>
-      {/* <Footer /> */}
+          {/* <Route path="/admin" element={<Admin />} /> */}
+          <Route element={<PrivateRoute />}>
+            <Route path="/admin/dashboard" element={<Admin />} />
+            <Route path="/admin/courses" element={<AdminCourses />} />
+            <Route path="/admin/instructors" element={<AdminInstructors />} />
+            <Route
+              path="/admin/instructor-approval"
+              element={<AdminInstructorApproval />}
+            />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route
+              path="/admin/course-details/:id"
+              element={<AdminCourseView />}
+            />
+            <Route path="/admin/categories" element={<AdminCategories />} />
+            <Route path="/admin/report" element={<AdminReports />} />
+            <Route
+              path="/admin/useranalytics"
+              element={<UserAnalyticsPage />}
+            />
+            <Route
+              path="/admin/orderanalytics"
+              element={<OrderAnalyticsPage />}
+            />
+            <Route
+              path="/admin/courseanalytics"
+              element={<CourseAnalyticsPage />}
+            />
+            <Route
+              path="/admin/deletedcourses"
+              element={<AdminDeletedCourses />}
+            />
+            <Route
+              path="/admin/course-approval"
+              element={<AdminCourseApproval />}
+            />
+          </Route>
+        </Routes>
+        {/* <Footer /> */}
+      </UserProvider>
     </BrowserRouter>
   );
 }

@@ -41,6 +41,10 @@ userRoute.get("/me", isAuthenticated, (req: Request, res: Response) => {
   userController.getUserInfo(req, res);
 });
 
+userRoute.get("/myinfo", isAuthenticated, (req: Request, res: Response) => {
+  userController.getMyInfo(req, res);
+});
+
 userRoute.get("/refresh", (req: Request, res: Response) => {
   userController.updateAccessToken(req, res);
 });
@@ -139,4 +143,14 @@ userRoute.get(
     userController.getUserAnalytics(req, res);
   }
 );
+
+userRoute.get(
+  "/user-info/:id",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    console.log("user dtails route");
+    userController.getUserDetails(req, res);
+  }
+);
+
 export default userRoute;

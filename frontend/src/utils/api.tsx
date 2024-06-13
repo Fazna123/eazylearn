@@ -40,4 +40,14 @@ export const MY_TEACHINGS = "/api/user/get-myteachings";
 export const INSTRUCTOR_DASHBOARD_DATA =
   "/api/order/get-instructordashboardanalytics";
 export const MY_COURSES = "/api/user/mycourses-user";
+export const MY_DETAILS = "/api/user/myinfo";
+export const CREATE_CONVERSATION = "/api/chat/create-new-conversation";
+export const INSTRUCTOR_CONVERSATIONS = (id: string) =>
+  `/api/chat/get-all-instructor-conversations/${id}`;
+export const CREATE_NEW_MESSAGE = "/api/chat/create-new-message";
+export const UPDATE_LAST_MESSAGE = (id: string) =>
+  `/api/chat/update-last-message/${id}`;
+
+export const ALL_MESSAGES = (id: string) => `/api/chat/get-all-messages/${id}`;
+export const USER_DETAILS = (id: string) => `/api/user/user-info/${id}`;
 //----------------------------------------------------------------------------------------------------------

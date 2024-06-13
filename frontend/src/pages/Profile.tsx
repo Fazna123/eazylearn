@@ -21,7 +21,8 @@ import Footer from "../components/Footer";
 import { Link, useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 //import { CHANGE_PASSWORD } from "../utils/api";
-import { changePasswordAPI } from "../utils/endPoint";
+import { changePasswordAPI, getMyInfo } from "../utils/endPoint";
+import Spinner from "../components/Spinner";
 
 export default function Profile() {
   const fileRef = useRef<HTMLInputElement | null>(null);
@@ -29,6 +30,7 @@ export default function Profile() {
   const [imagePercent, setImagePercent] = useState(0);
   const [imageError, setImageError] = useState(false);
   const [formData, setFormData] = useState({});
+  const [fetching, setFetching] = useState(false);
   //const [updateSuccess, setUpdateSuccess] = useState(false);
   const [passwordData, setPasswordData] = useState({
     oldPassword: "",
@@ -203,9 +205,22 @@ export default function Profile() {
 
   //-------------------------------------------------------------------------------------------------------------------
   useEffect(() => {
-    console.log("Component re-rendered"); // Add this line
-  });
-
+    const fetchMyInfo = async () => {
+      setFetching(true);
+      const { success, error, data } = await getMyInfo();
+      if (success) {
+        if (data.user.isBlock === true) {
+          await fetch("/api/user/logout");
+          dispatch(signOut());
+          navigate("/signin");
+        }
+      } else {
+        console.log(error);
+      }
+      setFetching(false);
+    };
+    fetchMyInfo();
+  }, []);
   //-------------------------------------------------------------------------------------------------------
 
   return (

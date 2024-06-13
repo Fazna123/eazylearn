@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 import { format } from "timeago.js";
 import { ToastContainer, toast } from "react-toastify";
 import { blockUser, unBlockUser } from "../../utils/endPoint";
+//import { useDispatch, useSelector } from "react-redux";
+
 type Props = {};
 
 const AdminInstructorsList = (props: Props) => {
@@ -19,6 +21,8 @@ const AdminInstructorsList = (props: Props) => {
     []
   );
   //const navigate = useNavigate();
+  // const { currentUser } = useSelector((state: any) => state.user);
+  // const dispatch = useDispatch();
 
   useEffect(() => {
     fetch("/api/user/get-instructors")
@@ -116,6 +120,7 @@ const AdminInstructorsList = (props: Props) => {
         setUnblockedInstructors((prevUnBlockedInstructors) =>
           prevUnBlockedInstructors.filter((userId) => userId !== id)
         );
+
         swal(data.message, { icon: "success" });
       }
     }

@@ -8,12 +8,17 @@ import swal from "sweetalert";
 
 import { format } from "timeago.js";
 import { ToastContainer, toast } from "react-toastify";
+import RejectionModal from "./RejectionModal";
 type Props = {};
 
 const AdminCourseApprovalList = (props: Props) => {
   const [rows, setRows] = useState<any[]>([]);
   const [approvedCourses, setApprovedCourses] = useState<string[]>([]);
   const [rejectedCourses, setRejectedCourses] = useState<string[]>([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedEmail, setSelectedEmail] = useState("");
+  const [courseName, setCourseName] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -128,6 +133,13 @@ const AdminCourseApprovalList = (props: Props) => {
   };
 
   //-------------------------------------------------------------------------------------
+  const handleOpenModal = (email: string, name: string) => {
+    setSelectedEmail(email);
+    setCourseName(name);
+    setModalOpen(true);
+  };
+
+  //-------------------------------------------------------------------------------------
 
   const handleViewDetails = (id: String) => {
     navigate(`/admin/course-details/${id}`);
@@ -217,10 +229,12 @@ const AdminCourseApprovalList = (props: Props) => {
         const handleLinkClick = (
           event: React.MouseEvent<HTMLAnchorElement>
         ) => {
+          event.preventDefault();
           event.stopPropagation();
+          handleOpenModal(row.instructor.email, row.name);
         };
         return (
-          <a href={`mailto:${row.instructor.email}`} onClick={handleLinkClick}>
+          <a onClick={handleLinkClick}>
             <AiOutlineMail
               className="text-black text-center mt-5 ml-2"
               size={20}
@@ -336,6 +350,12 @@ const AdminCourseApprovalList = (props: Props) => {
           <DataGrid checkboxSelection rows={rows} columns={coloumns} />
         </Box>
       </Box>
+      <RejectionModal
+        open={modalOpen}
+        handleClose={() => setModalOpen(false)}
+        email={selectedEmail}
+        courseName={courseName}
+      />
       <div>
         <ToastContainer autoClose={2000} />
       </div>

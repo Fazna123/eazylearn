@@ -127,7 +127,21 @@ class UserController {
       const response = await this.userUsecase.getUserInfo(req, res);
       console.log("response in controller", response);
       if (response !== undefined)
-        res.status(response.status).send(response.data?.user);
+        res.status(response.status).send(response.data);
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
+  async getMyInfo(req: Request, res: Response) {
+    try {
+      console.log("controllerinfo me");
+      const response = await this.userUsecase.getMyInfo(req, res);
+      console.log("response in controller", response);
+      if (response !== undefined)
+        res.status(response.status).send(response.data);
     } catch (error) {
       res.status(500).send({
         success: false,
@@ -277,6 +291,21 @@ class UserController {
       res.status(500).send({
         success: false,
         message: "Server Error",
+      });
+    }
+  }
+
+  async getUserDetails(req: Request, res: Response) {
+    try {
+      console.log("controllerinfo me");
+      const response = await this.userUsecase.getUserDetails(req, res);
+      console.log("response in controller", response);
+      if (response !== undefined)
+        res.status(response.status).send(response.data);
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
       });
     }
   }

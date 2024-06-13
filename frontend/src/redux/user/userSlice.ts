@@ -52,6 +52,9 @@ const userSlice = createSlice({
       state.userError = false;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase("RESET_STATE", () => initialState);
+  },
 });
 
 export const {

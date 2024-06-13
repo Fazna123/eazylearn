@@ -4,11 +4,14 @@ import {
   ADD_CATEGORY,
   ADD_QUESTION,
   ADD_REVIEW,
+  ALL_MESSAGES,
   ALL_ORDERS,
   BLOCK_USER,
   CHANGE_PASSWORD,
   COURSE_ANALYTICS,
   COURSE_FULL_CONTENT,
+  CREATE_CONVERSATION,
+  CREATE_NEW_MESSAGE,
   CREATE_ORDER,
   DASHBOARD_DATA,
   DELETE_CATEGORY,
@@ -17,14 +20,18 @@ import {
   GET_COURSES_SEARCH,
   GET_SINGLECOURSE,
   GET_STRIPE_KEY,
+  INSTRUCTOR_CONVERSATIONS,
   INSTRUCTOR_DASHBOARD_DATA,
   MY_COURSES,
+  MY_DETAILS,
   MY_TEACHINGS,
   NEW_PAYMENT,
   ORDER_ANALYTICS,
   UNBLOCK_USER,
   UPDATE_CATEGORY,
+  UPDATE_LAST_MESSAGE,
   USER_ANALYTICS,
+  USER_DETAILS,
   USER_INFO,
 } from "./api";
 
@@ -292,6 +299,84 @@ export const getInstructorDashboardAnaytics = async () => {
 export const getMyCourses = async () => {
   try {
     const response = await axios.get(MY_COURSES);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};
+
+export const getMyInfo = async () => {
+  try {
+    const response = await axios.get(MY_DETAILS);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};
+
+export const createConversation = async (
+  groupTitle: string,
+  userId: string,
+  instructorId: string
+) => {
+  try {
+    const response = await axios.post(CREATE_CONVERSATION, {
+      groupTitle,
+      userId,
+      instructorId,
+    });
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};
+
+export const getInstructorConversations = async (instructorId: string) => {
+  try {
+    const response = await axios.get(INSTRUCTOR_CONVERSATIONS(instructorId));
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};
+
+export const createNewMessage = async (message: {}) => {
+  try {
+    const response = await axios.post(CREATE_NEW_MESSAGE, message);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};
+
+export const updateLastMessageAPI = async (
+  conversationId: string,
+  lastMessage: string,
+  lastMessageId: string
+) => {
+  try {
+    const response = await axios.put(UPDATE_LAST_MESSAGE(conversationId), {
+      lastMessage,
+      lastMessageId,
+    });
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};
+
+export const getAllMessages = async (id: string) => {
+  try {
+    const response = await axios.get(ALL_MESSAGES(id));
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};
+
+export const getUserDetails = async (id: string) => {
+  try {
+    const response = await axios.get(USER_DETAILS(id));
     return { success: true, data: response.data };
   } catch (error: any) {
     return { success: false, error: error.response.data };

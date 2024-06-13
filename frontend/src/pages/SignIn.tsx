@@ -39,7 +39,7 @@ export default function SignIn() {
   useEffect(() => {
     if (currentUser) {
       console.log(currentUser);
-      if (currentUser.user.role === "admin") {
+      if (currentUser.user?.role === "admin") {
         navigate("/admin/dashboard");
       } else {
         navigate("/");
