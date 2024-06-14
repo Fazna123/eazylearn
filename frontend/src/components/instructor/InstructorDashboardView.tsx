@@ -75,7 +75,7 @@ const InstructorDashboardView = () => {
   }, 0);
   return (
     <div className="w-full flex flex-col p-2">
-      <div className=" w-[90%] flex items-start flex-row justify-between mt-14 ml-10">
+      <div className=" w-[96%] flex items-start flex-row justify-between mt-14 ml-10">
         <div className="flex p-5 text-lg text-[25px] rounded-sm shadow bg-white">
           <>
             <PiUsersFourLight className="text-[30px] mr-2" />

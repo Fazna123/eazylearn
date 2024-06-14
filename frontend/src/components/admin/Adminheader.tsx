@@ -1,7 +1,67 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import socketIO from "socket.io-client";
+import {
+  getAllNotifications,
+  updateNotificationsStatus,
+} from "../../utils/endPoint";
+import { format } from "timeago.js";
+
+const ENDPOINT = import.meta.env.VITE_PUBLIC_BASE_API;
+const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 export default function Adminheader() {
   const [open, setOpen] = useState(false);
+  const [notifications, setNotifications] = useState<any>([]);
+  const [audio] = useState(
+    new Audio(
+      "https://res.cloudinary.com/damk25w05/video/upload/v1693465789/notification_vcetjn.mp3"
+    )
+  );
+  const playerNotificationSound = () => {
+    audio.play();
+  };
+
+  const fetchNotificatons = async () => {
+    const { success, error, data } = await getAllNotifications();
+    if (success) {
+      setNotifications(
+        data.notifications.filter((item: any) => item.status === "unread")
+      );
+    } else {
+      console.log(error.message);
+    }
+  };
+
+  const updateNotifications = async (id: string) => {
+    const { success, error, data } = await updateNotificationsStatus(id);
+    if (success) {
+      setNotifications(
+        data.notifications.filter((item: any) => item.status === "unread")
+      );
+    } else {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotificatons();
+  }, []);
+
+  // useEffect(() => {
+  //   updateNotifications();
+  // }, [notifications]);
+
+  useEffect(() => {
+    socketId.on("newNotification", (data) => {
+      fetchNotificatons();
+      playerNotificationSound();
+    });
+  }, []);
+
+  const handleNotificationStatusChange = async (id: string) => {
+    await updateNotifications(id);
+  };
+
   return (
     <>
       <div className="flex items-center justify-end p-5 fixed top-5 right-0 w-[85%]">
@@ -22,23 +82,30 @@ export default function Adminheader() {
             />
           </svg>
           <span className="absolute -top-2 -right-1 bg-red-500 rounded-full w-[18px] h-[18px] text-[12px] flex items-center justify-center text-white ">
-            3
+            {notifications && notifications.length}
           </span>
         </div>
         {open && (
-          <div className="w-[350px] h-auto bg-blue-950 text-white shadow-xl absolute top-16 z-18 rounded">
+          <div className="w-[350px] h-auto bg-blue-950 text-white shadow-xl absolute top-16 z-99 rounded">
             <h5 className="text-center text-[20px] p-3">Notifications</h5>
-            <div className="border-gray-100 border-2 bg-blue-900">
-              <div className="w-full flex items-center justify-between -2">
-                <p className="text-white">New Questions</p>
-                <p className="text-white cursor-pointer">Mark as read</p>
-              </div>
-              <p className="px-2 py-3 text-white">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla,
-                accusamus.
-              </p>
-              <p className="p-2 text-white text-[14px]">5 days ago</p>
-            </div>
+            {notifications &&
+              notifications.map((item: any, index: number) => (
+                <div className="border-gray-100 border-2 bg-blue-900">
+                  <div className="w-full flex items-center justify-between -2">
+                    <p className="text-white">{item.title}</p>
+                    <p
+                      className="text-white cursor-pointer"
+                      onClick={() => handleNotificationStatusChange(item._id)}
+                    >
+                      Mark as read
+                    </p>
+                  </div>
+                  <p className="px-2 py-3 text-white">{item.message}</p>
+                  <p className="p-2 text-white text-[14px]">
+                    {format(item.createdAt)}
+                  </p>
+                </div>
+              ))}
           </div>
         )}
       </div>

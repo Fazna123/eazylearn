@@ -18,6 +18,10 @@ import { format } from "timeago.js";
 import { BiMessage } from "react-icons/bi";
 import { VscVerifiedFilled } from "react-icons/vsc";
 import Ratings from "../utils/Ratings";
+import socketIO from "socket.io-client";
+
+const ENDPOINT = import.meta.env.VITE_PUBLIC_BASE_API;
+const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 type Props = {
   data: any;
@@ -120,6 +124,11 @@ const CourseContentMedia = ({
         setReview("");
         fetchData(id);
         swal(data?.message, { icon: "success" });
+        socketId.emit("notification", {
+          title: "A new Review",
+          message: `A new review has been added on course ${course?.name}`,
+          userId: user._id,
+        });
       } else {
         setIsReviewLoading(false);
         swal(error?.message, { icon: "error" });

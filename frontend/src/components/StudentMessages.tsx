@@ -4,7 +4,7 @@ import swal from "sweetalert";
 import { format } from "timeago.js";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineArrowRight, AiOutlineSend } from "react-icons/ai";
-import socketIO from "socket.io-client";
+
 import {
   createNewMessage,
   getAllMessages,
@@ -24,7 +24,7 @@ interface Message {
   text: string;
   createdAt: number;
 }
-
+import socketIO from "socket.io-client";
 const ENDPOINT = import.meta.env.VITE_PUBLIC_BASE_API;
 
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
@@ -252,7 +252,7 @@ const MessageList = ({
   };
 
   useEffect(() => {
-    setActiveStatus(online);
+    //setActiveStatus(online);
     const userId = data.members.find((user: any) => user !== me);
 
     console.log(userId, "ffffffff");

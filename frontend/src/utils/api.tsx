@@ -50,4 +50,7 @@ export const UPDATE_LAST_MESSAGE = (id: string) =>
 
 export const ALL_MESSAGES = (id: string) => `/api/chat/get-all-messages/${id}`;
 export const USER_DETAILS = (id: string) => `/api/user/user-info/${id}`;
+export const ALL_NOTIFICATIONS = "/api/user/get-all-notifications";
+export const UPDATE_NOTIFICATIONS = (id: string) =>
+  `/api/user/update-notification/${id}`;
 //----------------------------------------------------------------------------------------------------------

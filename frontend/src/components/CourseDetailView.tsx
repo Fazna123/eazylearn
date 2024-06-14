@@ -299,7 +299,11 @@ const CourseDetailView = ({ data, stripePromise, clientSecret }: Props) => {
               <div className="w-full">
                 {stripePromise && clientSecret && (
                   <Elements stripe={stripePromise} options={{ clientSecret }}>
-                    <CheckOutForm setOpen={setOpen} data={data} />
+                    <CheckOutForm
+                      setOpen={setOpen}
+                      data={data}
+                      user={currentUser}
+                    />
                   </Elements>
                 )}
               </div>

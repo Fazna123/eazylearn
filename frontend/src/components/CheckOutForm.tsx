@@ -11,13 +11,18 @@ import { createOrder } from "../utils/endPoint";
 import { useSelector } from "react-redux";
 import { redirect, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import socketIO from "socket.io-client";
+const ENDPOINT = import.meta.env.VITE_PUBLIC_BASE_API;
+
+const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 type Props = {
   setOpen: any;
   data: any;
+  user: any;
 };
 
-const CheckOutForm: FC<Props> = ({ setOpen, data }: Props) => {
+const CheckOutForm: FC<Props> = ({ setOpen, data, user }: Props) => {
   const navigate = useNavigate();
   const course = data;
   const stripe = useStripe();
@@ -56,6 +61,11 @@ const CheckOutForm: FC<Props> = ({ setOpen, data }: Props) => {
       console.log(success, data, error);
       if (success) {
         setOrderData(data);
+        socketId.emit("notification", {
+          title: "New Order",
+          message: `A new order recieved for course ${course?.name}`,
+          userId: user._id,
+        });
         navigate(`/course-access/${course._id}`);
       }
       if (error) {

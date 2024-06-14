@@ -5,6 +5,7 @@ import {
   ADD_QUESTION,
   ADD_REVIEW,
   ALL_MESSAGES,
+  ALL_NOTIFICATIONS,
   ALL_ORDERS,
   BLOCK_USER,
   CHANGE_PASSWORD,
@@ -30,6 +31,7 @@ import {
   UNBLOCK_USER,
   UPDATE_CATEGORY,
   UPDATE_LAST_MESSAGE,
+  UPDATE_NOTIFICATIONS,
   USER_ANALYTICS,
   USER_DETAILS,
   USER_INFO,
@@ -377,6 +379,24 @@ export const getAllMessages = async (id: string) => {
 export const getUserDetails = async (id: string) => {
   try {
     const response = await axios.get(USER_DETAILS(id));
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};
+
+export const getAllNotifications = async () => {
+  try {
+    const response = await axios.get(ALL_NOTIFICATIONS);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};
+
+export const updateNotificationsStatus = async (id: string) => {
+  try {
+    const response = await axios.put(UPDATE_NOTIFICATIONS(id));
     return { success: true, data: response.data };
   } catch (error: any) {
     return { success: false, error: error.response.data };

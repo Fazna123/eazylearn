@@ -93,6 +93,11 @@ class SocketUtils {
         });
       });
 
+      socket.on("notification", (data: any) => {
+        //Broadcasting notification to all connected clients
+        io.emit("newNotification", data);
+      });
+
       //when disconnected
       socket.on("disconnect", () => {
         console.log("a user disconnected");

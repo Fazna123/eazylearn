@@ -5,7 +5,7 @@ export default function InstructorHeader() {
   return (
     <>
       <div className="flex items-center justify-end p-5 fixed top-15 right-0 w-full">
-        <div
+        {/* <div
           className="relative cursor-pointer m-2"
           onClick={() => setOpen(!open)}
         >
@@ -40,7 +40,7 @@ export default function InstructorHeader() {
               <p className="p-2 text-white text-[14px]">5 days ago</p>
             </div>
           </div>
-        )}
+        )} */}
       </div>
     </>
   );
