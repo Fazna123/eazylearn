@@ -177,6 +177,18 @@ function StudentMessages() {
     );
     if (success) {
       setNewMessage("");
+      setConversations((prevConversations: any) => {
+        const updatedConversations = prevConversations.map((conv: any) => {
+          if (conv._id === conversationId) {
+            return { ...conv, lastMessage, updatedAt: new Date() }; // Ensure updatedAt is a Date object
+          }
+          return conv;
+        });
+        return updatedConversations.sort(
+          (a: any, b: any) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        );
+      });
       console.log(data.conversation);
     } else {
       console.log(error.message);

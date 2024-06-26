@@ -213,6 +213,19 @@ class CourseController {
       });
     }
   }
+  async reportedCourses(req: Request, res: Response) {
+    try {
+      const response = await this.courseUsecase.reportedCourses(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "server error",
+      });
+    }
+  }
   async addCategory(req: Request, res: Response) {
     try {
       const response = await this.courseUsecase.addCategory(req.body);
@@ -364,6 +377,36 @@ class CourseController {
     try {
       console.log("rejctn cntrllr");
       const response = await this.courseUsecase.sendRejectionMail(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "Server Error",
+      });
+    }
+  }
+
+  async addReportReason(req: Request, res: Response) {
+    try {
+      //console.log("rejctn cntrllr");
+      const response = await this.courseUsecase.addReportReason(req, res);
+      if (response !== undefined) {
+        return res.status(response.status).send(response.data);
+      }
+    } catch (error) {
+      res.status(500).send({
+        success: false,
+        message: "Server Error",
+      });
+    }
+  }
+
+  async editReview(req: Request, res: Response) {
+    try {
+      //console.log("rejctn cntrllr");
+      const response = await this.courseUsecase.editReview(req, res);
       if (response !== undefined) {
         return res.status(response.status).send(response.data);
       }

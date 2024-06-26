@@ -50,23 +50,60 @@ const InstructorMessages = () => {
 
   //-----------------------------------------------------------------------------------
 
+  // useEffect(() => {
+  //   socketId.on("getMessage", (data) => {
+  //     console.log("message recieved");
+  //     setArrivalMessage({
+  //       sender: data.senderId,
+  //       text: data.text,
+  //       createdAt: Date.now(),
+  //     });
+  //   });
+  //   return () => {
+  //     socketId.off("getMessage");
+  //   };
+  // }, []);
+
   useEffect(() => {
     socketId.on("getMessage", (data) => {
-      console.log("message recieved");
+      console.log("message received");
       setArrivalMessage({
         sender: data.senderId,
         text: data.text,
         createdAt: Date.now(),
       });
+
+      // Update the conversation list immediately
+      setConversations((prevConversations: any) => {
+        const updatedConversations = prevConversations.map((conv: any) => {
+          if (conv.members.includes(data.senderId)) {
+            return {
+              ...conv,
+              lastMessage: data.text,
+              updatedAt: new Date().toISOString(),
+              unreadCount: conv.unreadCount ? conv.unreadCount + 1 : 1,
+            };
+          }
+          return conv;
+        });
+
+        return updatedConversations.sort(
+          (a: any, b: any) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        );
+      });
     });
+
     return () => {
       socketId.off("getMessage");
     };
   }, []);
 
+  //---------------------------------------------------------------------------------------
+
   useEffect(() => {
     arrivalMessage &&
-      currentChat &&
+      // currentChat &&
       currentChat?.members.includes(arrivalMessage.sender) &&
       setMessages((prev) => [...prev, arrivalMessage]);
     console.log("message saved");
@@ -126,6 +163,21 @@ const InstructorMessages = () => {
   }, [currentChat]);
 
   console.log("msgs:", messages);
+
+  //---------------------------------------------------------------------------------
+
+  //new experiment
+  // useEffect(() => {
+  //   const instructorId = currentUser?.user?._id;
+  //   socketId.emit("addUser", instructorId);
+  //   socketId.on("getUsers", (data) => {
+  //     setOnlineUsers(data);
+  //   });
+
+  //   return () => {
+  //     socketId.off("getUsers");
+  //   };
+  // }, []);
   //----------------------------------------------------------------------------------
 
   const sendMessageHandler = async (e) => {
@@ -165,7 +217,7 @@ const InstructorMessages = () => {
 
   //---------------------------------------------------------------------------------------------
   const updateLastMessage = async () => {
-    if (!currentChat) return;
+    //if (!currentChat) return;
     socketId.emit("updateLastMessage", {
       lastMessage: newMessage,
       lastMessageId: currentUser.user._id,
@@ -182,6 +234,23 @@ const InstructorMessages = () => {
     );
     if (success) {
       setNewMessage("");
+      setConversations((prevConversations: any) => {
+        const updatedConversations = prevConversations.map((conv: any) => {
+          if (conv._id === conversationId) {
+            return {
+              ...conv,
+              lastMessage,
+              updatedAt: new Date().toISOString(),
+              unreadCount: conv.unreadCount ? conv.unreadCount + 1 : 1,
+            };
+          }
+          return conv;
+        });
+        return updatedConversations.sort(
+          (a: any, b: any) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        );
+      });
       console.log(data.conversation);
     } else {
       console.log(error.message);
@@ -214,6 +283,8 @@ const InstructorMessages = () => {
                   userData={userData}
                   online={onlineCheck(item)}
                   setActiveStatus={setActiveStatus}
+                  instructorId={instructorId}
+                  setConversations={setConversations}
                 />
               ))}
           </>
@@ -247,12 +318,25 @@ const MessageList = ({
   userData,
   online,
   setActiveStatus,
+  instructorId,
+  setConversations,
 }) => {
   const [user, setUser] = useState([]);
   const navigate = useNavigate();
+  // const handleClick = (id: string) => {
+  //   navigate(`?${id}`);
+  //   setOpen(true);
+  // };
   const handleClick = (id: string) => {
     navigate(`?${id}`);
     setOpen(true);
+
+    // Reset unread message count when opening the chat
+    setConversations((prevConversations: any) =>
+      prevConversations.map((conv: any) =>
+        conv._id === id ? { ...conv, unreadCount: 0 } : conv
+      )
+    );
   };
   const [active, setActive] = useState(0);
 
@@ -272,6 +356,24 @@ const MessageList = ({
     getUserInfo();
   }, [me, data]);
   console.log(userData);
+
+  //-------------------------------------------------------------------------------
+
+  useEffect(() => {
+    const fetchConversations = async () => {
+      const { success, error, data } = await getInstructorConversations(
+        instructorId
+      );
+      if (success) {
+        setConversations(data.conversations);
+      } else {
+        swal(error.message);
+      }
+    };
+    fetchConversations();
+  }, []);
+
+  //-------------------------------------------------------------------------------
 
   return (
     <div
@@ -301,6 +403,11 @@ const MessageList = ({
       <div className="pl-3">
         <h1 className="text-[18px]">{user?.name}</h1>
         <p className="text-[16px] text-slate-500">{data?.lastMessage}</p>
+        {data.unreadCount > 0 && (
+          <span className="text-red-500 text-sm">
+            {data.unreadCount} unread messages
+          </span>
+        )}
       </div>
     </div>
   );

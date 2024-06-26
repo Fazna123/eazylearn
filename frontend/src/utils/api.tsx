@@ -53,4 +53,8 @@ export const USER_DETAILS = (id: string) => `/api/user/user-info/${id}`;
 export const ALL_NOTIFICATIONS = "/api/user/get-all-notifications";
 export const UPDATE_NOTIFICATIONS = (id: string) =>
   `/api/user/update-notification/${id}`;
+
+export const REPORT_COURSE = (id: string) =>
+  `/api/user/add-report-reason/${id}`;
+
 //----------------------------------------------------------------------------------------------------------

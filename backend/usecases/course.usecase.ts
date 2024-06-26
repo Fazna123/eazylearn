@@ -433,6 +433,31 @@ class CourseUsecase {
     }
   }
 
+  async reportedCourses(req: Request, res: Response) {
+    try {
+      //const courseId = req.params.id;
+      const response = await this.courseRepository.reportedCourses();
+      if (response.courses) {
+        return {
+          status: response.success ? 200 : 500,
+          data: {
+            success: response.success,
+            message: response.message,
+            courses: response.courses,
+          },
+        };
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+
   async addCategory(data: ICategory) {
     try {
       let { name } = data;
@@ -927,24 +952,36 @@ class CourseUsecase {
           template: "rejectionMail.ejs",
           data: mailData,
         });
-
-        res.status(201).json({
-          success: true,
-          message: "Mail sent successfully",
-        });
+        return {
+          status: 201,
+          data: {
+            success: true,
+            message: "Mail sent successfully",
+          },
+        };
+        // res.status(201).json({
+        //   success: true,
+        //   message: "Mail sent successfully",
+        // });
       } catch (error: any) {
         console.error("Error sending mail:", error.message);
-        res.status(500).json({
-          success: false,
-          message: error.message,
-        });
+        return {
+          status: 500,
+          data: {
+            success: false,
+            message: `server error ${error.message}`,
+          },
+        };
       }
     } catch (error: any) {
       console.error("Server error:", error.message);
-      res.status(500).json({
-        success: false,
-        message: `Server error: ${error.message}`,
-      });
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: `server error ${error.message}`,
+        },
+      };
     }
   }
 
@@ -975,6 +1012,94 @@ class CourseUsecase {
     };
 
     await transporter.sendMail(mailOptions);
+  }
+
+  async addReportReason(req: Request, res: Response) {
+    try {
+      const courseId = req.params.id;
+      //console.log(courseId);
+      const { reason } = req.body;
+      //const user = await this.userRepository.findUser(userId);
+      const courses = req?.user?.courses;
+      console.log("courses", courses);
+      const courseExists = courses?.some(
+        (course: any) => course._id.toString() === courseId.toString()
+      );
+      if (!courseExists) {
+        return {
+          status: 404,
+          data: {
+            success: false,
+            message: "You are not eligible to access this course",
+          },
+        };
+      }
+      const reportData: any = {
+        user: req?.user,
+        reason,
+      };
+      const res = await this.courseRepository.updateCourseReports(
+        courseId,
+        reportData
+      );
+
+      const courseDetails = await this.courseRepository.getSingleCourseContent(
+        courseId
+      );
+
+      const notificationData = {
+        user: req?.user?._id,
+        title: "Course Reported",
+        message: `${req?.user?.name} has reported the course ${courseDetails?.course?.name} for ${reason}`,
+      };
+      const notification = await this.orderRepository.saveNotification(
+        notificationData
+      );
+      return {
+        status: res.success ? 200 : 500,
+        data: {
+          success: res.success,
+          message: res.message,
+          course: res.course,
+        },
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
+  }
+
+  async editReview(req: Request, res: Response) {
+    try {
+      const courseId = req.params.id;
+      const { reviewId, comment, rating } = req.body;
+      const res = await this.courseRepository.editReview(
+        courseId,
+        reviewId,
+        comment,
+        rating
+      );
+      return {
+        status: res.success ? 200 : 500,
+        data: {
+          success: res.success,
+          message: res.message,
+        },
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        data: {
+          success: false,
+          message: "server error",
+        },
+      };
+    }
   }
 }
 

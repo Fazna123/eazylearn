@@ -1,81 +1,89 @@
+import { useEffect, useState } from "react";
+import { format } from "timeago.js";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Button } from "@mui/material";
-//import { AiOutlineDelete } from "react-icons/ai";
-
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import swal from "sweetalert";
 
-import { format } from "timeago.js";
-import { ToastContainer, toast } from "react-toastify";
-
-const AdminDeleteCourseList = () => {
-  const [rows, setRows] = useState<any[]>([]);
-  const [revokedCourses, setRevokedCourses] = useState<string[]>([]);
+function AdminCourseReportsList() {
   const navigate = useNavigate();
+  const [rows, setRows] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("/api/user/get-deletedcourses")
+    fetch("/api/user/get-reportedcourses")
       .then((response) => response.json())
       .then((data) => {
-        const newRows = data?.courses.map((course: any, index: number) => ({
-          id: index + 1,
-          ...course,
-
-          createdAt: format(course.createdAt),
-        }));
+        const newRows = data?.courses.map((course: any, index: number) => {
+          const reports = course.reports.map((report: any) => ({
+            reason: report.reason,
+            username: report.user?.name,
+          }));
+          reports.forEach((report: any) => {
+            console.log("reason", report.reason);
+          });
+          return {
+            id: index + 1,
+            ...course,
+            createdAt: format(course.createdAt),
+            reports,
+          };
+        });
         setRows(newRows);
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  //...............................................................................
-
-  const handleRevoke = async (id: string) => {
-    try {
-      const confirmed = await swal("Are you sure to revoke this course?", {
-        buttons: ["Cancel", true],
-      });
-      if (confirmed) {
-        const res = await fetch(`/api/user/revoke-course/${id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ isBlock: false }),
-        });
-
-        if (res.ok) {
-          toast.success(`Course with ID ${id} revoked successfully.`);
-          setRows((prevRows) => prevRows.filter((row) => row._id !== id));
-          setRevokedCourses((prevRevokedCourses) => [
-            ...prevRevokedCourses,
-            id,
-          ]);
-        }
-      } else {
-        toast.error(`Failed to revoke course with ID ${id}.`);
-      }
-    } catch (error) {
-      console.error(`Error in revoking course with ID ${id}:`, error);
-    }
-  };
-
-  //-------------------------------------------------------------------------------------
-
   const handleViewDetails = (id: String) => {
     navigate(`/admin/course-details/${id}`);
     console.log("view Details", id);
   };
-  //console.log(data);
+
+  //   const getRowHeight = (params: any) => {
+  //     if (!params.row) return 52; // default row height
+  //     const { reports } = params.row;
+  //     const lineHeight = 20; // Approximate line height
+  //     const padding = 20; // Padding for the cell
+  //     const linesPerReport = 2; // Assuming each report has 2 lines
+  //     const totalLines = reports.length * linesPerReport;
+  //     return lineHeight * totalLines + padding;
+  //   };
+
   const coloumns = [
     { field: "id", headerName: "S.No.", flex: 0.2 },
     { field: "name", headerName: "Title", flex: 0.5 },
-    { field: "description", headerName: "Course Description", flex: 0.5 },
+    { field: "description", headerName: "Course Description", flex: 0.3 },
     { field: "price", headerName: "Price" },
     { field: "ratings", headerName: "Ratings" },
     { field: "purchased", headerName: "Purchased" },
-    { field: "createdAt", headerName: "Created At", flex: 0.5 },
+    { field: "createdAt", headerName: "Created At", flex: 0.3 },
+    {
+      field: "reportcount",
+      headerName: "Report Count",
+      flex: 0.2,
+      renderCell: (params: any) => {
+        const { reports } = params.row;
+        return <div>{reports.length}</div>;
+      },
+    },
+    {
+      field: "reports",
+      headerName: "Reason",
+      flex: 0.5,
+      renderCell: (params: any) => {
+        const { reports } = params.row;
+        return (
+          <div>
+            {reports.map((report: any, index: number) => (
+              <div key={index} style={{ marginBottom: "8px" }} className="flex">
+                {/* <strong>{index + 1}:</strong> */}
+                <strong>{report.username} </strong>
+                {":"}
+                {report.reason}
+              </div>
+            ))}
+          </div>
+        );
+      },
+    },
 
     {
       field: "  ",
@@ -97,26 +105,6 @@ const AdminDeleteCourseList = () => {
         );
       },
     },
-    {
-      field: " ",
-      headerName: "Revoke the Course",
-      flex: 0.3,
-      renderCell: (params: any) => {
-        const { row } = params;
-        return (
-          <Button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleRevoke(row._id);
-            }}
-            variant="contained"
-            color="primary"
-          >
-            Revoke
-          </Button>
-        );
-      },
-    },
   ];
 
   return (
@@ -134,7 +122,10 @@ const AdminDeleteCourseList = () => {
             "& .MuiDataGrid-row": {
               color: "#000",
               borderBottom: "1px solid #ccc!important",
+              height: "80px !important",
               textAlign: "center",
+              whiteSpace: "normal !important",
+              wordWrap: "break-word !important",
             },
             "& .MuiDataGrid-columnHeader": {
               color: "#fff",
@@ -185,14 +176,16 @@ const AdminDeleteCourseList = () => {
             },
           }}
         >
-          <DataGrid checkboxSelection rows={rows} columns={coloumns} />
+          <DataGrid
+            getRowHeight={() => "auto"}
+            checkboxSelection
+            rows={rows}
+            columns={coloumns}
+          />
         </Box>
       </Box>
-      <div>
-        <ToastContainer autoClose={2000} />
-      </div>
     </div>
   );
-};
+}
 
-export default AdminDeleteCourseList;
+export default AdminCourseReportsList;

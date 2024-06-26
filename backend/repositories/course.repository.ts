@@ -350,18 +350,45 @@ class CourseRepository {
       if (!courses) {
         return {
           success: false,
-          message: "Failed to delete course",
+          message: "Failed to fetch deleted courses",
         };
       }
       return {
         success: true,
-        message: "Course deleted successfully",
+        message: "Deleted  courses fetched successfully",
         courses,
       };
     } catch (error) {
       return {
         success: false,
-        message: `Failed to delete course ${error}`,
+        message: `Failed to fetch deleted courses ${error}`,
+      };
+    }
+  }
+  async reportedCourses() {
+    try {
+      const courses = await CourseModel.find({
+        isReported: true,
+        isBlock: false,
+      }).sort({
+        createdAt: -1,
+      });
+
+      if (!courses) {
+        return {
+          success: false,
+          message: "Failed to fetch reported courses",
+        };
+      }
+      return {
+        success: true,
+        message: "Reported Course fetched successfully",
+        courses,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to fetch reported course ${error}`,
       };
     }
   }
@@ -810,6 +837,82 @@ class CourseRepository {
       return {
         success: false,
         message: `Server Error ${error.message}`,
+      };
+    }
+  }
+
+  async updateCourseReports(courseId: string, reportData: any) {
+    try {
+      const course = await CourseModel.findById(courseId);
+      if (!course) {
+        return {
+          success: false,
+          message: "Course not found",
+        };
+      }
+
+      const reports = course?.reports ?? [];
+
+      reports.push(reportData);
+
+      course.isReported = true;
+      course.reports = reports; // Ensure reports are saved
+
+      await course?.save();
+      return {
+        success: true,
+        message: "Report added successfully",
+        course,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to report course: ${error}`,
+      };
+    }
+  }
+
+  async editReview(
+    courseId: string,
+    reviewId: string,
+    comment: string,
+    rating: number
+  ) {
+    try {
+      const course = await CourseModel.findById(courseId);
+
+      if (!course) {
+        return {
+          success: false,
+          message: "Course not found",
+        };
+      }
+
+      // Find the review by ID within the course's reviews array
+      const review = course.reviews.id(reviewId);
+
+      if (!review) {
+        return {
+          success: false,
+          message: `Review not found`,
+        };
+      }
+
+      // Update the review fields
+      review.comment = comment;
+      review.rating = rating;
+
+      // Save the updated course
+      await course.save();
+      return {
+        success: true,
+        message: "Review edited successfully",
+        course,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to edit review: ${error}`,
       };
     }
   }

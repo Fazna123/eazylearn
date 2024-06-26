@@ -31,6 +31,7 @@ import MyCourses from "./pages/MyCourses";
 import { UserProvider } from "./utils/UserContext";
 import InstructorInbox from "./pages/InstructorInbox";
 import StudentInbox from "./pages/StudentInbox";
+import AdminCourseReports from "./pages/AdminCourseReports";
 
 export default function App() {
   return (
@@ -99,6 +100,10 @@ export default function App() {
             <Route
               path="/admin/course-approval"
               element={<AdminCourseApproval />}
+            />
+            <Route
+              path="/admin/course-reports"
+              element={<AdminCourseReports />}
             />
           </Route>
         </Routes>

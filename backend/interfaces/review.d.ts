@@ -7,6 +7,11 @@ export interface IComment extends Document {
   questionReplies?: IComment[];
 }
 
+export interface IReport extends Document {
+  user: IUser;
+  reason?: string;
+}
+
 export interface IReview extends Document {
   user: IUser;
   rating?: number;

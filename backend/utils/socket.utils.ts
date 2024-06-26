@@ -56,9 +56,9 @@ class SocketUtils {
           messages[recieverId].push(message);
         }
 
-        // if (user) {
-        io.to(user.socketId).emit("getMessage", message);
-        //}
+        if (user) {
+          io.to(user.socketId).emit("getMessage", message);
+        }
       });
 
       socket.on("messageSeen", ({ senderId, recieverId, messageId }) => {

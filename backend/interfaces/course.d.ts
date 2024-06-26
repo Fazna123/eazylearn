@@ -1,6 +1,6 @@
 import ILink from "./link";
 import ICoupon from "./coupon";
-import { IComment, IReview } from "./review";
+import { IComment, IReview, IReport } from "./review";
 import { Document } from "mongoose";
 
 export interface ICourseDetails extends Document {
@@ -28,6 +28,7 @@ export interface ICourse extends Document {
   benefits?: { title: string }[];
   prerequisites?: { title: string }[];
   reviews?: IReview[];
+  reports?: IReport[];
   courseData?: ICourseDetails[];
   ratings?: number;
   purchased?: number;
@@ -39,6 +40,7 @@ export interface ICourse extends Document {
   category?: string | ObjectId;
   announcements?: string[];
   isRejected?: boolean;
+  isReported?: boolean;
 }
 
 // interface IMCQ extends Document {

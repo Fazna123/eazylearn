@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Model, ObjectId } from "mongoose";
-import { IComment, IReview } from "../interfaces/review";
+import { IComment, IReport, IReview } from "../interfaces/review";
 import ILink from "../interfaces/link";
 import { ICourse, ICourseDetails } from "../interfaces/course";
 import User from "./user.model";
@@ -27,6 +27,14 @@ const commentSchema = new Schema<IComment>(
     user: Object,
     question: String,
     questionReplies: [Object],
+  },
+  { timestamps: true }
+);
+
+const reportSchema = new Schema<IReport>(
+  {
+    user: Object,
+    reason: String,
   },
   { timestamps: true }
 );
@@ -79,6 +87,7 @@ const courseSchema = new Schema<ICourse>(
     benefits: [{ title: String }],
     prerequisites: [{ title: String }],
     reviews: [reviewSchema],
+    reports: [reportSchema],
     courseData: [courseDetailsSchema],
     ratings: {
       type: Number,
@@ -98,6 +107,10 @@ const courseSchema = new Schema<ICourse>(
       default: false,
     },
     isRejected: {
+      type: Boolean,
+      default: false,
+    },
+    isReported: {
       type: Boolean,
       default: false,
     },

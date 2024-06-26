@@ -219,6 +219,15 @@ courseRoute.get(
 );
 
 courseRoute.get(
+  "/get-reportedcourses",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  (req: Request, res: Response) => {
+    courseController.reportedCourses(req, res);
+  }
+);
+
+courseRoute.get(
   "/get-course-analytics",
   isAuthenticated,
   authorizeRoles("admin"),
@@ -241,6 +250,22 @@ courseRoute.post(
   (req: Request, res: Response) => {
     console.log("rejection route");
     courseController.sendRejectionEmail(req, res);
+  }
+);
+
+courseRoute.put(
+  "/add-report-reason/:id",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    courseController.addReportReason(req, res);
+  }
+);
+
+courseRoute.put(
+  "/edit-review/:id",
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    courseController.editReview(req, res);
   }
 );
 

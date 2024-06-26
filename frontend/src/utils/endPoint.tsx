@@ -28,6 +28,7 @@ import {
   MY_TEACHINGS,
   NEW_PAYMENT,
   ORDER_ANALYTICS,
+  REPORT_COURSE,
   UNBLOCK_USER,
   UPDATE_CATEGORY,
   UPDATE_LAST_MESSAGE,
@@ -397,6 +398,17 @@ export const getAllNotifications = async () => {
 export const updateNotificationsStatus = async (id: string) => {
   try {
     const response = await axios.put(UPDATE_NOTIFICATIONS(id));
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return { success: false, error: error.response.data };
+  }
+};
+
+export const updateCourseReports = async (courseId: string, reason: string) => {
+  try {
+    const response = await axios.put(REPORT_COURSE(courseId), {
+      reason,
+    });
     return { success: true, data: response.data };
   } catch (error: any) {
     return { success: false, error: error.response.data };

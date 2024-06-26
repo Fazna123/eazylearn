@@ -83,7 +83,7 @@ class ChatRepository {
             $in: [instructorId],
           },
         })
-        .sort({ updatedAt: -1, createdAt: -1 });
+        .sort({ updatedAt: -1 });
 
       return {
         success: true,
@@ -128,6 +128,7 @@ class ChatRepository {
   async getAllMessages(conversationId: string) {
     try {
       const messages = await chatModel.find({ conversationId: conversationId });
+      // .sort({ createdAt: -1 });
 
       return {
         success: true,

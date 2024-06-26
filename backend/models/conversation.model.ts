@@ -14,6 +14,9 @@ const conversationSchema = new mongoose.Schema(
     lastMessageId: {
       type: String,
     },
+    unreadCount: {
+      type: Number,
+    },
   },
   { timestamps: true }
 );
