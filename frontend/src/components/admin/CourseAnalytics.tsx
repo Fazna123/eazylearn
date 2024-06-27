@@ -14,7 +14,7 @@ import { getCourseAnalytics } from "../../utils/endPoint";
 const CourseAnalytics = () => {
   const [courseData, setCourseData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchCourseAnalytics = async () => {
     setLoading(true);

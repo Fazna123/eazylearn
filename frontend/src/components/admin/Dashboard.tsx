@@ -6,7 +6,7 @@ type Props = {
 };
 
 const Dashboard = ({ isDashboard }: Props) => {
-  const [open, setOpen] = useState(false);
+  const [open] = useState(false);
   return (
     <div className="w-full">
       {isDashboard && <DashboardWidgets open={open} />}

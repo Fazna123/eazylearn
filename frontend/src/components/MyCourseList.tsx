@@ -1,17 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import {
-  getCategories,
-  getCourses,
-  getCoursesSearch,
-  getMyCourses,
-} from "../utils/endPoint";
+//import { useNavigate, useSearchParams } from "react-router-dom";
+import { getMyCourses } from "../utils/endPoint";
 import Spinner from "./Spinner";
 import CourseCard from "./CourseCard";
 
-type Props = {};
-
-const MyCourseList = (props: Props) => {
+const MyCourseList = () => {
   //const [searchParams, setSearchParams] = useSearchParams();
   //const [searchData, setSearchData] = useState("");
   //const [courseData, setCourseData] = useState([]);

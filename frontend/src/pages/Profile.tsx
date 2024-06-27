@@ -22,15 +22,17 @@ import { Link, useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 //import { CHANGE_PASSWORD } from "../utils/api";
 import { changePasswordAPI, getMyInfo } from "../utils/endPoint";
-import Spinner from "../components/Spinner";
+//import Spinner from "../components/Spinner";
 
 export default function Profile() {
   const fileRef = useRef<HTMLInputElement | null>(null);
-  const [image, setImage] = useState(undefined);
+  const [image, setImage] = useState<File | undefined>(undefined);
   const [imagePercent, setImagePercent] = useState(0);
   const [imageError, setImageError] = useState(false);
-  const [formData, setFormData] = useState({});
-  const [fetching, setFetching] = useState(false);
+  const [formData, setFormData] = useState({
+    profilePicture: "", // Provide initial value
+  });
+  const [, setFetching] = useState(false);
   //const [updateSuccess, setUpdateSuccess] = useState(false);
   const [passwordData, setPasswordData] = useState({
     oldPassword: "",
@@ -44,9 +46,7 @@ export default function Profile() {
   const navigate = useNavigate();
   //console.log("formdata", formData);
 
-  const { currentUser, loading, error } = useSelector(
-    (state: any) => state.user
-  );
+  const { currentUser, loading } = useSelector((state: any) => state.user);
   const admin = currentUser.user.role === "admin";
 
   useEffect(() => {

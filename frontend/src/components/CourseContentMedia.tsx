@@ -2,7 +2,6 @@ import {
   AiFillStar,
   AiOutlineArrowLeft,
   AiOutlineArrowRight,
-  AiOutlineEdit,
   AiOutlineStar,
 } from "react-icons/ai";
 import CoursePlayer from "../utils/CoursePlayer";
@@ -34,6 +33,16 @@ type Props = {
   fetchData: any;
 };
 
+type ReviewType = {
+  rating: number;
+  comment: string;
+  createdAt: string;
+  user: {
+    _id: string;
+    name: string;
+  };
+};
+
 const CourseContentMedia = ({
   data,
   id,
@@ -55,7 +64,13 @@ const CourseContentMedia = ({
   const [answer, setAnswer] = useState("");
   const [questionId, setQuestionId] = useState("");
   const [questions, setQuestions] = useState<any[]>([]);
-  const [course, setCourse] = useState({});
+  const [course, setCourse] = useState<{
+    name: any;
+    reviews?: ReviewType[];
+  }>({
+    name: undefined,
+    reviews: [],
+  });
   const [reportReason, setReportReason] = useState("");
   const [isReportLoading, setIsReportLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -103,7 +118,7 @@ const CourseContentMedia = ({
       if (success) {
         setIsQuestionLoading(false);
 
-        // setQuestions((prev) => [...prev, question]);
+        setQuestions((prev) => [...prev, question]);
         setQuestion("");
         fetchData(id);
         swal(data?.message, { icon: "success" });
@@ -241,7 +256,7 @@ const CourseContentMedia = ({
         swal(data?.message, { icon: "success" });
         socketId.emit("notification", {
           title: "Course Reported",
-          message: `${user.name} has reported the course ${course?.name} for ${reason}`,
+          message: `${user.name} has reported the course ${course?.name} for ${reportReason}`,
           userId: user._id,
         });
       } else {
@@ -315,7 +330,7 @@ const CourseContentMedia = ({
       )}
       {activeBar === 1 && (
         <div>
-          {data[activeVideo]?.links.map((item: any, index: number) => (
+          {data[activeVideo]?.links.map((item: any) => (
             <div className="mb-5">
               <h2 className="sm:text-[20px] sm:inline-block">
                 {item.title && item.title + " :"}
@@ -384,58 +399,57 @@ const CourseContentMedia = ({
       {activeBar === 3 && (
         <div className="w-full">
           <>
-            {!isReviewExists ||
-              (isEditing && (
-                <>
-                  <div className="w-full flex">
-                    <img
-                      src={
-                        user.avatar
-                          ? user.avatar
-                          : "https://w7.pngwing.com/pngs/981/645/png-transparent-default-profile-united-states-computer-icons-desktop-free-high-quality-person-icon-miscellaneous-silhouette-symbol-thumbnail.png"
-                      }
-                      width={50}
-                      height={50}
-                      alt=""
-                      className="w-[50px] h-[50px] rounded-full object-cover"
-                    />
-                    <div className="w-full">
-                      <h5 className="pl-3 text-[20px] font-[500]">
-                        Give a Rating <span className="text-red-500">*</span>
-                      </h5>
+            {(!isReviewExists || isEditing) && (
+              <>
+                <div className="w-full flex">
+                  <img
+                    src={
+                      user.avatar
+                        ? user.avatar
+                        : "https://w7.pngwing.com/pngs/981/645/png-transparent-default-profile-united-states-computer-icons-desktop-free-high-quality-person-icon-miscellaneous-silhouette-symbol-thumbnail.png"
+                    }
+                    width={50}
+                    height={50}
+                    alt=""
+                    className="w-[50px] h-[50px] rounded-full object-cover"
+                  />
+                  <div className="w-full">
+                    <h5 className="pl-3 text-[20px] font-[500]">
+                      Give a Rating <span className="text-red-500">*</span>
+                    </h5>
 
-                      <div className="flex w-full ml-2 pb-3">
-                        {[1, 2, 3, 4, 5].map((i) =>
-                          rating >= i ? (
-                            <AiFillStar
-                              key={i}
-                              className="mr-1 cursor-pointer"
-                              color="rgb(246,186,0)"
-                              size={25}
-                              // onClick={() => setRating(i)}
-                              onClick={() =>
-                                isEditing
-                                  ? setEditRating(i + 1)
-                                  : setRating(i + 1)
-                              }
-                            />
-                          ) : (
-                            <AiOutlineStar
-                              key={i}
-                              className="mr-1 cursor-pointer"
-                              size={25}
-                              color="rgb(246,186,0)"
-                              //onClick={() => setRating(i)}
-                              onClick={() =>
-                                isEditing
-                                  ? setEditRating(i + 1)
-                                  : setRating(i + 1)
-                              }
-                            />
-                          )
-                        )}
-                      </div>
-                      {/* <textarea
+                    <div className="flex w-full ml-2 pb-3">
+                      {[1, 2, 3, 4, 5].map((i) =>
+                        rating >= i ? (
+                          <AiFillStar
+                            key={i}
+                            className="mr-1 cursor-pointer"
+                            color="rgb(246,186,0)"
+                            size={25}
+                            // onClick={() => setRating(i)}
+                            onClick={() =>
+                              isEditing
+                                ? setEditRating(i + 1)
+                                : setRating(i + 1)
+                            }
+                          />
+                        ) : (
+                          <AiOutlineStar
+                            key={i}
+                            className="mr-1 cursor-pointer"
+                            size={25}
+                            color="rgb(246,186,0)"
+                            //onClick={() => setRating(i)}
+                            onClick={() =>
+                              isEditing
+                                ? setEditRating(i + 1)
+                                : setRating(i + 1)
+                            }
+                          />
+                        )
+                      )}
+                    </div>
+                    {/* <textarea
                         name=""
                         value={review}
                         onChange={(e) => setReview(e.target.value)}
@@ -445,36 +459,37 @@ const CourseContentMedia = ({
                         placeholder="Write your comment..."
                         className="outline-none bg-transparent ml-3 border border-blue-200 shadow sm:w-full p-2 rounded w-[90%] sm:text-[18px]"
                       ></textarea> */}
-                      <textarea
-                        value={isEditing ? editReview : review}
-                        onChange={(e) =>
-                          isEditing
-                            ? setEditReview(e.target.value)
-                            : setReview(e.target.value)
-                        }
-                        rows={2}
-                        placeholder="Add Review"
-                        className="w-[80%] border border-[#bbb] rounded-sm p-2"
-                      ></textarea>
-                    </div>
+                    <textarea
+                      value={isEditing ? editReview : review}
+                      onChange={(e) =>
+                        isEditing
+                          ? setEditReview(e.target.value)
+                          : setReview(e.target.value)
+                      }
+                      rows={2}
+                      placeholder="Add Review"
+                      className="w-[80%] border border-[#bbb] rounded-sm p-2"
+                    ></textarea>
                   </div>
-                  <div className="w-full flex justify-end">
-                    <div
-                      className={`!w-[110px] !h-[40px] text-[18px] mt-5 bg-blue-500 rounded-full border text-center py-2 text-white font-[600] hover:bg-white hover:text-blue-800 hover:border-blue-800 ${
-                        isReviewLoading && "cursor-no-drop"
-                      } `}
-                      onClick={isReviewLoading ? () => {} : handleReviewSubmit}
-                    >
-                      {isEditing ? "Update" : "Submit"}
-                    </div>
+                </div>
+                <div className="w-full flex justify-end">
+                  <div
+                    className={`!w-[110px] !h-[40px] text-[18px] mt-5 bg-blue-500 rounded-full border text-center py-2 text-white font-[600] hover:bg-white hover:text-blue-800 hover:border-blue-800 ${
+                      isReviewLoading && "cursor-no-drop"
+                    } `}
+                    onClick={isReviewLoading ? () => {} : handleReviewSubmit}
+                  >
+                    {isEditing ? "Update" : "Submit"}
                   </div>
-                </>
-              ))}
+                </div>
+              </>
+            )}
             <br />
             <div className="w-full bg-[#ffffff3b]">
               <div className="w-full mb-5 h-full">
-                {(course.reviews && [...course.reviews].reverse()).map(
-                  (item: any, index: number) => (
+                {course &&
+                  course.reviews &&
+                  [...course.reviews].reverse().map((item: any) => (
                     <div className="w-full my-5">
                       <div className="w-full flex">
                         <div>
@@ -511,8 +526,7 @@ const CourseContentMedia = ({
                         </div>
                       </div>
                     </div>
-                  )
-                )}
+                  ))}
               </div>
             </div>
           </>
@@ -570,8 +584,6 @@ const CommentReply = ({
   setAnswer,
   setQuestionId,
   handleAnswerSubmit,
-  user,
-  questions,
 }: any) => {
   return (
     <>
@@ -595,10 +607,8 @@ const CommentReply = ({
 };
 
 const CommentItem = ({
-  data,
-  activeVideo,
   item,
-  index,
+
   setQuestionId,
   answer,
   setAnswer,

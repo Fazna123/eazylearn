@@ -53,16 +53,16 @@ const CourseContentList: FC<Props> = (props: Props) => {
         props.isDemo && "ml-[-30px] sticky top-24 left-0 z-30"
       }`}
     >
-      {videoSections.map((section: string, sectionIndex: number) => {
+      {videoSections.map((section: string) => {
         const isSectionVisible = visibleSections.has(section);
         const sectionVideos: any[] = courseData.filter(
           (item: any) => item.videoSection === section
         );
         const sectionVideoCount: number = sectionVideos.length;
-        const sectionVideoLength: number = sectionVideos.reduce(
-          (totalLength: number, item: any) => totalLength + item.videoLength,
-          0
-        );
+        // const sectionVideoLength: number = sectionVideos.reduce(
+        //   (totalLength: number, item: any) => totalLength + item.videoLength,
+        //   0
+        // );
 
         const sectionStartIndex: number = totalCount;
         totalCount += sectionVideoCount;

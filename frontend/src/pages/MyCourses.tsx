@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 // import swal from "sweetalert";
 
 const MyCourses = () => {
-  const [fetching, setFetching] = useState(false);
+  const [, setFetching] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   useEffect(() => {

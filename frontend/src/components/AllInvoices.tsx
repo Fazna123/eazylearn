@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  //GridToolbar,
+  GridToolbarContainer,
+  GridToolbarExport,
+} from "@mui/x-data-grid";
 import { Box } from "@mui/material";
 import Spinner from "./Spinner";
 import { getAllOrders } from "../utils/endPoint";
 import swal from "sweetalert";
-import { AiOutlineMail } from "react-icons/ai";
+
 import { format } from "timeago.js";
 
 type Props = {
@@ -79,6 +84,13 @@ const AllInvoices = ({ isDashboard }: Props) => {
     createdAt: format(item.createdAt),
   }));
 
+  const CustomToolbar = () => {
+    return (
+      <GridToolbarContainer>
+        <GridToolbarExport />
+      </GridToolbarContainer>
+    );
+  };
   return (
     <div className={`${isDashboard ? "mt-[20px]" : "mt-[0px] w-[90%]"}`}>
       {loading ? (
@@ -148,7 +160,8 @@ const AllInvoices = ({ isDashboard }: Props) => {
               checkboxSelection={!isDashboard}
               rows={rows}
               columns={columns}
-              components={!isDashboard ? { Toolbar: GridToolbar } : {}}
+              // components={!isDashboard ? { Toolbar: GridToolbar } : {}}
+              {...(!isDashboard && { components: { Toolbar: CustomToolbar } })}
             />
           </Box>
         </Box>

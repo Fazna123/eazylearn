@@ -3,9 +3,7 @@ import { getCourses } from "../utils/endPoint";
 import CourseCard from "./CourseCard";
 import { useNavigate } from "react-router-dom";
 
-type Props = {};
-
-const CourseList = (props: Props) => {
+const CourseList = () => {
   const [courses, setCourses] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();

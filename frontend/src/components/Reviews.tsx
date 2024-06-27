@@ -1,7 +1,4 @@
-import React from "react";
 import ReviewCard from "./ReviewCard";
-
-type Props = {};
 
 const sampleReviews = [
   {
@@ -34,7 +31,7 @@ const sampleReviews = [
   },
 ];
 
-const Reviews = (props: Props) => {
+const Reviews = () => {
   return (
     <div className=" bg-blue-50 m-0 p-10">
       <br />

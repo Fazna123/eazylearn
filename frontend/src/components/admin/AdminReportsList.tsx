@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridToolbarContainer,
+  GridToolbarExport,
+} from "@mui/x-data-grid";
 import { Box, Button, TextField } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 import swal from "sweetalert";
-import { AiOutlineMail } from "react-icons/ai";
-import { format } from "timeago.js";
+// import { AiOutlineMail } from "react-icons/ai";
+// import { format } from "timeago.js";
 import { getAllOrders } from "../../utils/endPoint";
 import Spinner from "../Spinner";
 import jsPDF from "jspdf";
@@ -80,7 +84,7 @@ const AdminReportsList = ({ isDashboard }: Props) => {
       tableRows.push(orderData);
     });
 
-    doc.autoTable(tableColumn, tableRows, { startY: 20 });
+    (doc as any).autoTable(tableColumn, tableRows, { startY: 20 });
     doc.text("Order Report", 14, 15);
     doc.save("orders_report.pdf");
   };
@@ -109,6 +113,14 @@ const AdminReportsList = ({ isDashboard }: Props) => {
     // createdAt: format(item.createdAt),
   }));
 
+  const CustomToolbar = () => {
+    return (
+      <GridToolbarContainer>
+        <GridToolbarExport />
+      </GridToolbarContainer>
+    );
+  };
+
   return (
     <div className={`${isDashboard ? "mt-[20px]" : "mt-[0px] w-full"}`}>
       {loading ? (
@@ -121,15 +133,24 @@ const AdminReportsList = ({ isDashboard }: Props) => {
                 label="From"
                 value={fromDate}
                 onChange={(date) => setFromDate(date)}
-                renderInput={(params) => <TextField {...params} />}
-                sx={{ mr: 2 }}
+                slots={{
+                  textField: (textFieldProps) => (
+                    <TextField {...textFieldProps} />
+                  ),
+                }}
+                sx={{ ml: 2 }}
               />
               <DatePicker
                 label="To"
                 value={toDate}
                 onChange={(date) => setToDate(date)}
                 sx={{ ml: 2 }}
-                renderInput={(params) => <TextField {...params} />}
+                //renderInput={(params: any) => <TextField {...params} />}
+                slots={{
+                  textField: (textFieldProps) => (
+                    <TextField {...textFieldProps} />
+                  ),
+                }}
               />
               <Button
                 variant="contained"
@@ -204,7 +225,8 @@ const AdminReportsList = ({ isDashboard }: Props) => {
               checkboxSelection={!isDashboard}
               rows={rows}
               columns={columns}
-              components={!isDashboard ? { Toolbar: GridToolbar } : {}}
+              // components={!isDashboard ? { Toolbar: GridToolbar } : undefined}
+              {...(!isDashboard && { components: { Toolbar: CustomToolbar } })}
             />
           </Box>
         </Box>

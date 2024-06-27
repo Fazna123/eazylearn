@@ -9,18 +9,14 @@ import CourseData from "../components/instructor/CourseData";
 import CourseContent from "../components/instructor/CourseContent";
 import CoursePreview from "../components/instructor/CoursePreview";
 import { useDispatch } from "react-redux";
-import {
-  createCourseStart,
-  createCourseSuccess,
-  createCourseFailure,
-} from "../redux/courses/courseSlice";
+import { createCourseFailure } from "../redux/courses/courseSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 
 export default function EditCourse() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [courseFetchData, setCourseFetchData] = useState({});
+  //const [courseFetchData, setCourseFetchData] = useState({});
 
   const params = useParams();
   const id = params?.id;
@@ -134,7 +130,7 @@ export default function EditCourse() {
   };
   // const {  courseSuccess, courseLoaading, courseError } =
   //   useSelector((state: any) => state.course);
-  const handleCourseCreate = async (e: any) => {
+  const handleCourseCreate = async () => {
     const data = courseData;
     if (Object.keys(data).length === 0) {
       toast("Fill all the fields and try again");
@@ -206,7 +202,7 @@ export default function EditCourse() {
               )}
             </div>
             <div className="w-[20%] h-full -z-0 top-20 mt-[100px] right-0">
-              <CourseOptions active={active} setActive={setActive} />
+              <CourseOptions active={active} />
             </div>
           </div>
           <div>

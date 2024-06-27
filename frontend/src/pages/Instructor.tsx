@@ -18,7 +18,7 @@ export default function Instructor() {
   // }
 
   const role: boolean = currentUser && currentUser.user.role === "instructor";
-  const [fetching, setFetching] = useState(false);
+  const [, setFetching] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   useEffect(() => {

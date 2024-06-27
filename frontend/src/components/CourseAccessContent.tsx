@@ -15,17 +15,19 @@ type Props = {
 const CourseAccessContent = ({ id, user }: Props) => {
   console.log(id);
   const [loading, setLoading] = useState(false);
-  const [courseContent, setCourseContent] = useState({});
+  const [courseContent, setCourseContent] = useState<any>({});
+
   const [activeVideo, setActiveVideo] = useState(0);
   const fetchData = async (id: string) => {
     setLoading(true);
     const { success, error, data } = await getCourseInfo(id);
     console.log(data);
-    if (data.course && data.course.courseData) {
+    if (success && data.course && data.course.courseData) {
       setLoading(false);
       setCourseContent(data.course.courseData);
     } else {
       // Handle the case where courseData is undefined or empty
+      console.log(error);
       toast("Course data not found");
     }
     // if (data) {

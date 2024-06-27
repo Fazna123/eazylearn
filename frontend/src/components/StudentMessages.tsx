@@ -99,7 +99,10 @@ function StudentMessages() {
 
   const onlineCheck = (chat: any) => {
     const chatMembers = chat.members.find((member: any) => member !== userId);
-    const online = onlineUsers.find((user) => user?.userId === chatMembers);
+    if (!chatMembers) return false;
+    const online = onlineUsers.find(
+      (user: any) => user?.userId === chatMembers
+    );
     //setActiveStatus(online ? true : false);
     return online ? true : false;
   };
@@ -254,15 +257,29 @@ const MessageList = ({
   userData,
   online,
   setActiveStatus,
+}: {
+  data: any;
+  index: number;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setCurrentChat: React.Dispatch<React.SetStateAction<Conversation | null>>;
+  me: string;
+  setUserData: React.Dispatch<React.SetStateAction<any>>;
+  userData: any;
+  online: boolean;
+  setActiveStatus: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [active, setActive] = useState(0);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState<{ name: any; avatar: any }>({
+    name: undefined,
+    avatar: undefined,
+  });
   const navigate = useNavigate();
   const handleClick = (id: string) => {
     navigate(`/inbox?${id}`);
     setOpen(true);
   };
 
+  console.log(userData);
   useEffect(() => {
     //setActiveStatus(online);
     const userId = data.members.find((user: any) => user !== me);
@@ -286,13 +303,18 @@ const MessageList = ({
       className={`w-[97%] flex p-2 px-3 mx-4 ${
         active === index ? "bg-slate-200" : "bg-transparent"
       } cursor-pointer`}
-      onClick={(e) =>
-        setActive(index) ||
-        handleClick(data._id) ||
-        setCurrentChat(data) ||
-        setUserData(user) ||
-        setActiveStatus(online)
-      }
+      onClick={() => {
+        // setActive(index) ||
+        // handleClick(data._id) ||
+        // setCurrentChat(data) ||
+        // setUserData(user) ||
+        // setActiveStatus(online)
+        setActive(index);
+        handleClick(data._id);
+        setCurrentChat(data);
+        setUserData(user);
+        setActiveStatus(online);
+      }}
     >
       <div className="relative">
         <img
@@ -327,6 +349,16 @@ const StudentInboxMessage = ({
   userData,
   activeStatus,
   scrollRef,
+}: {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  newMessage: string;
+  setNewMessage: React.Dispatch<React.SetStateAction<string>>;
+  sendMessageHandler: (e: React.FormEvent<HTMLFormElement>) => void;
+  messages: Message[];
+  instructorId: string;
+  userData: any; // Adjust as per your actual userData type
+  activeStatus: boolean;
+  scrollRef: React.MutableRefObject<HTMLDivElement | null>;
 }) => {
   return (
     <div className="w-full min-h-full flex flex-col justify-between">
@@ -362,7 +394,7 @@ const StudentInboxMessage = ({
 
       <div className="px-3 h-[63vh] overflow-y-scroll">
         {messages &&
-          messages.map((item, index) => (
+          messages.map((item: any) => (
             <div
               key={item._id}
               className={`flex w-full my-2 ${

@@ -4,14 +4,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import CourseAccessContent from "../components/CourseAccessContent";
 
-type Props = {};
-
 const CourseAccessPage = () => {
-  const params = useParams();
+  const params = useParams<{ id?: string }>();
   const id = params.id;
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState<any>({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,7 +17,7 @@ const CourseAccessPage = () => {
       const { success, data, error } = await getUserInfo();
       console.log("data in access page", data);
 
-      if (data) {
+      if (success && data) {
         setUser(data);
         setLoading(false);
         const isPurchased = data.courses.find((item: any) => item._id === id);
@@ -39,9 +37,7 @@ const CourseAccessPage = () => {
       {loading ? (
         <Spinner />
       ) : (
-        <div>
-          <CourseAccessContent id={id} user={user} />
-        </div>
+        <div>{id && <CourseAccessContent id={id} user={user} />}</div>
       )}
     </>
   );

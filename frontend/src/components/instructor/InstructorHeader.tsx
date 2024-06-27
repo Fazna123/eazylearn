@@ -1,7 +1,7 @@
-import { useState } from "react";
+//import { useState } from "react";
 
 export default function InstructorHeader() {
-  const [open, setOpen] = useState(false);
+  //const [open, setOpen] = useState(false);
   return (
     <>
       <div className="flex items-center justify-end p-5 fixed top-15 right-0 w-full">

@@ -6,16 +6,15 @@ import { useEffect, useState } from "react";
 import { format } from "timeago.js";
 import swal from "sweetalert";
 import { Link } from "react-router-dom";
-type Props = {};
 
-const AllCourses = (props: Props) => {
+const AllCourses = () => {
   const [rows, setRows] = useState<any[]>([]);
 
   useEffect(() => {
     fetch("/api/user/get-myteachings")
       .then((response) => response.json())
       .then((data) => {
-        const newRows = data?.courses.map((course, index) => ({
+        const newRows = data?.courses.map((course: any, index: number) => ({
           id: index + 1,
           ...course,
           createdAt: format(course.createdAt),

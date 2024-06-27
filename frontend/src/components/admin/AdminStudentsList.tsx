@@ -7,15 +7,14 @@ import { useEffect, useState } from "react";
 //import { useNavigate } from "react-router-dom";
 
 import { format } from "timeago.js";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { blockUser, unBlockUser } from "../../utils/endPoint";
-type Props = {};
 
-const AdminInstructorsList = (props: Props) => {
+const AdminInstructorsList = () => {
   const [rows, setRows] = useState<any[]>([]);
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState("");
+  //const [modalOpen, setModalOpen] = useState(false);
+  //const [selectedUserId, setSelectedUserId] = useState("");
   const [blockedUsers, setBlockedUsers] = useState<string[]>([]);
   const [unblockedUsers, setUnblockedUsers] = useState<string[]>([]);
 

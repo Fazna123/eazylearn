@@ -387,7 +387,7 @@ const CourseContent: FC<Props> = ({
                     <div>
                       <p
                         className="flex items-center text-sm text-blue-800 cursor-pointer"
-                        onClick={(e: any) => {
+                        onClick={() => {
                           handleUploadVideo(index);
                         }}
                       >
@@ -408,7 +408,7 @@ const CourseContent: FC<Props> = ({
                     <div>
                       <p
                         className="flex items-center text-sm text-blue-800 cursor-pointer"
-                        onClick={(e: any) => {
+                        onClick={() => {
                           newContentHandler(item);
                         }}
                       >

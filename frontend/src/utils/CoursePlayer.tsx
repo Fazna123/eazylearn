@@ -7,7 +7,7 @@ type Props = {
 };
 
 const CoursePlayer: FC<Props> = ({ videoUrl }) => {
-  const [videoData, setVideoData] = useState({
+  const [] = useState({
     playbackInfo: "",
   });
 

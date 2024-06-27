@@ -1,51 +1,51 @@
 import { FC, useEffect, useState } from "react";
 import UserAnalytics from "./UserAnalytics";
 import { BiBorderLeft } from "react-icons/bi";
-import { Box, CircularProgress } from "@mui/material";
+//import { Box, CircularProgress } from "@mui/material";
 import { PiBookOpen, PiCurrencyDollar, PiUsersFourLight } from "react-icons/pi";
 import OrderAnalytics from "./OrderAnalytics";
 import AllInvoices from "../AllInvoices";
-import {
-  getAllOrders,
-  getDashboardData,
-  getOrderAnalytics,
-} from "../../utils/endPoint";
-import CourseAnalytics from "./CourseAnalytics";
+import { getAllOrders, getDashboardData } from "../../utils/endPoint";
+//import CourseAnalytics from "./CourseAnalytics";
 
 type Props = {
   open: boolean;
   value?: number;
 };
 
-const CircularProgressWithLabel: FC<Props> = ({ open, value }) => {
-  return (
-    <Box sx={{ position: "relative", display: "inline-flex" }}>
-      <CircularProgress
-        variant="determinate"
-        value={value}
-        size={45}
-        color={value && value > 99 ? "info" : "error"}
-        thickness={4}
-        style={{ zIndex: open ? -1 : 1 }}
-      />
-      <Box
-        sx={{
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          position: "absolute",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      ></Box>
-    </Box>
-  );
-};
+// const CircularProgressWithLabel: FC<Props> = ({ open, value }) => {
+//   return (
+//     <Box sx={{ position: "relative", display: "inline-flex" }}>
+//       <CircularProgress
+//         variant="determinate"
+//         value={value}
+//         size={45}
+//         color={value && value > 99 ? "info" : "error"}
+//         thickness={4}
+//         style={{ zIndex: open ? -1 : 1 }}
+//       />
+//       <Box
+//         sx={{
+//           top: 0,
+//           left: 0,
+//           bottom: 0,
+//           right: 0,
+//           position: "absolute",
+//           display: "flex",
+//           alignItems: "center",
+//           justifyContent: "center",
+//         }}
+//       ></Box>
+//     </Box>
+//   );
+// };
 
-const DashboardWidgets: FC<Props> = ({ open }: Props) => {
-  const [dashData, setDashData] = useState({});
+const DashboardWidgets: FC<Props> = ({}: Props) => {
+  const [dashData, setDashData] = useState<{
+    totalCourses: any;
+    totalOrders: any;
+    totalStudents: any;
+  }>({ totalCourses: 0, totalStudents: 0, totalOrders: 0 });
   const [orderData, setOrderData] = useState([]);
 
   const fetchOrderAnalytics = async () => {

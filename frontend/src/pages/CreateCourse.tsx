@@ -191,7 +191,7 @@ export default function CreateCourse() {
                 )}
               </div>
               <div className="w-[20%] h-full -z-0 top-20 mt-[100px] right-0">
-                <CourseOptions active={active} setActive={setActive} />
+                <CourseOptions active={active} />
               </div>
             </div>
             <div>

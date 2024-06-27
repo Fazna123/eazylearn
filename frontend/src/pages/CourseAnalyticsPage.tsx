@@ -2,9 +2,7 @@ import CourseAnalytics from "../components/admin/CourseAnalytics";
 import AdminSidebar from "../components/admin/AdminSidebar";
 import Adminheader from "../components/admin/Adminheader";
 
-type Props = {};
-
-const CourseAnalyticsPage = (props: Props) => {
+const CourseAnalyticsPage = () => {
   return (
     <div className="flex w-full bg-blue-50 m-0 h-screen">
       <AdminSidebar />

@@ -9,9 +9,8 @@ import swal from "sweetalert";
 import { format } from "timeago.js";
 import { ToastContainer, toast } from "react-toastify";
 import RejectionModal from "./RejectionModal";
-type Props = {};
 
-const AdminCourseApprovalList = (props: Props) => {
+const AdminCourseApprovalList = () => {
   const [rows, setRows] = useState<any[]>([]);
   const [approvedCourses, setApprovedCourses] = useState<string[]>([]);
   const [rejectedCourses, setRejectedCourses] = useState<string[]>([]);
@@ -118,6 +117,10 @@ const AdminCourseApprovalList = (props: Props) => {
               row._id === id ? { ...row, isRejected: "Rejected" } : row
             )
           );
+          setRejectedCourses((prevRejectedCourses) => [
+            ...prevRejectedCourses,
+            id,
+          ]);
         } else {
           // Handle error response
           throw new Error("Failed to delete course");

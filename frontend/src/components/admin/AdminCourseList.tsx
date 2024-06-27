@@ -7,12 +7,11 @@ import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 
 import { format } from "timeago.js";
-import { ToastContainer, toast } from "react-toastify";
-type Props = {};
+import { ToastContainer } from "react-toastify";
 
-const AdminCourseList = (props: Props) => {
+const AdminCourseList = () => {
   const [rows, setRows] = useState<any[]>([]);
-  const [approvedCourses, setApprovedCourses] = useState<string[]>([]);
+  //const [approvedCourses, setApprovedCourses] = useState<string[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -142,7 +142,10 @@ const InstructorMessages = () => {
     const chatMembers = chat.members.find(
       (member: any) => member !== instructorId
     );
-    const online = onlineUsers.find((user) => user?.userId === chatMembers);
+    if (!chatMembers) return false;
+    const online = onlineUsers.find(
+      (user: any) => user?.userId === chatMembers
+    );
     //setActiveStatus(online ? true : false);
     return online ? true : false;
   };
@@ -180,7 +183,7 @@ const InstructorMessages = () => {
   // }, []);
   //----------------------------------------------------------------------------------
 
-  const sendMessageHandler = async (e) => {
+  const sendMessageHandler = async (e: any) => {
     e.preventDefault();
 
     if (!currentChat) return;
@@ -217,7 +220,7 @@ const InstructorMessages = () => {
 
   //---------------------------------------------------------------------------------------------
   const updateLastMessage = async () => {
-    //if (!currentChat) return;
+    if (!currentChat) return;
     socketId.emit("updateLastMessage", {
       lastMessage: newMessage,
       lastMessageId: currentUser.user._id,
@@ -300,7 +303,7 @@ const InstructorMessages = () => {
             userData={userData}
             activeStatus={activeStatus}
             scrollRef={scrollRef}
-            setMessages={setMessages}
+            //setMessages={setMessages}
           />
         )}
       </div>
@@ -320,8 +323,24 @@ const MessageList = ({
   setActiveStatus,
   instructorId,
   setConversations,
+}: {
+  data: any;
+  index: number;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setCurrentChat: React.Dispatch<React.SetStateAction<Conversation | null>>;
+  me: string;
+  setUserData: React.Dispatch<React.SetStateAction<any>>;
+  userData: any;
+  online: boolean;
+  setActiveStatus: React.Dispatch<React.SetStateAction<boolean>>;
+  instructorId: string;
+  setConversations: any;
 }) => {
-  const [user, setUser] = useState([]);
+  //const [user, setUser] = useState([]);
+  const [user, setUser] = useState<{ name: any; avatar: any }>({
+    name: undefined,
+    avatar: undefined,
+  });
   const navigate = useNavigate();
   // const handleClick = (id: string) => {
   //   navigate(`?${id}`);
@@ -380,13 +399,13 @@ const MessageList = ({
       className={`w-[97%] flex p-2 px-3 mx-4 ${
         active === index ? "bg-slate-200" : "bg-transparent"
       } cursor-pointer`}
-      onClick={(e) =>
-        setActive(index) ||
-        handleClick(data._id) ||
-        setCurrentChat(data) ||
-        setUserData(user) ||
-        setActiveStatus(online)
-      }
+      onClick={() => {
+        setActive(index);
+        handleClick(data._id);
+        setCurrentChat(data);
+        setUserData(user);
+        setActiveStatus(online);
+      }}
     >
       <div className="relative">
         <img
@@ -423,6 +442,16 @@ const InstructorInboxMessage = ({
   userData,
   activeStatus,
   scrollRef,
+}: {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  newMessage: string;
+  setNewMessage: React.Dispatch<React.SetStateAction<string>>;
+  sendMessageHandler: (e: React.FormEvent<HTMLFormElement>) => void;
+  messages: Message[];
+  instructorId: string;
+  userData: any; // Adjust as per your actual userData type
+  activeStatus: boolean;
+  scrollRef: React.MutableRefObject<HTMLDivElement | null>;
 }) => {
   return (
     <div className="w-full min-h-full flex flex-col justify-between">
@@ -458,7 +487,7 @@ const InstructorInboxMessage = ({
 
       <div className="px-3 h-[63vh] overflow-y-scroll">
         {messages &&
-          messages.map((item, index) => (
+          messages.map((item: any) => (
             <div
               className={`flex w-full my-2 ${
                 item.sender === instructorId ? "justify-end" : "justify-start"

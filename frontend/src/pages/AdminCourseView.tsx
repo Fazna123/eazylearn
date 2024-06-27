@@ -6,8 +6,13 @@ import CourseView from "../components/CourseView";
 type Props = {};
 
 const AdminCourseView: FC<Props> = ({}) => {
-  const params = useParams();
-  const courseId: string = params.id;
+  const params = useParams<{ id?: string }>();
+  const courseId: string | undefined = params.id;
+
+  if (!courseId) {
+    // Handle case where courseId is undefined (optional)
+    return <div>No course ID provided!</div>;
+  }
 
   return (
     <div className="bg-blue-50 px-[10%] py-[3%] h-full">

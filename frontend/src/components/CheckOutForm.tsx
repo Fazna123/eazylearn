@@ -1,15 +1,14 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import {
   AddressElement,
   LinkAuthenticationElement,
   PaymentElement,
-  ShippingAddressElement,
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
 import { createOrder } from "../utils/endPoint";
-import { useSelector } from "react-redux";
-import { redirect, useNavigate } from "react-router-dom";
+//import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import socketIO from "socket.io-client";
 const ENDPOINT = import.meta.env.VITE_PUBLIC_BASE_API;
@@ -22,17 +21,17 @@ type Props = {
   user: any;
 };
 
-const CheckOutForm: FC<Props> = ({ setOpen, data, user }: Props) => {
+const CheckOutForm: FC<Props> = ({ data, user }: Props) => {
   const navigate = useNavigate();
   const course = data;
   const stripe = useStripe();
   const elements = useElements();
   const [orderData, setOrderData] = useState({});
   const [message, setMessage] = useState<any>("");
-  const [loadUser, setLoadUser] = useState(false);
+  //const [loadUser, setLoadUser] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [shippingAddress, setShippingAddress] = useState<any>({});
-  const { currentUser } = useSelector((state: any) => state.user);
+  //const { currentUser } = useSelector((state: any) => state.user);
   //const [createOrder, { data: orderData, error }] = useCreateOrderMutation();
 
   //const {} = useLoadUserQuery({ skip: loadUser ? false : true });
@@ -53,6 +52,7 @@ const CheckOutForm: FC<Props> = ({ setOpen, data, user }: Props) => {
       console.log(error.message);
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
       console.log(paymentIntent);
+      console.log(shippingAddress);
       setIsLoading(false);
       const { success, data, error } = await createOrder(
         course._id,
@@ -66,6 +66,7 @@ const CheckOutForm: FC<Props> = ({ setOpen, data, user }: Props) => {
           message: `A new order recieved for course ${course?.name}`,
           userId: user._id,
         });
+        console.log(orderData);
         navigate(`/course-access/${course._id}`);
       }
       if (error) {

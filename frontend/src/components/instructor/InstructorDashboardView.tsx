@@ -19,9 +19,18 @@ import {
 } from "recharts";
 import { PiBookOpen, PiUsersFourLight } from "react-icons/pi";
 
+type DashboardData = {
+  monthlyCount: { count: number }[]; // Define the correct type structure
+  monthlyRevenue: { year: number; month: number; totalAmount: number }[]; // Define the correct type structure
+};
+
 const InstructorDashboardView = () => {
   const [courseData, setCourseData] = useState([]);
-  const [dashData, setDashData] = useState({
+  // const [dashData, setDashData] = useState({
+  //   monthlyCount: [],
+  //   monthlyRevenue: [],
+  // });
+  const [dashData, setDashData] = useState<DashboardData>({
     monthlyCount: [],
     monthlyRevenue: [],
   });
@@ -49,9 +58,9 @@ const InstructorDashboardView = () => {
     fetchAnalytics();
   }, []);
 
-  const processData = (data: any) => {
-    const { monthlyRevenue, monthlyCount } = dashData;
-
+  const processData = (data: DashboardData) => {
+    // const { monthlyRevenue, monthlyCount } = dashData;
+    const { monthlyRevenue, monthlyCount } = data;
     // Assuming monthlyRevenue and monthlyCount are ordered and match by index
     return monthlyRevenue.map((revenue, index) => {
       const count = monthlyCount[index]?.count;

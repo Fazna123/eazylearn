@@ -11,14 +11,14 @@ type Props = {
 };
 
 const CourseDetail = ({ id }: Props) => {
-  const [route, setRoute] = useState("Login");
-  const [open, setOpen] = useState(false);
+  //const [route, setRoute] = useState("Login");
+  //const [open, setOpen] = useState(false);
   const [course, setCourse] = useState({});
   const [loading, setLoading] = useState(false);
   const [configData, setConfigData] = useState({});
   const [stripePromise, setStripePromise] = useState<any>(null);
   const [clientSecret, setClientSecret] = useState("");
-  const publishableKey = configData;
+  //const publishableKey = configData;
 
   useEffect(() => {
     const fetchDataAndPayment = async (id: string) => {
@@ -64,6 +64,7 @@ const CourseDetail = ({ id }: Props) => {
       if (success) {
         setConfigData(publishableKey);
         setStripePromise(loadStripe(publishableKey));
+        console.log(configData);
       }
     };
     fetchDataConfig();

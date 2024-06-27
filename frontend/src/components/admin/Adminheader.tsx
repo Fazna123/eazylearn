@@ -52,7 +52,7 @@ export default function Adminheader() {
   // }, [notifications]);
 
   useEffect(() => {
-    socketId.on("newNotification", (data) => {
+    socketId.on("newNotification", () => {
       fetchNotificatons();
       playerNotificationSound();
     });
@@ -89,7 +89,7 @@ export default function Adminheader() {
           <div className="w-[350px] h-auto bg-blue-950 text-white shadow-xl absolute top-16 z-99 rounded">
             <h5 className="text-center text-[20px] p-3">Notifications</h5>
             {notifications &&
-              notifications.map((item: any, index: number) => (
+              notifications.map((item: any) => (
                 <div className="border-gray-100 border-2 bg-blue-900">
                   <div className="w-full flex items-center justify-between -2">
                     <p className="text-white">{item.title}</p>

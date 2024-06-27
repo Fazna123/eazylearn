@@ -11,8 +11,8 @@ import { Elements } from "@stripe/react-stripe-js";
 import CheckOutForm from "./CheckOutForm";
 import Ratings from "../utils/Ratings";
 import { format } from "timeago.js";
-import { createConversation, getMyInfo, getUserInfo } from "../utils/endPoint";
-import Instructor from "../pages/Instructor";
+import { createConversation, getMyInfo } from "../utils/endPoint";
+//import Instructor from "../pages/Instructor";
 import swal from "sweetalert";
 
 type Props = {
@@ -34,7 +34,10 @@ const CourseDetailView = ({ data, stripePromise, clientSecret }: Props) => {
   console.log(courseDetails.instructor);
 
   const { currentUser: user } = useSelector((state: any) => state.user);
-  const [currentUser, setCurrentUser] = useState({});
+  const [currentUser, setCurrentUser] = useState<{ _id: any; courses: any }>({
+    _id: undefined,
+    courses: {},
+  });
   const [open, setOpen] = useState(false);
   //const [isPurchased, setIsPurchased] = useState(false);
 
@@ -43,7 +46,7 @@ const CourseDetailView = ({ data, stripePromise, clientSecret }: Props) => {
 
   const discountPercentagePrice = discountPercentage.toFixed(0);
 
-  const handleOrder = (e: any) => {
+  const handleOrder = () => {
     if (!user || !user.user) {
       navigate("/signin");
     } else {
@@ -75,8 +78,12 @@ const CourseDetailView = ({ data, stripePromise, clientSecret }: Props) => {
       console.log("User info:", data); // Log user info
       console.log("Current course ID:", currentCourseId); // Log current course ID
       if (success) {
-        setCurrentUser(data.user);
+        //setCurrentUser(data.user);
+        setCurrentUser(data.user || { _id: undefined, courses: [] });
+
         //setIsPurchased(data.courses.includes(currentCourseId));
+      } else {
+        console.log(error);
       }
     };
     fetchData();
@@ -84,9 +91,13 @@ const CourseDetailView = ({ data, stripePromise, clientSecret }: Props) => {
 
   console.log("current user", currentUser);
 
+  // const isPurchased =
+  //   currentUser &&
+  //   currentUser?.courses?.find((item: any) => item._id === currentCourseId);
   const isPurchased =
     currentUser &&
-    currentUser?.courses?.find((item: any) => item._id === currentCourseId);
+    Array.isArray(currentUser.courses) &&
+    currentUser.courses.find((item: any) => item._id === currentCourseId);
   console.log(currentUser);
   console.log("current user courses", currentUser.courses);
   console.log("purchased", isPurchased);

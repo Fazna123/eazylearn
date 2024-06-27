@@ -7,13 +7,11 @@ import { useEffect, useState } from "react";
 //import { useNavigate } from "react-router-dom";
 
 import { format } from "timeago.js";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { blockUser, unBlockUser } from "../../utils/endPoint";
 //import { useDispatch, useSelector } from "react-redux";
 
-type Props = {};
-
-const AdminInstructorsList = (props: Props) => {
+const AdminInstructorsList = () => {
   const [rows, setRows] = useState<any[]>([]);
   //const [approvedInstructors, setApprovedInstructors] = useState<string[]>([]);
   const [blockedInstructors, setBlockedInstructors] = useState<string[]>([]);

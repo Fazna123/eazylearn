@@ -8,7 +8,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import { AiOutlineDelete, AiOutlineMail } from "react-icons/ai";
+import { AiOutlineMail } from "react-icons/ai";
 import swal from "sweetalert";
 
 import { useEffect, useState } from "react";
@@ -16,14 +16,26 @@ import { useEffect, useState } from "react";
 
 import { format } from "timeago.js";
 import { ToastContainer, toast } from "react-toastify";
-type Props = {};
 
-const AdminInstructorApprovalList = (props: Props) => {
-  const [rows, setRows] = useState<any[]>([]);
+interface Instructor {
+  _id: string;
+  id: number;
+  name: string;
+  email: string;
+  isBlock: string;
+  isApproved: string;
+  createdAt: string;
+  isRejected: string;
+  verification: Record<string, string>;
+}
+
+const AdminInstructorApprovalList = () => {
+  const [rows, setRows] = useState<Instructor[]>([]);
   const [approvedInstructors, setApprovedInstructors] = useState<string[]>([]);
   const [rejectedInstructors, setRejectedInstructors] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
-  const [selectedInstructor, setSelectedInstructor] = useState<any>(null);
+  const [selectedInstructor, setSelectedInstructor] =
+    useState<Instructor | null>(null);
   //const navigate = useNavigate();
 
   useEffect(() => {
@@ -92,6 +104,10 @@ const AdminInstructorApprovalList = (props: Props) => {
         if (response.ok) {
           // Deletion successful
           setRows(rows.filter((user) => user._id !== id));
+          setRejectedInstructors((prevRejectedInstructors) => [
+            ...prevRejectedInstructors,
+            id,
+          ]);
           swal("User rejected successfully!", {
             icon: "success",
           });
@@ -117,7 +133,7 @@ const AdminInstructorApprovalList = (props: Props) => {
       (instructor) => instructor._id === instructorId
     );
     console.log("details", selectedInstructor);
-    setSelectedInstructor(selectedInstructor);
+    setSelectedInstructor(selectedInstructor || null);
     setOpen(true);
   };
 

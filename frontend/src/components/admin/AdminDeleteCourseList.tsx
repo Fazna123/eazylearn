@@ -52,6 +52,7 @@ const AdminDeleteCourseList = () => {
             ...prevRevokedCourses,
             id,
           ]);
+          console.log(revokedCourses);
         }
       } else {
         toast.error(`Failed to revoke course with ID ${id}.`);

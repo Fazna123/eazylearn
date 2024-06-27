@@ -60,7 +60,7 @@ const CourseInformation: FC<Props> = ({
     if (file) {
       const reader = new FileReader();
 
-      reader.onload = async (e: any) => {
+      reader.onload = async () => {
         if (reader.readyState === 2) {
           const imageData = new FormData();
           imageData.append("file", file); // Append the file, not reader.result
@@ -125,7 +125,7 @@ const CourseInformation: FC<Props> = ({
     const file = e.dataTransfer.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = () => {
         setCourseInfo({ ...courseInfo, thumbnail: reader.result });
       };
       reader.readAsDataURL(file);
