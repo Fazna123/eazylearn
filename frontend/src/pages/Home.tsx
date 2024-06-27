@@ -9,13 +9,14 @@ import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import Reviews from "../components/Reviews";
 
 export default function Home() {
-  const [courses, setCourses] = useState<any[]>([]);
+  const [courses, setCourses] = useState<any[]>([]); // Assuming 'courses' can be any type
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleCourses, setVisibleCourses] = useState<any[]>([]);
   const fetchCourses = async () => {
     const { success, error, data } = await getCourses();
 
-    if (success) {
+    if (success && data && data.courses) {
       setCourses(data?.courses);
       setVisibleCourses(data?.courses.slice(0, 10));
       console.log(data);
@@ -37,6 +38,11 @@ export default function Home() {
   };
 
   const updateVisibleCourses = () => {
+    if (!courses || !courses.length) {
+      // Handle case where courses are not yet loaded or empty
+      //setVisibleCourses([]);
+      return;
+    }
     const start = currentIndex * 10;
     const end = start + 10;
     setVisibleCourses(courses.slice(start, end));
@@ -118,7 +124,7 @@ export default function Home() {
             onClick={handleNext}
             style={{
               visibility:
-                (currentIndex + 1) * 10 >= courses.length
+                (currentIndex + 1) * 10 >= courses?.length
                   ? "hidden"
                   : "visible",
             }}
