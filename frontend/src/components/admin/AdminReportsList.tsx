@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 import {
   DataGrid,
   GridToolbarContainer,
@@ -15,7 +16,7 @@ import { getAllOrders } from "../../utils/endPoint";
 import Spinner from "../Spinner";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import { format as formatDate } from "date-fns";
+//import { format } from "dayjs";
 
 type Props = {
   isDashboard: boolean;
@@ -79,7 +80,8 @@ const AdminReportsList = ({ isDashboard }: Props) => {
         order.userId.email,
         order.courseId.name,
         order.price,
-        formatDate(new Date(order.createdAt), "dd/MM/yyyy"),
+        // formatDate(new Date(order.createdAt), "dd/MM/yyyy"),
+        dayjs(new Date(order.createdAt)).format("DD/MM/YYYY"),
       ];
       tableRows.push(orderData);
     });
@@ -109,7 +111,7 @@ const AdminReportsList = ({ isDashboard }: Props) => {
     userEmail: item.userId.email,
     courseTitle: item.courseId.name,
     price: item.price,
-    createdAt: formatDate(new Date(item.createdAt), "dd/MM/yyyy"),
+    createdAt: dayjs(new Date(item.createdAt)).format("DD/MM/YYYY"),
     // createdAt: format(item.createdAt),
   }));
 
