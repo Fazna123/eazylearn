@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://backend.eazylearn.xyz",
+        target: "http://localhost:8000",
         secure: false,
       },
     },
