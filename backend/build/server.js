@@ -31,6 +31,9 @@ app.use("/api/chat", chat_route_1.default);
 //     message: "Invalid Route in URL",
 //   });
 // });
+app.get("/", (req, res) => {
+    res.send("Allset until now");
+});
 cloudinary_1.v2.config({
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.CLOUD_API_KEY,
