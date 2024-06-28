@@ -16,6 +16,8 @@ const createServer = () => {
   app.use(
     cors({
       origin: process.env.ORIGIN,
+      methods: ["GET", "POST", "PUT", "DELETE"],
+      credentials: true,
     })
   );
   const io = new SocketIOServer(server, {
