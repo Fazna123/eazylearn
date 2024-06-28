@@ -17,6 +17,8 @@ const createServer = () => {
     const server = http_1.default.createServer(app);
     app.use((0, cors_1.default)({
         origin: process.env.ORIGIN,
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        credentials: true,
     }));
     const io = new socket_io_1.Server(server, {
         cors: {
