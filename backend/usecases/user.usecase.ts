@@ -251,6 +251,7 @@ class UserUsecase {
       res.cookie("access_token", "", { maxAge: 0 });
       res.cookie("refresh_token", "", { maxAge: 0 });
       //console.log("req.user", req.user);
+
       const userId = req.user?._id || "";
       console.log("user:", userId);
       //console.log(`Deleting user data for user ${userId}`);
@@ -508,6 +509,15 @@ class UserUsecase {
   async getUserInfo(req: Request, res: Response) {
     try {
       const userId = req.user?._id;
+      if (!userId) {
+        return {
+          status: HttpStatus.NotFound,
+          data: {
+            success: true,
+            message: "Failed to authorize the session",
+          },
+        };
+      }
       console.log("user id in get user info", userId);
       const user = await getUserById(userId, res);
       console.log(user);
@@ -541,6 +551,15 @@ class UserUsecase {
     try {
       const userId = req.user?._id;
       console.log("user id in get user info", userId);
+      if (!userId) {
+        return {
+          status: HttpStatus.NotFound,
+          data: {
+            success: true,
+            message: "Failed to authorize the session",
+          },
+        };
+      }
       const user = await this.userRepository.getMyInfoById(userId);
       console.log(user);
       if (user) {
