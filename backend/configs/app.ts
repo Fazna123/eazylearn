@@ -13,16 +13,16 @@ const createServer = () => {
   const app = express();
   const server = http.createServer(app);
 
-  // if (process.env.NODE_ENV === "development") {
-  //   app.use(
-  //     cors({
-  //       origin: process.env.ORIGIN,
-  //       methods: ["GET", "POST", "PUT", "DELETE"],
-  //       credentials: true,
-  //     })
-  //   );
-  // }
-  app.use(cors());
+  if (process.env.NODE_ENV === "development") {
+    app.use(
+      cors({
+        origin: process.env.ORIGIN,
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        credentials: true,
+      })
+    );
+  }
+  //app.use(cors());
   const io = new SocketIOServer(server, {
     cors: {
       origin: "*",
