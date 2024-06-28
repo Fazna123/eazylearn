@@ -54,6 +54,15 @@ class OrderUsecase {
       }
 
       const id = req?.user?._id;
+      if (!id) {
+        return {
+          status: 404,
+          data: {
+            success: false,
+            message: "Need to authorize user",
+          },
+        };
+      }
       const userDetails = await this.userRepository.findUser(id);
       const user = userDetails.data;
       //console.log(user);
@@ -128,7 +137,17 @@ class OrderUsecase {
           };
         }
         user?.courses?.push(courseDetails?.course._id);
-        await redis.set(req.user?._id, JSON.stringify(user));
+        const user_id = req.user?._id;
+        if (!user_id) {
+          return {
+            status: 404,
+            data: {
+              success: false,
+              message: "Need to authorize",
+            },
+          };
+        }
+        await redis.set(user_id, JSON.stringify(user));
 
         if (courseDetails.course.purchased) {
           courseDetails.course.purchased += 1;
@@ -294,6 +313,15 @@ class OrderUsecase {
   async getInstructorMonthlyOrderAnalytics(req: Request, res: Response) {
     try {
       const instructorId = req?.user?._id;
+      if (!instructorId) {
+        return {
+          status: 404,
+          data: {
+            success: false,
+            message: `Need to authorize`,
+          },
+        };
+      }
       const response =
         await this.orderRepository.getInstructorMonthlyOrderAnalytics(
           instructorId

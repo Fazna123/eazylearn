@@ -914,6 +914,15 @@ class CourseUsecase {
   async getMyCourses(req: Request, res: Response) {
     try {
       const userId = req?.user?._id;
+      if (!userId) {
+        return {
+          status: 404,
+          data: {
+            success: false,
+            message: `Need to authorize`,
+          },
+        };
+      }
       const response = await this.courseRepository.getMyCourses(userId);
       return {
         status: response.success ? 201 : 500,

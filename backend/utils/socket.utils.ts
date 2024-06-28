@@ -27,7 +27,15 @@ class SocketUtils {
     };
 
     //Defining message object with seen property
-    const createMessage = ({ senderId, recieverId, text }) => ({
+    const createMessage = ({
+      senderId,
+      recieverId,
+      text,
+    }: {
+      senderId: string;
+      recieverId: string;
+      text: string;
+    }) => ({
       senderId,
       recieverId,
       text,
@@ -74,13 +82,13 @@ class SocketUtils {
             message.seen = true;
 
             //send a message seen event to the sender
-            // if (user) {
-            io.to(user.socketId).emit("messageSeen", {
-              senderId,
-              recieverId,
-              messageId,
-            });
-            //}
+            if (user) {
+              io.to(user.socketId).emit("messageSeen", {
+                senderId,
+                recieverId,
+                messageId,
+              });
+            }
           }
         }
       });

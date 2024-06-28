@@ -754,8 +754,8 @@ class CourseRepository {
     pageSize?: number;
   }) {
     try {
-      const pageNumber = parseInt(page, 10);
-      const limit = parseInt(pageSize, 10);
+      const pageNumber = parseInt((page ?? 1).toString(), 10);
+      const limit = parseInt((pageSize ?? 10).toString(), 10);
       const skip = (pageNumber - 1) * limit;
 
       const query: CourseQuery = { isBlock: false, isApproved: true };
@@ -888,8 +888,17 @@ class CourseRepository {
         };
       }
 
+      if (!course.reviews) {
+        return {
+          success: false,
+          message: "No reviews found for this course",
+        };
+      }
       // Find the review by ID within the course's reviews array
-      const review = course.reviews.id(reviewId);
+      //const review = course.reviews.id(reviewId);
+      const review = course.reviews.find(
+        (review) => review._id.toString() === reviewId
+      ); //changed during building
 
       if (!review) {
         return {
