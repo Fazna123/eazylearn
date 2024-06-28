@@ -6,7 +6,7 @@ import { v2 as cloudinary } from "cloudinary";
 import dotenv from "dotenv";
 
 dotenv.config();
-
+import { Request, Response } from "express";
 import userRoute from "./routes/user.route";
 import adminRoute from "./routes/admin.route";
 import courseRoute from "./routes/course.route";
@@ -34,6 +34,9 @@ app.use("/api/chat", chatRoute);
 //     message: "Invalid Route in URL",
 //   });
 // });
+app.get("/", (req: Request, res: Response) => {
+  res.send("Allset until now");
+});
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
