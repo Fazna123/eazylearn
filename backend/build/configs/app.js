@@ -12,9 +12,12 @@ const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const http_1 = __importDefault(require("http"));
 const socket_io_1 = require("socket.io");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const createServer = () => {
     const app = (0, express_1.default)();
     const server = http_1.default.createServer(app);
+    console.log("origin", process.env.ORIGIN);
     app.use((0, cors_1.default)({
         origin: process.env.ORIGIN,
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],

@@ -9,9 +9,15 @@ import cookieParser from "cookie-parser";
 import http from "http";
 import { Server as SocketIOServer } from "socket.io";
 
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const createServer = () => {
   const app = express();
   const server = http.createServer(app);
+
+  console.log("origin", process.env.ORIGIN);
 
   app.use(
     cors({
