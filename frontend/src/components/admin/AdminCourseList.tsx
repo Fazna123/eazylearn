@@ -8,6 +8,7 @@ import swal from "sweetalert";
 
 import { format } from "timeago.js";
 import { ToastContainer } from "react-toastify";
+import { BASE_URL } from "../../utils/api";
 
 const AdminCourseList = () => {
   const [rows, setRows] = useState<any[]>([]);
@@ -15,7 +16,7 @@ const AdminCourseList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("/api/user/get-approved-courses")
+    fetch(`${BASE_URL}/api/user/get-approved-courses`)
       .then((response) => response.json())
       .then((data) => {
         const newRows = data?.courses.map((course: any, index: number) => ({
@@ -68,9 +69,12 @@ const AdminCourseList = () => {
     });
     if (confirmed) {
       try {
-        const response = await fetch(`/api/user/delete-course/${id}`, {
-          method: "DELETE", // Assuming you are using DELETE method for deletion
-        });
+        const response = await fetch(
+          `${BASE_URL}/api/user/delete-course/${id}`,
+          {
+            method: "DELETE", // Assuming you are using DELETE method for deletion
+          }
+        );
         if (response.ok) {
           // Deletion successful
           setRows(rows.filter((course) => course._id !== id));

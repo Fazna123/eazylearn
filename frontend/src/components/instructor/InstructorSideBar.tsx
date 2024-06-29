@@ -1,13 +1,14 @@
 import { useDispatch } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import { signOut } from "../../redux/user/userSlice";
+import { BASE_URL } from "../../utils/api";
 
 export default function InstructorSideBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleSignOut = async () => {
     try {
-      await fetch("/api/user/logout");
+      await fetch(`${BASE_URL}/api/user/logout`);
       dispatch(signOut());
       navigate("/");
     } catch (error) {

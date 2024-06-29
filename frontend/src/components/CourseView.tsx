@@ -3,6 +3,7 @@ import CoursePlayer from "../utils/CoursePlayer";
 import Ratings from "../utils/Ratings";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../utils/api";
 
 type Props = {
   courseId: string;
@@ -22,7 +23,9 @@ const CourseView: FC<Props> = ({ courseId }) => {
   });
   useEffect(() => {
     const fetchCourseData = async () => {
-      const response = await fetch(`/api/user/get-course/${courseId}`);
+      const response = await fetch(
+        `${BASE_URL}/api/user/get-course/${courseId}`
+      );
       const data = await response.json();
       console.log("data.course", data);
       setCourseData(data.course);

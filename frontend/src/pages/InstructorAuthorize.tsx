@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import swal from "sweetalert";
+import { BASE_URL } from "../utils/api";
 const qa = [
   {
     title: "Share Your Knowledge",
@@ -57,7 +58,7 @@ function InstructorAuthorize() {
       return;
     }
     try {
-      const res = await fetch(`/api/user/instructor/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/user/instructor/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

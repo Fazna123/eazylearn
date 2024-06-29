@@ -6,12 +6,13 @@ import { useEffect, useState } from "react";
 import { format } from "timeago.js";
 import swal from "sweetalert";
 import { Link } from "react-router-dom";
+import { BASE_URL } from "../../utils/api";
 
 const AllCourses = () => {
   const [rows, setRows] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("/api/user/get-myteachings")
+    fetch(`${BASE_URL}/api/user/get-myteachings`)
       .then((response) => response.json())
       .then((data) => {
         const newRows = data?.courses.map((course: any, index: number) => ({
@@ -34,9 +35,12 @@ const AllCourses = () => {
     });
     if (confirmed) {
       try {
-        const response = await fetch(`/api/user/delete-course/${id}`, {
-          method: "DELETE", // Assuming you are using DELETE method for deletion
-        });
+        const response = await fetch(
+          `${BASE_URL}/api/user/delete-course/${id}`,
+          {
+            method: "DELETE", // Assuming you are using DELETE method for deletion
+          }
+        );
         if (response.ok) {
           // Deletion successful
           setRows(rows.filter((course) => course._id !== id));

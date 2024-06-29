@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 
 import { format } from "timeago.js";
 import { ToastContainer, toast } from "react-toastify";
+import { BASE_URL } from "../../utils/api";
 
 interface Instructor {
   _id: string;
@@ -39,7 +40,7 @@ const AdminInstructorApprovalList = () => {
   //const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("/api/user/get-instructors-approval")
+    fetch(`${BASE_URL}/api/user/get-instructors-approval`)
       .then((response) => response.json())
       .then((data) => {
         const newRows = data?.instructors.map(
@@ -69,13 +70,16 @@ const AdminInstructorApprovalList = () => {
         buttons: ["Cancel", true],
       });
       if (confirmed) {
-        const res = await fetch(`/api/user/approve-instructor/${id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ isApproved: true }),
-        });
+        const res = await fetch(
+          `${BASE_URL}/api/user/approve-instructor/${id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ isApproved: true }),
+          }
+        );
         if (res.ok) {
           toast.success(`Instructor with ID ${id} approved successfully.`);
           setApprovedInstructors((prevApprovedInstructors) => [
@@ -98,7 +102,7 @@ const AdminInstructorApprovalList = () => {
     });
     if (confirmed) {
       try {
-        const response = await fetch(`/api/user/reject-user/${id}`, {
+        const response = await fetch(`${BASE_URL}/api/user/reject-user/${id}`, {
           method: "PUT",
         });
         if (response.ok) {

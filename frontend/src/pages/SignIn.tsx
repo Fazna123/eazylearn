@@ -11,6 +11,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import { BASE_URL } from "../utils/api";
 
 export default function SignIn() {
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
@@ -65,7 +66,7 @@ export default function SignIn() {
       } else {
         dispatch(signInStart());
 
-        const res = await fetch("/api/user/login", {
+        const res = await fetch(`${BASE_URL}/api/user/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

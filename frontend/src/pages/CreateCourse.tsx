@@ -17,6 +17,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import swal from "sweetalert";
+import { BASE_URL } from "../utils/api";
 
 export default function CreateCourse() {
   const { currentUser } = useSelector((state: any) => state.user);
@@ -99,7 +100,7 @@ export default function CreateCourse() {
     } else {
       try {
         dispatch(createCourseStart());
-        const res = await fetch("/api/user/create-course", {
+        const res = await fetch(`${BASE_URL}/api/user/create-course`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

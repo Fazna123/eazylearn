@@ -1,19 +1,23 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react-swc";
 
-// console.log(process.env.BACKEND_URL);
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  server: {
-    proxy: {
-      "/api": {
-        target: "https://backend.eazylearn.xyz",
-        secure: false,
-      },
-    },
-  },
 });
+
+// console.log(process.env.BACKEND_URL);
+// https://vitejs.dev/config/
+// export default defineConfig({
+//   plugins: [react()],
+//   server: {
+//     proxy: {
+//       "/api/": {
+//         target: "https://backend.eazylearn.xyz",
+//         secure: false,
+//       },
+//     },
+//   },
+// });
 
 //export default defineConfig(({ mode }) => {
 // Load env file based on `mode` in the current working directory.

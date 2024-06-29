@@ -20,6 +20,7 @@ import { BiMessage } from "react-icons/bi";
 import { VscVerifiedFilled } from "react-icons/vsc";
 import Ratings from "../utils/Ratings";
 import socketIO from "socket.io-client";
+import { BASE_URL } from "../utils/api";
 
 const ENDPOINT = import.meta.env.VITE_PUBLIC_BASE_API;
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
@@ -166,13 +167,16 @@ const CourseContentMedia = ({
     courseId: string
   ) => {
     try {
-      const response = await fetch(`/api/user/edit-review/${courseId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ comment, rating, reviewId }),
-      });
+      const response = await fetch(
+        `${BASE_URL}/api/user/edit-review/${courseId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ comment, rating, reviewId }),
+        }
+      );
 
       const data = await response.json();
       return { success: response.ok, data, error: data.error };

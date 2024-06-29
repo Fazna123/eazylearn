@@ -22,6 +22,7 @@ import { Link, useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 //import { CHANGE_PASSWORD } from "../utils/api";
 import { changePasswordAPI, getMyInfo } from "../utils/endPoint";
+import { BASE_URL } from "../utils/api";
 //import Spinner from "../components/Spinner";
 
 export default function Profile() {
@@ -94,7 +95,7 @@ export default function Profile() {
     try {
       console.log("form data", formData);
       dispatch(updateUserStart());
-      const res = await fetch(`/api/user/updateuser`, {
+      const res = await fetch(`${BASE_URL}/api/user/updateuser`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -124,7 +125,7 @@ export default function Profile() {
 
   const handleSignOut = async () => {
     try {
-      await fetch("/api/user/logout");
+      await fetch(`${BASE_URL}/api/user/logout`);
       dispatch(signOut());
       navigate("/");
     } catch (error) {
@@ -210,7 +211,7 @@ export default function Profile() {
       const { success, error, data } = await getMyInfo();
       if (success) {
         if (data.user.isBlock === true) {
-          await fetch("/api/user/logout");
+          await fetch(`${BASE_URL}/api/user/logout`);
           dispatch(signOut());
           navigate("/signin");
         }

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { signInSuccess, signInFailure } from "../redux/user/userSlice";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { BASE_URL } from "../utils/api";
 
 export default function OAuth() {
   const dispatch = useDispatch();
@@ -20,7 +21,7 @@ export default function OAuth() {
         avatar: result.user.photoURL,
       };
 
-      const res = await fetch("/api/user/google", {
+      const res = await fetch(`${BASE_URL}/api/user/google`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

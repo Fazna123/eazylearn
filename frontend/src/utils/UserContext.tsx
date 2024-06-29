@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { getMyInfo } from "../utils/endPoint";
 import { signOut } from "../redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "./api";
 
 const UserContext = createContext<any>(null);
 
@@ -22,7 +23,7 @@ export const UserProvider = ({ children }: any) => {
         if (data?.user?.isBlock === true) {
           setCurrentUser(null);
           console.log("current user", currentUser);
-          await fetch("/api/user/logout"); // Ensure user is logged out
+          await fetch(`${BASE_URL}/api/user/logout`); // Ensure user is logged out
           dispatch(signOut());
           navigate("/signin");
         } else {

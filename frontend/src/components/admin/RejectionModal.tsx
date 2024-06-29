@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Box, TextField, Button } from "@mui/material";
 import swal from "sweetalert";
+import { BASE_URL } from "../../utils/api";
 
 type RejectionModalProps = {
   open: boolean;
@@ -25,13 +26,16 @@ const RejectionModal = ({
     if (reason.trim()) {
       try {
         console.log(email, courseName, reason);
-        const response = await fetch("/api/user/send-rejection-email", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, courseName, reason }),
-        });
+        const response = await fetch(
+          `${BASE_URL}/api/user/send-rejection-email`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, courseName, reason }),
+          }
+        );
         console.log(response);
         if (response.ok) {
           swal("Email sent successfully!", { icon: "success" });

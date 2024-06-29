@@ -8,6 +8,7 @@ import swal from "sweetalert";
 
 import { format } from "timeago.js";
 import { ToastContainer, toast } from "react-toastify";
+import { BASE_URL } from "../../utils/api";
 
 const AdminDeleteCourseList = () => {
   const [rows, setRows] = useState<any[]>([]);
@@ -15,7 +16,7 @@ const AdminDeleteCourseList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("/api/user/get-deletedcourses")
+    fetch(`${BASE_URL}/api/user/get-deletedcourses`)
       .then((response) => response.json())
       .then((data) => {
         const newRows = data?.courses.map((course: any, index: number) => ({
@@ -37,7 +38,7 @@ const AdminDeleteCourseList = () => {
         buttons: ["Cancel", true],
       });
       if (confirmed) {
-        const res = await fetch(`/api/user/revoke-course/${id}`, {
+        const res = await fetch(`${BASE_URL}/api/user/revoke-course/${id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

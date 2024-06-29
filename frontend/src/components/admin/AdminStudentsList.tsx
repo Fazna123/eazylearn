@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { format } from "timeago.js";
 import { ToastContainer } from "react-toastify";
 import { blockUser, unBlockUser } from "../../utils/endPoint";
+import { BASE_URL } from "../../utils/api";
 
 const AdminInstructorsList = () => {
   const [rows, setRows] = useState<any[]>([]);
@@ -19,7 +20,7 @@ const AdminInstructorsList = () => {
   const [unblockedUsers, setUnblockedUsers] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch("/api/user/get-students")
+    fetch(`${BASE_URL}/api/user/get-students`)
       .then((response) => response.json())
       .then((data) => {
         const newRows = data?.students.map((student: any, index: number) => ({
@@ -82,7 +83,7 @@ const AdminInstructorsList = () => {
     });
     if (confirmed) {
       try {
-        const response = await fetch(`/api/user/delete-user/${id}`, {
+        const response = await fetch(`${BASE_URL}/api/user/delete-user/${id}`, {
           method: "DELETE", // Assuming you are using DELETE method for deletion
         });
         if (response.ok) {

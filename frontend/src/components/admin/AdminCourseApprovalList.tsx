@@ -9,6 +9,7 @@ import swal from "sweetalert";
 import { format } from "timeago.js";
 import { ToastContainer, toast } from "react-toastify";
 import RejectionModal from "./RejectionModal";
+import { BASE_URL } from "../../utils/api";
 
 const AdminCourseApprovalList = () => {
   const [rows, setRows] = useState<any[]>([]);
@@ -21,7 +22,7 @@ const AdminCourseApprovalList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("/api/user/get-courses-approval")
+    fetch(`${BASE_URL}/api/user/get-courses-approval`)
       .then((response) => response.json())
       .then((data) => {
         const newRows = data?.courses.map((course: any, index: number) => ({
@@ -43,7 +44,7 @@ const AdminCourseApprovalList = () => {
         buttons: ["Cancel", true],
       });
       if (confirmed) {
-        const res = await fetch(`/api/user/approve-course/${id}`, {
+        const res = await fetch(`${BASE_URL}/api/user/approve-course/${id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -75,9 +76,12 @@ const AdminCourseApprovalList = () => {
     });
     if (confirmed) {
       try {
-        const response = await fetch(`/api/user/delete-course/${id}`, {
-          method: "DELETE", // Assuming you are using DELETE method for deletion
-        });
+        const response = await fetch(
+          `${BASE_URL}/api/user/delete-course/${id}`,
+          {
+            method: "DELETE", // Assuming you are using DELETE method for deletion
+          }
+        );
         if (response.ok) {
           // Deletion successful
           setRows(rows.filter((course) => course._id !== id));
@@ -105,9 +109,12 @@ const AdminCourseApprovalList = () => {
     });
     if (confirmed) {
       try {
-        const response = await fetch(`/api/user/reject-course/${id}`, {
-          method: "PUT",
-        });
+        const response = await fetch(
+          `${BASE_URL}/api/user/reject-course/${id}`,
+          {
+            method: "PUT",
+          }
+        );
         if (response.ok) {
           swal("Course Rejected successfully!", {
             icon: "success",

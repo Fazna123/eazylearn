@@ -77,7 +77,7 @@ export async function getCategories() {
     const response = await axios.get(GET_CATEGORIES);
     return { success: true, data: response.data };
   } catch (error: any) {
-    return { success: false, error: error.response.data };
+    return { success: false, error: error.response };
   }
 }
 

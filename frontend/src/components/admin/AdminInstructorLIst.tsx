@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { format } from "timeago.js";
 import { ToastContainer } from "react-toastify";
 import { blockUser, unBlockUser } from "../../utils/endPoint";
+import { BASE_URL } from "../../utils/api";
 //import { useDispatch, useSelector } from "react-redux";
 
 const AdminInstructorsList = () => {
@@ -23,7 +24,7 @@ const AdminInstructorsList = () => {
   // const dispatch = useDispatch();
 
   useEffect(() => {
-    fetch("/api/user/get-instructors")
+    fetch(`${BASE_URL}/api/user/get-instructors`)
       .then((response) => response.json())
       .then((data) => {
         const newRows = data?.instructors.map(
@@ -78,7 +79,7 @@ const AdminInstructorsList = () => {
     });
     if (confirmed) {
       try {
-        const response = await fetch(`/api/user/delete-user/${id}`, {
+        const response = await fetch(`${BASE_URL}/api/user/delete-user/${id}`, {
           method: "DELETE", // Assuming you are using DELETE method for deletion
         });
         if (response.ok) {

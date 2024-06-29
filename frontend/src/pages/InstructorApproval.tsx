@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
+import { BASE_URL } from "../utils/api";
 
 export default function InstructorApproval() {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export default function InstructorApproval() {
   console.log(id);
 
   const handleRequest = async () => {
-    const res = await fetch(`/api/user/instructor/${id}`, {
+    const res = await fetch(`${BASE_URL}/api/user/instructor/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

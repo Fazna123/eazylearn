@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { createCourseFailure } from "../redux/courses/courseSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import { BASE_URL } from "../utils/api";
 
 export default function EditCourse() {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ export default function EditCourse() {
   const id = params?.id;
   console.log(id);
   useEffect(() => {
-    fetch("/api/user/get-allcourses")
+    fetch(`${BASE_URL}/api/user/get-allcourses`)
       .then((response) => response.json())
       .then((data) => {
         const courseDetails = data?.courses.find((i: any) => i._id === id);
@@ -136,7 +137,7 @@ export default function EditCourse() {
       toast("Fill all the fields and try again");
     } else {
       try {
-        const res = await fetch(`/api/user/edit-course/${id}`, {
+        const res = await fetch(`${BASE_URL}/api/user/edit-course/${id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

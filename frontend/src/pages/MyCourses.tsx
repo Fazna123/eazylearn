@@ -6,6 +6,7 @@ import { getMyInfo } from "../utils/endPoint";
 import { useDispatch } from "react-redux";
 import { signOut } from "../redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../utils/api";
 // import { useEffect } from "react";
 // import { getMyInfo } from "../utils/endPoint";
 // import { signOut, updateUserSuccess } from "../redux/user/userSlice";
@@ -23,7 +24,7 @@ const MyCourses = () => {
       const { success, error, data } = await getMyInfo();
       if (success) {
         if (data.user.isBlock === true) {
-          await fetch("/api/user/logout");
+          await fetch(`${BASE_URL}/api/user/logout`);
           dispatch(signOut());
           navigate("/signin");
         }

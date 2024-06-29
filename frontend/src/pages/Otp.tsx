@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { BASE_URL } from "../utils/api";
 
 export default function SignIn() {
   const [activation_token, setActivationToken] = useState("");
@@ -48,7 +49,7 @@ export default function SignIn() {
         };
         console.log(body);
 
-        const res = await fetch("/api/user/activate-user", {
+        const res = await fetch(`${BASE_URL}/api/user/activate-user`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -103,7 +104,7 @@ export default function SignIn() {
     };
     console.log(body);
 
-    const res = await fetch("/api/user/resendotp", {
+    const res = await fetch(`${BASE_URL}/api/user/resendotp`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

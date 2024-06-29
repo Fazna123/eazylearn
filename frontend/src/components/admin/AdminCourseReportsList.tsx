@@ -3,13 +3,14 @@ import { format } from "timeago.js";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../utils/api";
 
 function AdminCourseReportsList() {
   const navigate = useNavigate();
   const [rows, setRows] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("/api/user/get-reportedcourses")
+    fetch(`${BASE_URL}/api/user/get-reportedcourses`)
       .then((response) => response.json())
       .then((data) => {
         const newRows = data?.courses.map((course: any, index: number) => {

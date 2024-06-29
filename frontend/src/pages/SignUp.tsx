@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import swal from "sweetalert";
+import { BASE_URL } from "../utils/api";
 
 export default function SignUp() {
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
@@ -34,7 +35,7 @@ export default function SignUp() {
         setLoading(true);
         setError(false);
 
-        const res = await fetch("/api/user/register", {
+        const res = await fetch(`${BASE_URL}/api/user/register`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
