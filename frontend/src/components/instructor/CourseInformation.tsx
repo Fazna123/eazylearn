@@ -44,12 +44,14 @@ const CourseInformation: FC<Props> = ({
           setActive(active + 1);
         } else {
           console.log("uploading failed");
+          toast("Uploading video failed", { type: "error" });
         }
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          toast(error?.response?.data?.message);
+          toast(error?.response?.data?.message, { type: "error" });
         }
         console.error("Error uploading video:", error);
+        toast("An error occurred during video upload", { type: "error" });
       }
     } else {
       setActive(active + 1);
