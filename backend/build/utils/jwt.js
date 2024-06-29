@@ -13,13 +13,15 @@ exports.accessTokenOptions = {
     expires: new Date(Date.now() + exports.accessTokenExpire * 1000),
     maxAge: exports.accessTokenExpire * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "none",
+    secure: process.env.NODE_ENV === "production",
 };
 exports.refreshTokenOptions = {
     expires: new Date(Date.now() + exports.refreshTokenExpire * 1000),
     maxAge: exports.refreshTokenExpire * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "none",
+    secure: process.env.NODE_ENV === "production",
 };
 const sendToken = (user, statusCode, res) => {
     const accessToken = user.signAccessToken();
@@ -31,9 +33,9 @@ const sendToken = (user, statusCode, res) => {
     // if (process.env.NODE_ENV === "production") {
     //   accessTokenOptions.secure = true;
     // }
-    if (process.env.NODE_ENV === "production") {
-        exports.accessTokenOptions.secure = false;
-    }
+    // if (process.env.NODE_ENV === "production") {
+    //   accessTokenOptions.secure = false;
+    // }
     res.cookie("access_token", accessToken, exports.accessTokenOptions);
     res.cookie("refresh_token", refreshToken, exports.refreshTokenOptions);
     res.status(statusCode).json({
