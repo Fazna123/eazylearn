@@ -75,7 +75,6 @@ const CourseInformation: FC<Props> = ({
               headers: {
                 "Content-Type": "multipart/form-data",
               },
-              withCredentials: true,
             });
 
             if (response) {
