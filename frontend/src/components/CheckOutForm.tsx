@@ -45,14 +45,15 @@ const CheckOutForm: FC<Props> = ({ data, user }: Props) => {
       elements,
       redirect: "if_required",
     });
-    //console.log(paymentIntent?.status);
+    console.log("payment status", paymentIntent?.status);
+    console.log("payment Intent", paymentIntent);
     if (error) {
       setMessage(error.message);
       setIsLoading(false);
       console.log(error.message);
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
-      console.log(paymentIntent);
-      console.log(shippingAddress);
+      console.log("paymentIntent", paymentIntent);
+      console.log("shiping address", shippingAddress);
       setIsLoading(false);
       const { success, data, error } = await createOrder(
         course._id,
