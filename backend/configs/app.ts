@@ -19,7 +19,7 @@ const createServer = () => {
 
   console.log("origin", process.env.ORIGIN);
 
-  //app.use(cors());
+  app.use(cors());
 
   const io = new SocketIOServer(server, {
     cors: {

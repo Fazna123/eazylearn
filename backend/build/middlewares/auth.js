@@ -55,7 +55,7 @@ const isAuthenticated = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
     //req.user = JSON.parse(user);
     req.user = JSON.parse(user);
     // console.log("req.user in isAuthenticated", req.user);
-    //console.log(req.user);
+    console.log("req.user", req.user);
     next();
 });
 exports.isAuthenticated = isAuthenticated;

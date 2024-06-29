@@ -58,7 +58,7 @@ export const isAuthenticated = async (
   //req.user = JSON.parse(user);
   req.user = JSON.parse(user);
   // console.log("req.user in isAuthenticated", req.user);
-  //console.log(req.user);
+  console.log("req.user", req.user);
 
   next();
 };
