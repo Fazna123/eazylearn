@@ -28,6 +28,7 @@ const createServer = () => {
         cors: {
             origin: "https://eazylearn.xyz",
             methods: ["GET", "POST"],
+            credentials: true,
         },
         transports: ["websocket", "polling"],
     });
