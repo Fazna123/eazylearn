@@ -36,6 +36,7 @@ const CourseInformation: FC<Props> = ({
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          withCredentials: false,
         });
         if (response) {
           console.log("demo video uploaded");
@@ -75,6 +76,7 @@ const CourseInformation: FC<Props> = ({
               headers: {
                 "Content-Type": "multipart/form-data",
               },
+              withCredentials: false,
             });
 
             if (response) {
