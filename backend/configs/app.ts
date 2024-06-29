@@ -4,7 +4,7 @@ export const app = express();
 import morgan from "morgan";
 
 import { ErrorMiddleWare } from "../middlewares/error";
-import cors from "cors";
+//import cors from "cors";
 import cookieParser from "cookie-parser";
 import http from "http";
 import { Server as SocketIOServer } from "socket.io";
@@ -19,7 +19,7 @@ const createServer = () => {
 
   console.log("origin", process.env.ORIGIN);
 
-  app.use(cors());
+  //app.use(cors());
 
   const io = new SocketIOServer(server, {
     cors: {
