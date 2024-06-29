@@ -10,7 +10,13 @@ function AdminCourseReportsList() {
   const [rows, setRows] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch(`${BASE_URL}/api/user/get-reportedcourses`)
+    fetch(`${BASE_URL}/api/user/get-reportedcourses`, {
+      headers: {
+        "Content-Type": "application/json",
+        // Add any other headers you need
+      },
+      credentials: "include", // Include cookies in the request
+    })
       .then((response) => response.json())
       .then((data) => {
         const newRows = data?.courses.map((course: any, index: number) => {

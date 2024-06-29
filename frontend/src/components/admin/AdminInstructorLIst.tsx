@@ -24,7 +24,13 @@ const AdminInstructorsList = () => {
   // const dispatch = useDispatch();
 
   useEffect(() => {
-    fetch(`${BASE_URL}/api/user/get-instructors`)
+    fetch(`${BASE_URL}/api/user/get-instructors`, {
+      headers: {
+        "Content-Type": "application/json",
+        // Add any other headers you need
+      },
+      credentials: "include", // Include cookies in the request
+    })
       .then((response) => response.json())
       .then((data) => {
         const newRows = data?.instructors.map(

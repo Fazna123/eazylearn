@@ -24,7 +24,15 @@ const CourseView: FC<Props> = ({ courseId }) => {
   useEffect(() => {
     const fetchCourseData = async () => {
       const response = await fetch(
-        `${BASE_URL}/api/user/get-course/${courseId}`
+        `${BASE_URL}/api/user/get-course/${courseId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            // Add any other headers you need
+          },
+          credentials: "include", // Include cookies in the request
+        }
       );
       const data = await response.json();
       console.log("data.course", data);

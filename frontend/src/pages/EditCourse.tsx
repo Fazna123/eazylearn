@@ -23,7 +23,13 @@ export default function EditCourse() {
   const id = params?.id;
   console.log(id);
   useEffect(() => {
-    fetch(`${BASE_URL}/api/user/get-allcourses`)
+    fetch(`${BASE_URL}/api/user/get-allcourses`, {
+      headers: {
+        "Content-Type": "application/json",
+        // Add any other headers you need
+      },
+      credentials: "include", // Include cookies in the request
+    })
       .then((response) => response.json())
       .then((data) => {
         const courseDetails = data?.courses.find((i: any) => i._id === id);

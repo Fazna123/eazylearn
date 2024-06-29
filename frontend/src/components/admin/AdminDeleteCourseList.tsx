@@ -16,7 +16,13 @@ const AdminDeleteCourseList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${BASE_URL}/api/user/get-deletedcourses`)
+    fetch(`${BASE_URL}/api/user/get-deletedcourses`, {
+      headers: {
+        "Content-Type": "application/json",
+        // Add any other headers you need
+      },
+      credentials: "include", // Include cookies in the request
+    })
       .then((response) => response.json())
       .then((data) => {
         const newRows = data?.courses.map((course: any, index: number) => ({

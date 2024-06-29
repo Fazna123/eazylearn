@@ -23,7 +23,13 @@ export const UserProvider = ({ children }: any) => {
         if (data?.user?.isBlock === true) {
           setCurrentUser(null);
           console.log("current user", currentUser);
-          await fetch(`${BASE_URL}/api/user/logout`); // Ensure user is logged out
+          await fetch(`${BASE_URL}/api/user/logout`, {
+            headers: {
+              "Content-Type": "application/json",
+              // Add any other headers you need
+            },
+            credentials: "include", // Include cookies in the request
+          }); // Ensure user is logged out
           dispatch(signOut());
           navigate("/signin");
         } else {

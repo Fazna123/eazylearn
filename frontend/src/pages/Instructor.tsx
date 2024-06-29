@@ -28,7 +28,13 @@ export default function Instructor() {
       const { success, error, data } = await getMyInfo();
       if (success) {
         if (data.user.isBlock === true) {
-          await fetch(`${BASE_URL}/api/user/logout`);
+          await fetch(`${BASE_URL}/api/user/logout`, {
+            headers: {
+              "Content-Type": "application/json",
+              // Add any other headers you need
+            },
+            credentials: "include", // Include cookies in the request
+          });
           dispatch(signOut());
           navigate("/signin");
         }

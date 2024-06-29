@@ -22,7 +22,12 @@ const AdminCourseApprovalList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${BASE_URL}/api/user/get-courses-approval`)
+    fetch(`${BASE_URL}/api/user/get-courses-approval`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // Include cookies in the request
+    })
       .then((response) => response.json())
       .then((data) => {
         const newRows = data?.courses.map((course: any, index: number) => ({

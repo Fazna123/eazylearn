@@ -8,7 +8,13 @@ export default function AdminSidebar() {
   const navigate = useNavigate();
   const handleSignOut = async () => {
     try {
-      await fetch(`${BASE_URL}/api/user/logout`);
+      await fetch(`${BASE_URL}/api/user/logout`, {
+        headers: {
+          "Content-Type": "application/json",
+          // Add any other headers you need
+        },
+        credentials: "include", // Include cookies in the request
+      });
       dispatch(signOut());
       navigate("/");
     } catch (error) {

@@ -20,7 +20,13 @@ const AdminInstructorsList = () => {
   const [unblockedUsers, setUnblockedUsers] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch(`${BASE_URL}/api/user/get-students`)
+    fetch(`${BASE_URL}/api/user/get-students`, {
+      headers: {
+        "Content-Type": "application/json",
+        // Add any other headers you need
+      },
+      credentials: "include", // Include cookies in the request
+    })
       .then((response) => response.json())
       .then((data) => {
         const newRows = data?.students.map((student: any, index: number) => ({
