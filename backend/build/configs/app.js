@@ -8,7 +8,7 @@ const express_1 = __importDefault(require("express"));
 exports.app = (0, express_1.default)();
 const morgan_1 = __importDefault(require("morgan"));
 const error_1 = require("../middlewares/error");
-//import cors from "cors";
+const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const http_1 = __importDefault(require("http"));
 const socket_io_1 = require("socket.io");
@@ -19,6 +19,11 @@ const createServer = () => {
     const server = http_1.default.createServer(app);
     console.log("origin", process.env.ORIGIN);
     //app.use(cors());
+    const corsOptions = {
+        origin: "https://eazylearn.xyz",
+        credentials: true,
+    };
+    app.use((0, cors_1.default)(corsOptions));
     const io = new socket_io_1.Server(server, {
         cors: {
             origin: "https://eazylearn.xyz",
