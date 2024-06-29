@@ -18,49 +18,27 @@ const createServer = () => {
   const server = http.createServer(app);
 
   console.log("origin", process.env.ORIGIN);
-  // const corsConfig = {
-  //   origin: "https://eazylearn.xyz",
-  //   credentials: true,
-  // };
 
-  //app.use(cors(corsConfig));
+  // app.use(
+  //   cors({
+  //     origin: "https://eazylearn.xyz",
+  //     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  //     credentials: true,
+  //   })
+  // );
 
-  app.use(
-    cors({
-      origin: "https://eazylearn.xyz",
-      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-      credentials: true,
-    })
-  );
+  const corsConfig = {
+    origin: "https://eazylearn.xyz",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    credentials: true,
+  };
 
-  // app.use((req, res, next) => {
-  //   res.header("Access-Control-Allow-Origin", "http://www.eazylearn.xyz");
-  //   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  //   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  //   next();
-  // });
+  // Use CORS middleware
+  app.use(cors(corsConfig));
 
-  // // Handle preflight requests
-  // app.options("*", (req, res) => {
-  //   res.header("Access-Control-Allow-Origin", "http://www.eazylearn.xyz");
-  //   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  //   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  //   res.sendStatus(200);
-  // });
-
-  // if (process.env.NODE_ENV === "development") {
-  //   app.use(
-  //     cors({
-  //       origin: process.env.ORIGIN,
-  //       methods: ["GET", "POST", "PUT", "DELETE"],
-  //       credentials: true,
-  //     })
-  //   );
-  // }
-  //app.use(cors());
   const io = new SocketIOServer(server, {
     cors: {
-      origin: "*",
+      origin: "https://eazylearn.xyz",
       methods: ["GET", "POST"],
     },
     transports: ["websocket", "polling"],
