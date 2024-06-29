@@ -84,6 +84,7 @@ const CourseContent: FC<Props> = ({
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          withCredentials: false,
         });
         if (response) {
           const { secure_url } = response.data;
