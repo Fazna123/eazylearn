@@ -171,6 +171,7 @@ const CourseContentMedia = ({
         `${BASE_URL}/api/user/edit-review/${courseId}`,
         {
           method: "PUT",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },

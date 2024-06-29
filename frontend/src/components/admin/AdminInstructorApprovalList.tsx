@@ -74,6 +74,7 @@ const AdminInstructorApprovalList = () => {
           `${BASE_URL}/api/user/approve-instructor/${id}`,
           {
             method: "PUT",
+            credentials: "include",
             headers: {
               "Content-Type": "application/json",
             },
@@ -104,6 +105,10 @@ const AdminInstructorApprovalList = () => {
       try {
         const response = await fetch(`${BASE_URL}/api/user/reject-user/${id}`, {
           method: "PUT",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
         });
         if (response.ok) {
           // Deletion successful

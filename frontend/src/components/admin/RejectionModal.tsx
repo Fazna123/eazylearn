@@ -30,6 +30,7 @@ const RejectionModal = ({
           `${BASE_URL}/api/user/send-rejection-email`,
           {
             method: "POST",
+            credentials: "include",
             headers: {
               "Content-Type": "application/json",
             },

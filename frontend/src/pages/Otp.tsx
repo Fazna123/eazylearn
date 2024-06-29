@@ -51,6 +51,7 @@ export default function SignIn() {
 
         const res = await fetch(`${BASE_URL}/api/user/activate-user`, {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -106,6 +107,7 @@ export default function SignIn() {
 
     const res = await fetch(`${BASE_URL}/api/user/resendotp`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

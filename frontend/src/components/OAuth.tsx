@@ -23,6 +23,7 @@ export default function OAuth() {
 
       const res = await fetch(`${BASE_URL}/api/user/google`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },

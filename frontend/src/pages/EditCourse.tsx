@@ -139,6 +139,7 @@ export default function EditCourse() {
       try {
         const res = await fetch(`${BASE_URL}/api/user/edit-course/${id}`, {
           method: "PUT",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },

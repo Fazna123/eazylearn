@@ -97,6 +97,7 @@ export default function Profile() {
       dispatch(updateUserStart());
       const res = await fetch(`${BASE_URL}/api/user/updateuser`, {
         method: "PUT",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },

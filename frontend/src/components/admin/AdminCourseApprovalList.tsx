@@ -46,6 +46,7 @@ const AdminCourseApprovalList = () => {
       if (confirmed) {
         const res = await fetch(`${BASE_URL}/api/user/approve-course/${id}`, {
           method: "PUT",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -79,7 +80,12 @@ const AdminCourseApprovalList = () => {
         const response = await fetch(
           `${BASE_URL}/api/user/delete-course/${id}`,
           {
-            method: "DELETE", // Assuming you are using DELETE method for deletion
+            method: "DELETE",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            // Assuming you are using DELETE method for deletion
           }
         );
         if (response.ok) {
@@ -113,6 +119,10 @@ const AdminCourseApprovalList = () => {
           `${BASE_URL}/api/user/reject-course/${id}`,
           {
             method: "PUT",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
         );
         if (response.ok) {

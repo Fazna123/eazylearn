@@ -1,4 +1,5 @@
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import {
   ADD_ANSWER,
   ADD_CATEGORY,

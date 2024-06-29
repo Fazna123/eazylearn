@@ -80,7 +80,11 @@ const AdminInstructorsList = () => {
     if (confirmed) {
       try {
         const response = await fetch(`${BASE_URL}/api/user/delete-user/${id}`, {
-          method: "DELETE", // Assuming you are using DELETE method for deletion
+          method: "DELETE",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          }, // Assuming you are using DELETE method for deletion
         });
         if (response.ok) {
           // Deletion successful

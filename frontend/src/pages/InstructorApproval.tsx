@@ -14,6 +14,7 @@ export default function InstructorApproval() {
   const handleRequest = async () => {
     const res = await fetch(`${BASE_URL}/api/user/instructor/${id}`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

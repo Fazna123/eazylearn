@@ -73,6 +73,10 @@ const AdminCourseList = () => {
           `${BASE_URL}/api/user/delete-course/${id}`,
           {
             method: "DELETE", // Assuming you are using DELETE method for deletion
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
         );
         if (response.ok) {
