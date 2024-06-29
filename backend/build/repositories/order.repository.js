@@ -21,6 +21,8 @@ class OrderRepository {
     createOrder(data) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log("order repo");
+                console.log("data in order repo", data);
                 const order = yield order_model_1.default.create(data);
                 if (!order) {
                     return {

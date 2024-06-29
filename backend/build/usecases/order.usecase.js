@@ -166,7 +166,7 @@ class OrderUsecase {
                     status: 500,
                     data: {
                         success: false,
-                        message: "server error",
+                        message: `server error ${error}`,
                     },
                 };
             }

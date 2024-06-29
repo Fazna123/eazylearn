@@ -10,6 +10,8 @@ import CourseModel from "../models/course.model";
 class OrderRepository {
   async createOrder(data: any) {
     try {
+      console.log("order repo");
+      console.log("data in order repo", data);
       const order = await orderModel.create(data);
       if (!order) {
         return {

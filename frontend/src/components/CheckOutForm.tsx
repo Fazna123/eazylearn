@@ -45,8 +45,7 @@ const CheckOutForm: FC<Props> = ({ data, user }: Props) => {
       elements,
       redirect: "if_required",
     });
-    console.log("payment status", paymentIntent?.status);
-    console.log("payment Intent", paymentIntent);
+
     if (error) {
       setMessage(error.message);
       setIsLoading(false);
