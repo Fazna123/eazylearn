@@ -24,10 +24,15 @@ exports.refreshTokenOptions = {
 const sendToken = (user, statusCode, res) => {
     const accessToken = user.signAccessToken();
     const refreshToken = user.signRefreshToken();
+    console.log("access token", accessToken);
+    console.log("refresh token", refreshToken);
     //upload session to redis
     redis_1.redis.set(user._id, JSON.stringify(user));
+    // if (process.env.NODE_ENV === "production") {
+    //   accessTokenOptions.secure = true;
+    // }
     if (process.env.NODE_ENV === "production") {
-        exports.accessTokenOptions.secure = true;
+        exports.accessTokenOptions.secure = false;
     }
     res.cookie("access_token", accessToken, exports.accessTokenOptions);
     res.cookie("refresh_token", refreshToken, exports.refreshTokenOptions);

@@ -40,12 +40,19 @@ export const sendToken = (user: IUser, statusCode: number, res: Response) => {
   const accessToken = user.signAccessToken();
   const refreshToken = user.signRefreshToken();
 
+  console.log("access token", accessToken);
+  console.log("refresh token", refreshToken);
+
   //upload session to redis
 
   redis.set(user._id, JSON.stringify(user));
 
+  // if (process.env.NODE_ENV === "production") {
+  //   accessTokenOptions.secure = true;
+  // }
+
   if (process.env.NODE_ENV === "production") {
-    accessTokenOptions.secure = true;
+    accessTokenOptions.secure = false;
   }
 
   res.cookie("access_token", accessToken, accessTokenOptions);
