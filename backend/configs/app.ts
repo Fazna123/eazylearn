@@ -19,26 +19,11 @@ const createServer = () => {
 
   console.log("origin", process.env.ORIGIN);
 
-  // app.use(
-  //   cors({
-  //     origin: "https://eazylearn.xyz",
-  //     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-  //     credentials: true,
-  //   })
-  // );
-
-  const corsConfig = {
-    origin: "https://eazylearn.xyz",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-    credentials: true,
-  };
-
-  // Use CORS middleware
-  app.use(cors(corsConfig));
+  app.use(cors());
 
   const io = new SocketIOServer(server, {
     cors: {
-      origin: "https://eazylearn.xyz",
+      origin: "*",
       methods: ["GET", "POST"],
     },
     transports: ["websocket", "polling"],
@@ -62,11 +47,5 @@ export default createServer;
 
 // //cookie parser
 // app.use(cookieParser());
-
-// app.use(
-//   cors({
-//     origin: process.env.ORIGIN,
-//   })
-// );
 
 // app.use(ErrorMiddleWare);
