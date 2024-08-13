@@ -139,6 +139,11 @@ export default function SignIn() {
         >
           {error ? toast(error) || "Something went wrong!" : ""}
         </p> */}
+        <div className="pt-5 pl-20">
+          <p>Instructor Demo Details:</p>
+          <p>Email: xyz@gmail.com</p>
+          <p>Password: 123456</p>
+        </div>
       </div>
       <Footer />
     </div>
