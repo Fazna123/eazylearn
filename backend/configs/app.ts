@@ -22,6 +22,7 @@ const createServer = () => {
   //app.use(cors());
   const corsOptions = {
     origin: "https://eazylearn.xyz",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
   };
 
