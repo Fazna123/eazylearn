@@ -1,9 +1,9 @@
 import {
   GoogleAuthProvider,
   getAuth,
-  getRedirectResult,
-  //signInWithPopup,
-  signInWithRedirect,
+  //getRedirectResult,
+  signInWithPopup,
+  //signInWithRedirect,
 } from "firebase/auth";
 import { app } from "../firebase";
 import { useDispatch } from "react-redux";
@@ -20,11 +20,11 @@ export default function OAuth() {
     try {
       const provider = new GoogleAuthProvider();
       const auth = getAuth(app);
-      //const result = await signInWithPopup(auth, provider);
-      await signInWithRedirect(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      //await signInWithRedirect(auth, provider);
 
       // After redirection, handle the result
-      const result = await getRedirectResult(auth);
+      //const result = await getRedirectResult(auth);
       // const senddata = {
       //   name: result.user.displayName,
       //   email: result.user.email,

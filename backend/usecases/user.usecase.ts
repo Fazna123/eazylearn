@@ -285,6 +285,7 @@ class UserUsecase {
       const user = await this.userRepository.checkExistUser(email);
       console.log("response from repo", user);
       if (user.data) {
+        //console.log(user.data);
         sendToken(user.data, 200, res);
       } else {
         const generatedPassword =
