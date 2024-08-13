@@ -1,4 +1,10 @@
-import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  getAuth,
+  getRedirectResult,
+  //signInWithPopup,
+  signInWithRedirect,
+} from "firebase/auth";
 import { app } from "../firebase";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -14,32 +20,43 @@ export default function OAuth() {
     try {
       const provider = new GoogleAuthProvider();
       const auth = getAuth(app);
-      const result = await signInWithPopup(auth, provider);
-      const senddata = {
-        name: result.user.displayName,
-        email: result.user.email,
-        avatar: result.user.photoURL,
-      };
+      //const result = await signInWithPopup(auth, provider);
+      await signInWithRedirect(auth, provider);
 
-      const res = await fetch(`${BASE_URL}/api/user/google`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(senddata),
-      });
+      // After redirection, handle the result
+      const result = await getRedirectResult(auth);
+      // const senddata = {
+      //   name: result.user.displayName,
+      //   email: result.user.email,
+      //   avatar: result.user.photoURL,
+      // };
+      if (result) {
+        const senddata = {
+          name: result.user.displayName,
+          email: result.user.email,
+          avatar: result.user.photoURL,
+        };
 
-      if (res.ok) {
-        const data = await res.json();
-        dispatch(signInSuccess(data));
-        navigate("/");
-      } else {
-        const errorData = await res.json();
-        dispatch(signInFailure(errorData));
-        toast.error(errorData.message);
-        console.error("Error during Google authentication:", errorData);
-        // Display or log the error message received from the server
+        const res = await fetch(`${BASE_URL}/api/user/google`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(senddata),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          dispatch(signInSuccess(data));
+          navigate("/");
+        } else {
+          const errorData = await res.json();
+          dispatch(signInFailure(errorData));
+          toast.error(errorData.message);
+          console.error("Error during Google authentication:", errorData);
+          // Display or log the error message received from the server
+        }
       }
     } catch (error) {
       console.log("Couldn't login with Google", error);
